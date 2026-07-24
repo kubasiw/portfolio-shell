@@ -1,0 +1,62 @@
+.landing {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 44px;
+}
+
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--eg-hairline-inner);
+  padding: 16px 0;
+}
+
+.masthead__name {
+  font-family: var(--eg-font-serif);
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+}
+
+.masthead__nav {
+  display: flex;
+  gap: 22px;
+  font-family: var(--eg-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+}
+
+.masthead__vol {
+  font-family: var(--eg-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--eg-accent-secondary);
+}
+
+.hero {
+  padding: 64px 0 40px;
+  max-width: 560px;
+}
+
+.hero__title {
+  font-family: var(--eg-font-serif);
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 1.06;
+  margin: 0 0 16px;
+}
+
+.hero__title em {
+  font-style: italic;
+  color: var(--eg-accent-primary);
+}
+
+.hero__tagline {
+  font-size: 14px;
+  color: var(--eg-ink-secondary);
+  line-height: 1.6;
+  margin: 0;
+}

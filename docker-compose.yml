@@ -1,0 +1,24 @@
+# Zakłada, że Traefik już działa na VPS jako osobny stos (docker-compose)
+# i że stworzył zewnętrzną sieć `web`, do której podpinają się wszystkie apki.
+# Traefik sam ten stos nie zawiera — patrz PORTFOLIO_PLAN.md, sekcja "Hosting / infrastruktura".
+#
+# PRZED WDROŻENIEM PODMIEŃ:
+#   - TWOJ-USERNAME  → Twój login GitHub (właściciel obrazu w ghcr.io)
+#   - TWOJA-DOMENA.pl → docelowa domena/subdomena portfolio shellu
+services:
+  portfolio-shell:
+    image: ghcr.io/TWOJ-USERNAME/portfolio-shell:latest
+    container_name: portfolio-shell
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portfolio-shell.rule=Host(`TWOJA-DOMENA.pl`)"
+      - "traefik.http.routers.portfolio-shell.entrypoints=websecure"
+      - "traefik.http.routers.portfolio-shell.tls.certresolver=letsencrypt"
+      - "traefik.http.services.portfolio-shell.loadbalancer.server.port=80"
+
+networks:
+  web:
+    external: true

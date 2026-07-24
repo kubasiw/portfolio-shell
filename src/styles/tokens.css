@@ -1,0 +1,22 @@
+/*
+ * Design tokens — "Editorial Garage"
+ * Źródło prawdy: PORTFOLIO_PLAN.md, sekcja "Design system — Editorial Garage".
+ * Nie hardkodować tych wartości w komponentach — zawsze referencja do zmiennej.
+ */
+:root {
+  /* paleta */
+  --eg-paper: #f2ece0;
+  --eg-ink: #201d19;
+  --eg-ink-secondary: #6b6357;
+  --eg-hairline: #ddd2bf;
+  --eg-hairline-inner: #c9c0ac;
+  --eg-divider: #e4ddcf;
+  --eg-accent-primary: #0b3d2e; /* zieleń wyścigowa */
+  --eg-accent-secondary: #a9772f; /* mosiądz */
+  --eg-muted: #c7bfae; /* zablokowane/nieaktywne */
+
+  /* typografia */
+  --eg-font-serif: Georgia, 'Iowan Old Style', ui-serif, serif;
+  --eg-font-mono: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --eg-font-sans: -apple-system, 'Segoe UI', system-ui, sans-serif;
+}

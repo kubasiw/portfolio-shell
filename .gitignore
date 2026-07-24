@@ -1,0 +1,19 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.DS_Store
+
+# prywatny dziennik nauki — nie publiczny domyślnie, patrz nagłówek pliku
+DZIENNIK_NAUKI.md
