@@ -216,13 +216,34 @@ jako umiejętność DevOps, kosztem większego nakładu pracy utrzymaniowej). Po
 sprawdzony pod kątem realnych, aktualnych cen (2026-07-24, po podwyżce Hetznera z kwietnia 2026 —
 patrz źródła na dole dokumentu).
 
-**VPS: Hetzner Cloud, plan CX33** (4 vCPU, 8GB RAM, 80GB SSD, 20TB transferu) —
-**€6.49/mies. + €0.50 za IPv4** (Cost-Optimized/CX Gen3, x86). Lokalizacja: Norymberga albo
-Falkenstein (Niemcy) — najbliżej Polski, najniższe opóźnienie. Wystarcza na 4 apki (frontend +
-backend + wspólny Postgres) przy umiarkowanym ruchu portfolio-scale; Hetzner pozwala skalować
-w górę bez przesiadki na nowy serwer, więc można też realnie zacząć od tańszego CX23
-(2 vCPU/4GB, €3.99/mies.) i podnieść w razie potrzeby. Odrzucone alternatywy: DigitalOcean/Linode/
-Vultr/AWS Lightsail — przy porównywalnej specyfikacji 2.5–5.5× drożej niż Hetzner.
+**VPS: Hetzner Cloud, plan CPX22 (tymczasowo, patrz niżej)** (2 vCPU, 4GB RAM, 80GB SSD,
+20TB transferu) — **€23.97/mies.** (Regular Performance/CPX, AMD). Lokalizacja: Norymberga albo
+Falkenstein (Niemcy) — najbliżej Polski, najniższe opóźnienie.
+
+**Korekta 2026-07-24 (ważne, zmienia poniższą "Decyzję ostateczną"):** pierwotny wybór CX33
+(4 vCPU/8GB za €6.99/mies.) okazał się nieaktualny — 15 czerwca 2026 Hetzner podniósł ceny linii
+CPX/CCX o nawet 176% (Niemcy/Finlandia: ~2,4–2,75×), a przy realnym zakładaniu serwera linia
+Cost-Optimized (CX) w ogóle nie była dostępna do wyboru (tylko Regular Performance/CPX) — mimo że
+CX podrożał znacznie łagodniej (~1,3–1,4×) niż CPX. Zamiast czekać/szukać dalej, świadoma decyzja:
+**kupić teraz CPX22 (€23,97/mies.), nie najmniejszy CPX12 (€14,13/mies.)** — w ciągu tygodnia
+dochodzi kolejna apka (własny backend NestJS + Postgres), a 2GB RAM z CPX12 (Traefik +
+portfolio-shell + backend + baza jednocześnie) to realne ryzyko OOM przy starcie; różnica
+€9,84/mies. za dodatkowe 2GB to tania polisa. Nadal jasny plan migracji za ok. miesiąc na coś
+tańszego (CX, jeśli wróci do wyboru, albo inny dostawca) — dzięki temu, że cała infrastruktura jest
+jako kod (Docker Compose + Traefik + GitHub Actions), migracja to tylko: nowy VPS, ten sam
+`docker compose up` na Traefiku, zmiana rekordu A w Cloudflare. Hetzner rozlicza się godzinowo, bez
+umowy/okresu wypowiedzenia — serwer można skasować w dowolnym momencie bez kary.
+**⚠️ Przypomnienie: sprawdzić ok. 2026-08-24 (miesiąc od zakupu), czy nie przenieść się na
+tańszą opcję** (patrz też "Otwarte pytania" niżej). Oryginalna analiza CX23 vs. CX33 poniżej
+zostaje jako historyczny kontekst decyzji, nieaktualna cenowo.
+
+**Decyzja ostateczna 2026-07-24 (historyczna, ceny nieaktualne — patrz korekta wyżej):** po
+dyskusji o CX23 vs. CX33 (CX23 realnie wystarczyłby na sam portfolio-shell, CX33 to wymiarowanie
+pod docelowy stan z roadmapy — Traefik + wszystkie 4 apki + wspólny Postgres + monitoring naraz)
+właściciel zdecydował zostać przy CX33 od początku — prostota (brak późniejszego kroku resize)
+uznana za wartą ~€2.50/mies. różnicy. Odrzucone alternatywy: DigitalOcean/Linode/Vultr/AWS
+Lightsail — przy porównywalnej specyfikacji 2.5–5.5× drożej niż Hetzner (ceny sprzed czerwcowej
+podwyżki, do ponownego porównania przy migracji za miesiąc).
 
 **Reverse proxy + TLS: Traefik** z automatycznym Let's Encrypt (routing na podstawie labeli
 Dockera, zero ręcznej konfiguracji per apka przy dodawaniu kolejnego kontenera) — rekomendacja.
@@ -255,9 +276,13 @@ Hetznera (+20% kosztu serwera) albo cron `pg_dump` → Hetzner Object Storage (S
 **Do ustalenia:** sama nazwa domeny (osobista decyzja właściciela, niezależna od struktury
 powyższej) oraz ostateczny wybór Traefik vs. nginx (do potwierdzenia przy realnym wdrożeniu).
 
-*Ceny sprawdzone na żywo 2026-07-24 (po podwyżce Hetznera z kwietnia 2026), źródło:
-[bitdoze.com — Hetzner Cloud Pricing After the April 2026 Increase](https://www.bitdoze.com/hetzner-cloud-cost-optimized-plans/).
-Do zweryfikowania ponownie bezpośrednio na hetzner.com przed realnym zakupem — ceny się zmieniają.*
+*Ceny CPX12 sprawdzone na żywo 2026-07-24 bezpośrednio w formularzu zakupu na hetzner.com (nie
+z artykułu — patrz korekta wyżej, artykuł był już nieaktualny). Kontekst podwyżek: [wz-it.com —
+Hetzner price increase June 2026: CPX and CCX up to +176%](https://wz-it.com/en/blog/hetzner-price-increase-june-2026-cpx-ccx-alternatives/),
+[northflank.com — Hetzner cloud server price increases in 2026](https://northflank.com/blog/hetzner-cloud-server-price-increases),
+[bitdoze.com — Hetzner Cloud Pricing After the April 2026 Increase](https://www.bitdoze.com/hetzner-cloud-cost-optimized-plans/)
+(ten ostatni już nieaktualny co do CX33/CPX22 — patrz korekta wyżej). Do zweryfikowania ponownie
+bezpośrednio na hetzner.com przy migracji za miesiąc — ceny się zmieniają.*
 
 ## Dobre praktyki programistyczne i architektoniczne (wspólne dla wszystkich projektów)
 
@@ -447,10 +472,16 @@ Duże decyzje (koncept, framework i design wszystkich 4 projektów; architektura
 szkielet hostingu) są już zamknięte — patrz sekcje wyżej i "Historia decyzji" niżej. Zostały
 głównie detale wykonawcze:
 
-- Nazwa domeny (osobista decyzja właściciela) — reszta struktury domenowej (subdomeny per apka,
-  Cloudflare) już ustalona w sekcji "Hosting / infrastruktura".
+- ~~Nazwa domeny~~ — **potwierdzone: `kubsiw.com`** (kupiona przez Cloudflare Registrar, $10.46,
+  automatycznie na Cloudflare DNS, bez przełączania nameserverów). Reszta struktury domenowej
+  (subdomeny per apka) już ustalona w sekcji "Hosting / infrastruktura".
 - Traefik vs. nginx jako reverse proxy — Traefik jako robocza rekomendacja, do potwierdzenia przy
   realnym wdrożeniu.
+- **⚠️ ok. 2026-08-24: sprawdzić, czy przenieść VPS z tymczasowego CPX22 (€23,97/mies.) na coś
+  tańszego** — czy CX (Cost-Optimized) wróciło do wyboru u Hetznera, i/lub porównać ponownie
+  DigitalOcean/Linode/Vultr po ich własnych aktualnych cenach (poprzednie porównanie było sprzed
+  czerwcowej podwyżki Hetznera). Migracja jest tania dzięki infrastrukturze jako kodowi — patrz
+  sekcja "Hosting / infrastruktura" wyżej.
 - Backupy (Hetzner automatyczne vs. cron `pg_dump` → Object Storage) — niekrytyczne na start.
 - Wersje mobilne makiet (plansza w statki, spec-plate boxy, pieczątki Serwisanta na wąskim
   ekranie).
@@ -470,9 +501,20 @@ działa, zanim doda się złożoność.
    makieta z tej rozmowy.
 2. ✅ Dockerfile (multi-stage: build w node, serwowanie przez nginx + SPA fallback) i
    `docker-compose.yml` z labelami Traefik — gotowe, czekają na realny VPS.
-3. ⬜ VPS Hetzner postawiony, Traefik uruchomiony, Cloudflare DNS spięty z domeną — wymaga akcji
-   właściciela (konto/płatność), nie do zrobienia z tego środowiska. Checklist krok po kroku w
-   `C:\portfolio-shell\README.md`.
+3. ✅ VPS Hetzner postawiony (CPX22, Helsinki), Traefik uruchomiony, Cloudflare DNS spięty z domeną,
+   pierwszy realny deploy portfolio-shellu — `https://kubsiw.com` faktycznie odpowiada. Zrobione
+   2026-07-24, przez SSH/scp prowadzone krok po kroku (nie automatycznie — właściciel wykonywał
+   polecenia ręcznie). Napotkane i naprawione po drodze: (1) hasło `root` trzeba było wziąć z maila
+   od Hetznera (brak wcześniej wygenerowanego klucza SSH), zresetowane przez panel po literówce
+   przy pierwszym wklejeniu; (2) wklejanie wieloliniowego YAML-a do `nano` przez SSH psuło wcięcia
+   (auto-indent terminala) — ominięte przez wygenerowanie plików lokalnie i wysłanie `scp`
+   zamiast edycji na serwerze; (3) realny, świeży bug zgodności: **Traefik `v3.1` nie działał z
+   Dockerem 29** (`client version 1.24 is too old`, Docker 29 podniósł minimalne wspierane API do
+   1.44, a `v3.1` miało sztywno wpisane 1.24) — Traefik nie widział żadnych kontenerów, serwował
+   domyślny samopodpisany certyfikat zamiast Let's Encrypt. Naprawione podbiciem obrazu na
+   `traefik:v3.7` (auto-negocjacja wersji API od v3.6.1+) — poprawka wprowadzona też do
+   `INFRA_SETUP.md`, żeby kolejne wdrożenia (Insider, Serwisant) nie powtarzały tego samego kroku
+   wstecz.
 4. ⬜ CI/CD (`.github/workflows/deploy.yml`, gotowy kod) przechodzi end-to-end — wymaga repo
    GitHub + sekretów (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`) i działającego VPS z kroku 3.
    **Pierwszy realny bug złapany na żywym GitHub Actions (2026-07-24):** `build-and-deploy` failował
@@ -624,8 +666,21 @@ w tour-guide.
    przeliczony (~4.9:1, wciąż AA), brak przewijania po zmianie na 320px.
 
 **Faza 3 — Projekt 01: tour-guide jako pierwszy Web Component**
-7. Wydzielenie wybranego fragmentu tour-guide (np. mapa) jako Angular Elements custom element —
-   realny kod z `MICROFRONTEND_POC_NOTES.md` jako punkt wyjścia.
+7. ✅ **Wydzielenie fragmentu tour-guide (mapa) jako realny Angular Elements custom element
+   (2026-07-24).** Zbudowane w repo tour-guide (`C:\tour-guide`, osobny projekt — pełny szczegół w
+   jego własnym `CLAUDE.md`, krok 15 roadmapy), nie tutaj: nowy `src/app/mini-map-widget/`
+   (cienki wrapper wokół już istniejącego `PoiMap`, pobiera realne dane POI z Krakowa-Stare Miasto
+   przez nowy `PoiService.findInBoundingBox()`), nowy entry point `src/main-element.ts`
+   (`createCustomElement` z `@angular/elements`, definiuje tag `<tour-guide-mini-map area-id="...">`),
+   nowy cel builda `build-element` w `angular.json` (osobny bundle, ~330KB/~90KB gzip prod).
+   **Zweryfikowane end-to-end w realnej przeglądarce** (osobna statyczna strona testowa, poza
+   repo): prawdziwy Shadow DOM z Leaflet CSS wstrzykniętym w środku, realne kafle mapy, 40 realnych
+   markerów POI (ucięte z ~1000 na szerszym obszarze), klikalny popup z prawdziwą nazwą POI, tryb
+   readonly poprawnie ukrywa przycisk dodawania. Po drodze złapane i naprawione dwa realne bugi w
+   tour-guide (jeden pre-existing, niezwiązany z tą pracą — `npm run build` produkcyjny już
+   wcześniej failował na budżecie stylu Leaflet CSS; drugi nowy — CORS backendu musiał obsłużyć
+   wiele originów, nie tylko jeden hardkodowany). Deploy pod realną subdomeną i wpięcie w
+   portfolio-shell (kroki 8-9 poniżej) czekają na VPS.
 8. Deploy tour-guide (frontend + backend + baza) na tym samym VPS, subdomena
    `tourguide.<domena>`, tym samym pipeline'em co portfolio shell.
 9. Karta "Projekt 01" w portfolio przestaje być placeholderem — realny link + osadzony widget.
@@ -697,6 +752,10 @@ w tour-guide.
   sprawdzone na żywo po podwyżce z kwietnia 2026), Traefik + Let's Encrypt, Cloudflare DNS,
   wspólny Postgres z osobnymi bazami logicznymi per apka, CI/CD przez GitHub Actions → ghcr.io →
   SSH deploy, status/monitoring przez self-hosted Uptime Kuma.
+- 2026-07-24: rozważono CX23 zamiast CX33 na start (właściciel słusznie zapytał, czy CX33 jest
+  naprawdę potrzebne teraz, skoro istnieje tylko statyczny portfolio-shell) — po dyskusji
+  zdecydowano jednak zostać przy CX33 od razu, prostota (bez późniejszego resize) uznana za wartą
+  ~€2.50/mies. różnicy.
 - 2026-07-24: spisano roadmap budowy — 6 faz, od dowodu działania infrastruktury (Faza 1) przez
   landing, kolejno tour-guide → Insider → Serwisant jako Web Componenty, aż po polish. Kolejność
   projektów (tour-guide → Insider → Serwisant) wynika z tego, że tour-guide już istnieje i jest
@@ -710,6 +769,18 @@ w tour-guide.
   zweryfikowane — jawnie zaznaczone jako pierwszy krok do zrobienia przez właściciela, nie
   przemilczane. Pełna checklista pozostałych kroków (VPS, domena, sekrety GitHub) w
   `C:\portfolio-shell\README.md`.
+- 2026-07-24: napisano `INFRA_SETUP.md` — szczegółowy przewodnik krok po kroku (domena →
+  Cloudflare → Hetzner VPS → SSH → Docker → Traefik → DNS → pierwszy deploy). Po drodze
+  zweryfikowano na żywo w oficjalnej dokumentacji Cloudflare, że "Add a site" to nieaktualna
+  nazwa (teraz "Domains → Onboard a domain") — poprawione, nie zostawione z pamięci.
+- 2026-07-24: **kupiono domenę `kubsiw.com`** przez Cloudflare Registrar ($10.46, ceny hurtowe
+  bez marży) — ta ścieżka (rejestracja bezpośrednio przez Cloudflare zamiast osobnego
+  rejestratora) okazała się prostsza niż pierwotnie opisana w `INFRA_SETUP.md`: brak kroku
+  przełączania nameserverów, domena od razu aktywna na Cloudflare DNS. Wybór nazwy: prostota nad
+  tematycznością — `kubsiw` (już używany jako identyfikator, ten sam co adres e-mail) zamiast
+  nazwy nawiązującej do "Editorial Garage", świadomie, żeby domena przetrwała nawet gdyby design
+  się kiedyś zmienił. `docker-compose.yml`/`INFRA_SETUP.md` zaktualizowane z realną domeną,
+  placeholder `TWOJA-DOMENA.pl` usunięty.
 - 2026-07-24: zamknięto znaną lukę z poprzedniego wpisu — `npm run lint`/`npm run build`/
   `docker build`/`docker run` faktycznie odpalone i zweryfikowane (nie tylko poprawność
   składniowa plików). Wynik: wszystko działa bez poprawek w kodzie aplikacji; jedyna poprawka to
@@ -746,3 +817,48 @@ w tour-guide.
   wdrożonej strony — zablokowane/odblokowane karty spisu treści za mało się różniły (sam kolor
   tekstu); wzmocnione o kolor/grubość obwódki, tło całej karty i wypełnioną plakietkę stanu
   odblokowanego.
+- 2026-07-24: **zmiana planu VPS — CX33 nieaktualne, kupiony tymczasowo CPX22.** Przy realnym
+  zakładaniu serwera okazało się, że linia Cost-Optimized (CX) w ogóle nie jest dostępna do
+  wyboru (tylko Regular Performance/CPX), a ceny CPX są radykalnie wyższe niż w pierwotnej
+  analizie — nie €7,99/mies. za CPX22, tylko €23,97/mies. (potwierdzone na żywo w formularzu
+  zakupu, dla wszystkich trzech lokalizacji europejskich). Przyczyna: podwyżka Hetznera z 15
+  czerwca 2026 podniosła ceny CPX/CCX o do 176%, podczas gdy CX podrożał dużo łagodniej — artykuł,
+  z którego wcześniej wzięto €6,99/€7,99, był już nieaktualny w momencie sprawdzania (sprzed
+  czerwcowej podwyżki). Pierwsza decyzja była kupić najmniejszy CPX12 (1 vCPU/2GB/40GB,
+  €14,13/mies.) tylko po to, żeby uruchomić i sprawdzić cały pipeline (Traefik/TLS/DNS/deploy)
+  tanim kosztem — **skorygowane tego samego dnia**: w ciągu tygodnia dochodzi kolejna apka z
+  własnym backendem NestJS + Postgres, więc 2GB RAM z CPX12 (Traefik + portfolio-shell + backend +
+  baza naraz) to realne ryzyko OOM zaraz po starcie; ostatecznie kupiony **CPX22 (2 vCPU/4GB/80GB,
+  €23,97/mies.)** — różnica €9,84/mies. za realny zapas RAM uznana za wartą tego kosztu. Nadal
+  jawny plan migracji za ok. miesiąc (**przypomnienie: ok. 2026-08-24**) na coś tańszego — CX,
+  jeśli wróci do wyboru, albo innego dostawcę. Migracja niska kosztem dzięki temu, że cała
+  infrastruktura jest jako kod (Docker Compose + Traefik + GitHub Actions) — nowy VPS, ten sam
+  `docker compose up`, zmiana rekordu A w Cloudflare. Hetzner rozlicza się godzinowo bez umowy,
+  więc nie ma "przedłużenia" do anulowania — wystarczy skasować serwer przed końcem miesiąca.
+  Szczegóły i źródła w sekcji "Hosting / infrastruktura" wyżej.
+- 2026-07-24: zbudowano Fazę 3, krok 7 (fragment tour-guide jako realny Web Component) — patrz
+  szczegóły przy tym kroku w Roadmapie wyżej. Praca wykonana w repo tour-guide, nie tutaj; pełny
+  szczegół w jego własnym `CLAUDE.md` (krok 15 roadmapy). Zweryfikowane end-to-end w realnej
+  przeglądarce (Shadow DOM, realne dane POI, popup). Po drodze naprawiony pre-existing bug w
+  tour-guide (budżet stylu komponentu blokujący `npm run build`) oraz rozszerzony CORS backendu o
+  wiele originów. Deploy i wpięcie w portfolio-shell (kroki 8-9) czekają na dokończenie
+  konfiguracji VPS (Traefik/DNS) z wpisu wyżej.
+- 2026-07-24: **realny bug znaleziony przez właściciela** — po trafieniu statku spis treści
+  "spadał" pod planszę zamiast zostać obok niej. Zgłoszony na desktopie (nie mobile, gdzie
+  stackowanie jest zamierzone). Odtworzenie po dokładnym pytaniu ("wpisałem długi tekst z palca w
+  devtools") ujawniło prawdziwą przyczynę: `.toc__status` (komunikat wyniku strzału) nie miał
+  żadnego ograniczenia szerokości — długi, **niełamliwy** ciąg znaków (bez spacji, np. przypadkowe
+  wciśnięcie klawiszy) zmuszał `.toc__board-col` (flex-item bez `min-width:0`) do rozrośnięcia się
+  do szerokości tego tekstu, wypychając `.toc__cards` poza dostępną przestrzeń → zawinięcie do
+  nowej linii. Realne dane gry (nazwy sekcji) nigdy tego nie wywołują — to defensywny fix dla
+  patologicznej treści, nie codzienny scenariusz. **Pierwsza próba fixu (samo `min-width:0` na
+  `.toc__board-col`) nie wystarczyła** — potwierdzone pomiarem: multi-line flex-wrap podejmuje
+  decyzję o zawinięciu na bazie hipotetycznego (max-content) rozmiaru elementu, zanim algorytm
+  kurczenia w ogóle zadziała, więc kolumna nadal rosła (372px → 812px, mniej niż poprzednio, ale
+  wciąż zawijało). Ostateczny fix: sprawdzony trik `width: 0; min-width: 100%;` na `.toc__status`
+  (element "nie liczy się" przy ustalaniu naturalnej szerokości rodzica, dopiero potem rozciąga się
+  na 100% już ustalonej szerokości) + `overflow-wrap: anywhere` (łamanie nawet niełamliwego tekstu).
+  Zweryfikowane dokładnie tym samym testem, który odtworzył bug (150-znakowy ciąg bez spacji,
+  wstrzyknięty bezpośrednio przez `element.textContent =`, ten sam mechanizm co devtools) —
+  potwierdzone `sameLine: true` i `boardColWidth: 372` niezmienione, przy desktopie i mobile, plus
+  pełna realna gra (16 trafień/84 pudła/6 sekcji) wciąż działa poprawnie.
