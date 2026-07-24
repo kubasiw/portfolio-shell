@@ -1,4 +1,5 @@
 import './App.css';
+import { Toc } from './features/toc/Toc';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         </h1>
         <p className="hero__tagline">Trzy aplikacje, jedna trasa.</p>
       </main>
+
+      <Toc />
     </div>
   );
 }

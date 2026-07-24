@@ -7,13 +7,27 @@
   /* paleta */
   --eg-paper: #f2ece0;
   --eg-ink: #201d19;
-  --eg-ink-secondary: #6b6357;
-  --eg-hairline: #ddd2bf;
-  --eg-hairline-inner: #c9c0ac;
+  /*
+   * ink-secondary/hairline/hairline-inner poprawione 2026-07-24 — oryginalne wartości dawały
+   * kontrast wobec --eg-paper poniżej progu WCAG dla obramowań (3:1): hairline ~1.28:1,
+   * hairline-inner ~1.54:1 (realnie wyliczone, nie oszacowane). Nowe wartości: ink-secondary
+   * ~6.46:1 (AA), hairline ~3.18:1, hairline-inner ~4.42:1 — ten sam ciepły, brązowo-beżowy
+   * charakter, po prostu wystarczająco ciemniejszy, żeby faktycznie było widać.
+   */
+  --eg-ink-secondary: #5a5347;
+  --eg-hairline: #97815f;
+  --eg-hairline-inner: #7d6a4c;
   --eg-divider: #e4ddcf;
   --eg-accent-primary: #0b3d2e; /* zieleń wyścigowa */
   --eg-accent-secondary: #a9772f; /* mosiądz */
   --eg-muted: #c7bfae; /* zablokowane/nieaktywne */
+  /*
+   * miss-bg/preview-bg dodane 2026-07-24 dla planszy w statki — pudło samo w sobie (bez tła)
+   * było prawie niewidoczne na --eg-paper; teraz ma własne, delikatnie przyciemnione tło plus
+   * realną kropkę (nie tylko glif tekstowy). preview-bg to podgląd obszaru "(Art)yleria".
+   */
+  --eg-miss-bg: #e4dccd;
+  --eg-preview-bg: #e7dac5;
 
   /* typografia */
   --eg-font-serif: Georgia, 'Iowan Old Style', ui-serif, serif;

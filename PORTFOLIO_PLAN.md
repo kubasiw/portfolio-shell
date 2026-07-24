@@ -1,0 +1,712 @@
+# Portfolio / Multi-app showcase — plan roboczy
+
+Ten dokument jest **niezależny od repo `tour-guide`** — tour-guide jest tu traktowany jako jeden
+z kilku projektów wchodzących w skład większej całości: portfolio-appki spinającej wszystko razem.
+Status: brainstorming w toku, decyzje poniżej są robocze i mogą się zmieniać w miarę pracy.
+
+## Wizja
+
+Portfolio nie jako statyczna strona z linkami do projektów, tylko jako osobna, w pełni działająca
+aplikacja — "meta-projekt", który sam w sobie demonstruje umiejętności (mikrofrontendy, gamifikacja,
+UX, DevOps), a jednocześnie prezentuje pozostałe projekty jako żywe, klikalne demo (nie
+screenshoty/wideo).
+
+Nawiązanie do zainteresowań właściciela (siłownia, bieganie, rower, hiking, fotografia,
+motoryzacja) — wspólny mianownik to **ruch / eksploracja / dokumentowanie trasy**. Ten motyw
+przewiduje się w tour-guide (kierunek "trail journal", zielenie szlaku, przerywana linia łącząca
+punkty) — ale **portfolio jako całość ma mieć własny, nowy design**, niekoniecznie nawiązujący
+wizualnie do tour-guide. Każda apka w zestawie może mieć inny charakter graficzny; to jest
+świadoma decyzja, nie przeoczenie.
+
+## Struktura całości
+
+- **Portfolio shell** — właściwa strona/appka portfolio, punkt wejścia. Framework: **React** —
+  domyka trio Angular/React/Vue w obrębie całego zestawu, dobre wsparcie pod bogatsze
+  interakcje (canvas gry w statki, animacje odsłaniania sekcji).
+- **Projekt 1 — tour-guide** (`Angular 22` + `NestJS 11`, w budowie równolegle, osobne repo/
+  `CLAUDE.md`) — appka do planowania wycieczek. Status: zaawansowany, patrz jego własny
+  `CLAUDE.md`/`PROJECT_BRIEF.md` po pełny szczegół.
+- **Projekt 2 — insider news dla małych inwestorów** (framework: **Vue** — lekki, szybki do
+  uruchomienia, dobrze pasuje do prostych, szybkich kart-stories) — patrz sekcja osobna poniżej.
+- **Projekt 3 — "Serwisant"** (robocza nazwa, framework: do ustalenia) — asystent serwisowy
+  samochodu. Patrz sekcja osobna poniżej.
+
+## Projekt 2 — apka finansowa (robocza nazwa: "Insider" roboczo, framework: Vue)
+
+**Ważne rozróżnienie (2026-07-23):** design "Editorial Garage" dotyczy wyłącznie portfolio
+shellu — karta/link do Insidera *w portfolio* może w niej żyć jako element chrome'u shellu, ale
+to nie jest design samej apki Insider. Insider jako samodzielna apka jeszcze **nie ma własnego
+kierunku wizualnego** i powinien go dostać osobno — z założenia bardziej "finansowy" charakter
+(np. estetyka bliższa terminalom giełdowym/fintech: dane liczbowe, szybkie skanowanie, inny rytm
+niż edytorski/spokojny charakter portfolio i tour-guide), nie przedłużenie stylu shellu. Każda
+apka w zestawie ma świadomie inny charakter graficzny — patrz sekcja "Wizja" na górze dokumentu.
+
+**Design system Insidera — "Night Desk" (zablokowany 2026-07-23):** ciemny terminal inwestora,
+kontrast do ciepłych/jasnych tour-guide i portfolio shellu.
+- Tło: prawie czarny granat `#0a0e14`; tekst główny: `#eef1f4`; tekst drugorzędny: `#7c8794`;
+  hairline: `#1c222b`/`#2a3138`.
+- Akcent primary: bursztyn `#ffb020` (kategorie, wyróżnienia — "poczucie insidera").
+- Kolory funkcyjne (tylko przy realnych liczbach, nie dekoracyjnie): zielony `#2fbf71` (wzrost),
+  czerwony `#e5484d` (spadek) — standardowa, oczekiwana konwencja w finansach.
+- Typografia: monospace (`ui-monospace`) dla tickerów/liczb/etykiet, pogrubiony sans dla
+  nagłówków newsów, zwykły sans dla opisu.
+- Komponent stały: plakietka "SUGESTIA AI · NIE PORADA" — zawsze widoczna przy sugestiach
+  inwestycyjnych, patrz zastrzeżenie regulacyjne niżej.
+- Format: pionowe karty-story (swipe), pasek tickera na górze, jedna informacja na kartę.
+- Odrzucony wariant: "Clear Desk" (jasny, fioletowy akcent, sparkline) — bezpieczniejszy, ale
+  czytał się bardziej jako "kolejny neobank" niż "insiderski news", mniej odróżnialny w zestawie.
+
+Cel: mega szybkie podsumowanie kluczowych wydarzeń ze świata istotnych dla małych inwestorów,
+w formie krótkich, "insiderskich" newsów (np. plany inwestycyjne zarządów spółek, nowe technologie
+od dużych graczy typu Nvidia, zapowiedzi deweloperów gier, zagrożenia w dostawach surowców), a w
+kolejnym kroku — sugestie inwestycyjne generowane przez AI na bazie zebranych newsów.
+
+**Format UI (propozycja):** karty w stylu "stories" (jak Instagram/TikTok) — jedna informacja na
+kartę, przesuwane swipe'em, ostatnia karta = sugestie AI. Pasuje do założenia "mega proste i
+szybkie".
+
+**Źródła danych (kandydaci, wszystkie mają darmowy tier, wzorem podejścia z tour-guide —
+Overpass/Open-Meteo/Nominatim):**
+- Finnhub — news + company news + sentiment
+- Alpha Vantage — news & sentiment endpoint
+- Marketaux — dedykowane API do newsów finansowych
+
+**AI:** ta sama zasada "retrieve then generate" co w tour-guide's `AiModule` — AI nie zmyśla
+faktów, tylko streszcza/interpretuje realnie pobrane newsy i na ich bazie generuje sugestie.
+
+**Ważne — aspekt regulacyjny/odpowiedzialność:** sugestie inwestycyjne generowane przez AI mogą w
+niektórych jurysdykcjach (w PL: nadzór KNF) mieścić się w definicji "doradztwa inwestycyjnego".
+Jako projekt portfolio ryzyko jest niskie, ale warto to zaprojektować porządnie od początku:
+- wyraźny ekran/checkbox z disclaimerem przy starcie ("wyłącznie informacyjne/edukacyjne, nie
+  jest to porada inwestycyjna")
+- język w UI unikający imperatywów ("kup", "sprzedaj") na rzecz opisowych sformułowań ("AI wskazuje
+  potencjalny kierunek", "warto obserwować")
+- to też dobry fragment do opisania w portfolio jako dowód świadomego, odpowiedzialnego myślenia
+  produktowego, nie tylko technicznego
+
+## Projekt 3 — "Serwisant" (robocza nazwa, framework: do ustalenia)
+
+Cel: asystent obsługi serwisowej samochodu. Użytkownik zakłada profil pojazdu (marka, model,
+generacja, rocznik, silnik — wypełnione ręcznie albo ze zdjęcia dowodu rejestracyjnego, które AI
+sam odczytuje) i podaje aktualny przebieg. Następnie robi zdjęcia wszystkich stron książki
+serwisowej oraz faktur za usługi — AI analizuje to razem z typowymi dla danego modelu interwałami
+serwisowymi i pokazuje w przystępnej formie co i kiedy wypada zrobić (olej silnikowy/skrzyni/
+napędu, klimatyzacja, rozrząd), a przy okazji może podać specyfikacje płynów/olejów zalecanych
+przez producenta. Całość układa się w logiczny timeline z priorytetyzacją: przeoczone / bliskie /
+odległe w czasie.
+
+**Silny fit tematyczny z motoryzacją** (jedno z zainteresowań z sekcji "Wizja") — i ładny,
+niezaplanowany rezonans z designem portfolio shellu: motyw "karty technicznej" (spec-plate) w
+Editorial Garage dosłownie zapowiadał tę apkę, która operuje na prawdziwych danych technicznych
+pojazdu. Mimo to Serwisant dostaje **własny, odrębny kierunek wizualny** — nie przedłużenie
+Editorial Garage (patrz zasada "każda apka ma inny charakter" w sekcji "Wizja").
+
+**Kluczowe wykorzystanie AI (multimodalne, spójne z podejściem "retrieve then generate" z
+tour-guide):**
+- OCR/odczyt dowodu rejestracyjnego → automatyczne wypełnienie profilu pojazdu
+- OCR/analiza zdjęć książki serwisowej i faktur → wyciągnięcie historii realnie wykonanych usług
+  (data, przebieg, zakres)
+- Zestawienie historii z typowymi interwałami serwisowymi → timeline z priorytetyzacją
+
+**Ważne ograniczenie do zaprojektowania świadomie (analogiczne do disclaimeru w Insiderze):** w
+przeciwieństwie do tour-guide (Overpass/Open-Meteo/Nominatim — realne, darmowe, ustandaryzowane
+API) **nie ma dobrego darmowego źródła prawdy dla oficjalnych interwałów serwisowych producenta**
+per marka/model/silnik. Poleganie wyłącznie na ogólnej wiedzy AI ryzykuje nieścisności przy czymś
+potencjalnie istotnym dla bezpieczeństwa (np. rozrząd). Robocze podejście: **historia serwisowa
+użytkownika (wyciągnięta z realnych zdjęć) jest twardym gruntem prawdy**, a sugerowane interwały
+są jawnie oznaczone jako orientacyjne ("orientacyjne wg wiedzy ogólnej, nie oficjalna dokumentacja
+producenta — zawsze zweryfikuj z ASO/instrukcją obsługi"), szczególnie przy pozycjach
+bezpieczeństwa krytycznych. Ten sam duch odpowiedzialnego projektowania co przy Insiderze.
+
+**Framework: Angular** (potwierdzone 2026-07-24) — powtórka stacku z tour-guide, świadomie: ten
+sam wzorzec engineering discipline (signals/resource, strict typing, wywołania AI w kształcie już
+sprawdzonym w `AiModule`/`PlanChatModule`) zastosowany w drugiej, nowej domenie. Pokazuje głębię
+kompetencji, nie tylko szerokość frameworków — tę akurat pokrywają już React (shell) i Vue
+(Insider).
+
+**Dodatkowe funkcje ustalone 2026-07-24:**
+- **Przegląd techniczny (SKP)** jako osobna pozycja w timeline, obok olej/rozrząd/klimatyzacja.
+  Termin ważności badania technicznego jest realnie wydrukowany na dowodzie rejestracyjnym (PL) —
+  więc w przeciwieństwie do interwałów serwisowych (szacunek AI) **to jest twardy, pewny fakt**,
+  wyciągany wprost z OCR dowodu (albo wpisywany ręcznie, jeśli użytkownik nie ma zdjęcia pod ręką).
+  Wizualnie oznaczony inaczej niż szacowane interwały — patrz "Fakt vs. szacunek" w design systemie
+  niżej.
+- **Domykanie pętli — odhaczanie z dowodem wykonania.** Użytkownik może ręcznie oznaczyć pozycję
+  jako zrobioną; apka od razu prosi o zdjęcie faktury/dokumentu z serwisu jako potwierdzenie. To
+  zdjęcie przechodzi przez ten sam OCR co książka serwisowa (data, przebieg, zakres usługi),
+  dopisuje się do historii pojazdu i przelicza kolejny termin dla tej pozycji na nowo. Każde
+  odhaczenie robi timeline odrobinę dokładniejszym — historia użytkownika, nie AI, pozostaje
+  twardym gruntem prawdy (zgodnie z zasadą ustaloną wyżej).
+
+**Design system — "Workshop Docket" (zablokowany 2026-07-24):** estetyka kwitu warsztatowego —
+uczciwa wobec tego, czym apka faktycznie operuje (realne dokumenty), i wyraźnie odrębna od Night
+Desku (Insider), mimo że oba są "techniczne".
+- Tło (papier kwitu): `#f1efe9`; tekst główny: `#2b2620`; tekst drugorzędny: `#6b6357`.
+- Hairline pełny: `#d6d2c4`; hairline przerywany (nagłówek dokumentu): `#b8b3a1`; separator wiersza:
+  `#e2dfd4`.
+- Kolory statusu (pieczątki, tylko funkcyjnie): czerwony `#b3261e` (przeterminowane), bursztyn
+  `#a9772f` (wkrótce), zielony `#3f6b3f` (ok).
+- Typografia: wyłącznie monospace (`ui-monospace`) — maszynopisowy charakter kwitu, brak serifów/
+  groteskowych nagłówków (odróżnia to świadomie od Editorial Garage, gdzie serif jest głównym
+  motywem).
+- Komponent: pieczątka statusu — bordered badge, lekko obrócony (`transform: rotate(-4deg)` do
+  `rotate(4deg)`, losowo/na wiersz, imituje realną pieczątkę), uppercase, bold.
+- **Fakt vs. szacunek (nowa, generalna zasada — patrz też sekcja dobrych praktyk):** pieczątka
+  pełna/wypełniona = potwierdzony fakt (SKP z OCR dowodu, ukończona usługa z dowodem); pieczątka
+  tylko-obrys/przerywana + prefiks "SZAC." = szacowany interwał AI. Nigdy nie prezentować jednym
+  wizualnym językiem.
+- Odrzucony wariant: "Instrument Cluster" (ciemna deska rozdzielcza, paski postępu jak wskaźniki) —
+  bardziej "żywy panel" niż "archiwum dokumentów", mniej spójny z tym, czym apka faktycznie jest.
+
+## Mikrofrontendy
+
+Cel: zademonstrować realną wiedzę o mikrofrontendach, nie tylko linkowanie osobnych apek.
+Frameworki w zestawie będą różne (Angular w tour-guide, prawdopodobnie React i/lub Vue w
+pozostałych) — stąd potrzebne jest podejście działające cross-framework.
+
+Dwa warianty rozważane, **do zbudowania jako mały POC obu, żeby zobaczyć różnicę na żywo** zanim
+padnie ostateczna decyzja:
+
+1. **Web Components (Custom Elements)** — każda apka opakowuje swój root w customowy element
+   (Angular Elements / `react-to-webcomponent` lub Lit / Vue `defineCustomElement`). Host używa ich
+   jak zwykłych tagów HTML, Shadow DOM izoluje style. Lżejsze operacyjnie, mniej wspólnej
+   infrastruktury do utrzymania.
+2. **single-spa** — framework zbudowany dokładnie pod ten scenariusz (gotowe adaptery dla
+   Angulara/Reacta/Vue, wspólny router, lifecycle'e `bootstrap`/`mount`/`unmount`). Bardziej
+   "podręcznikowe" rozwiązanie dla poliglotycznych mikrofrontendów, ale dokłada realną złożoność
+   (routing między apkami, wersjonowanie, wspólny root config).
+
+Roboczy kandydat na demo: fragment mapy z tour-guide osadzony jako widget w portfolio shell, w obu
+wariantach, do porównania.
+
+**Decyzja (2026-07-23): Web Components.** POC zbudowany i zweryfikowany na żywo (test izolacji
+stylów przez Shadow DOM — globalna reguła CSS celująca w tę samą klasę realnie nie przebija się do
+środka custom elementu; symulacja cyklu życia single-spa jako punkt odniesienia). Pełne notatki i
+realny kod referencyjny (Angular Elements bootstrap, single-spa root-config) w osobnym pliku
+`MICROFRONTEND_POC_NOTES.md`.
+
+Uzasadnienie: Web Components nie wymagają centralnego orkiestratora, każda apka pozostaje w pełni
+samodzielna (spójne z zasadą "każda apka musi działać niezależnie od shellu" z sekcji dobrych
+praktyk) — single-spa miałby sens dopiero przy potrzebie płynnego routingu między fragmentami
+różnych apek na jednej stronie, czego na razie nie planujemy.
+
+**Ważna korekta ustalona przy okazji POC:** Web Components, single-spa i Module Federation
+rozwiązują trzy różne problemy — kompozycja / orkiestracja / współdzielenie kodu — nie są
+wzajemnymi alternatywami. Żadne z nich samo z siebie nie eliminuje zdublowanych bundli
+frameworków (każda apka nadal wysyła własny runtime Angular/React/Vue, chyba że dojdzie Module
+Federation). Przy skali 3 apek to akceptowalny koszt, nieplanowany do rozwiązywania osobno na
+razie.
+
+## Gamifikacja — landing portfolio
+
+Pomysł: gra w **statki** jako mechanika odkrywania zawartości portfolio — trafienia odsłaniają
+kolejne elementy: projekt 1, projekt 2, sekcja "o mnie" (sport, fotografia, samochody, itd.).
+Wybrano statki (nie breakout) świadomie — metafora "odkrywania" lepiej pasuje narracyjnie do
+motywu eksploracji, który już przewija się przez cały zestaw projektów.
+
+**UX zastrzeżenie do uwzględnienia w makietach:** gra musi być *opcjonalna* — rekruter/klient z
+ograniczonym czasem powinien mieć możliwość pominięcia jej i przejścia od razu do treści (np. link
+"Przejdź od razu"). Progres w grze powinien być stosunkowo szybki do zdobycia (pierwsza sekcja
+odblokowuje się po kilku trafieniach, nie po ukończeniu całej planszy).
+
+## Hosting / infrastruktura
+
+Zdecydowano na wariant bardziej "inżynierski" (świadomy wybór — więcej do pokazania w portfolio
+jako umiejętność DevOps, kosztem większego nakładu pracy utrzymaniowej). Poniżej konkretny plan,
+sprawdzony pod kątem realnych, aktualnych cen (2026-07-24, po podwyżce Hetznera z kwietnia 2026 —
+patrz źródła na dole dokumentu).
+
+**VPS: Hetzner Cloud, plan CX33** (4 vCPU, 8GB RAM, 80GB SSD, 20TB transferu) —
+**€6.49/mies. + €0.50 za IPv4** (Cost-Optimized/CX Gen3, x86). Lokalizacja: Norymberga albo
+Falkenstein (Niemcy) — najbliżej Polski, najniższe opóźnienie. Wystarcza na 4 apki (frontend +
+backend + wspólny Postgres) przy umiarkowanym ruchu portfolio-scale; Hetzner pozwala skalować
+w górę bez przesiadki na nowy serwer, więc można też realnie zacząć od tańszego CX23
+(2 vCPU/4GB, €3.99/mies.) i podnieść w razie potrzeby. Odrzucone alternatywy: DigitalOcean/Linode/
+Vultr/AWS Lightsail — przy porównywalnej specyfikacji 2.5–5.5× drożej niż Hetzner.
+
+**Reverse proxy + TLS: Traefik** z automatycznym Let's Encrypt (routing na podstawie labeli
+Dockera, zero ręcznej konfiguracji per apka przy dodawaniu kolejnego kontenera) — rekomendacja.
+Prostszy fallback, gdyby Traefik okazał się zbyt "magiczny": nginx + certbot, bardziej klasyczne,
+więcej ręcznej konfiguracji per subdomena.
+
+**DNS: Cloudflare** (darmowy plan) — subdomeny per apka (`tourguide.<domena>`,
+`insider.<domena>`, `serwisant.<domena>`), root `<domena>` = portfolio shell. Uwaga do ustalenia
+przy wdrożeniu: tryb proxy Cloudflare (pomarańczowa chmurka, dodaje DDoS-protection/cache, wymaga
+"Full (strict)" SSL z certyfikatem origin) vs. DNS-only (szara chmurka, prostsze, TLS w całości po
+stronie Traefika/Let's Encrypt).
+
+**Baza danych:** jeden kontener Postgres na VPS, osobne logiczne bazy per apka (`tour_guide`,
+`insider`, `serwisant`) — oszczędniejsze na 8GB RAM niż osobny kontener Postgres na apkę;
+rewizja, gdyby obciążenie realnie tego wymagało.
+
+**CI/CD:** GitHub Actions per repo, ten sam kształt pipeline'u dla każdego projektu (lint → build
+→ test → build obrazu Dockera → push do GitHub Container Registry `ghcr.io` → SSH na VPS →
+`docker compose pull && docker compose up -d`) — spójne z zasadą "pipeline CI w jasnych, kolejnych
+etapach" z sekcji dobrych praktyk.
+
+**Monitoring/status:** self-hosted **Uptime Kuma** (lekki, open-source), publiczna strona
+`status.<domena>` pingująca health-check każdego serwisu — bezpośrednie wykorzystanie zasady
+"health check per serwis" już zapisanej w dobrych praktykach, i sam w sobie dobry, namacalny
+dowód dojrzałości DevOps do pokazania w portfolio.
+
+**Backupy:** do rozstrzygnięcia później, niekrytyczne na start — kandydaci: wbudowane backupy
+Hetznera (+20% kosztu serwera) albo cron `pg_dump` → Hetzner Object Storage (S3-compatible).
+
+**Do ustalenia:** sama nazwa domeny (osobista decyzja właściciela, niezależna od struktury
+powyższej) oraz ostateczny wybór Traefik vs. nginx (do potwierdzenia przy realnym wdrożeniu).
+
+*Ceny sprawdzone na żywo 2026-07-24 (po podwyżce Hetznera z kwietnia 2026), źródło:
+[bitdoze.com — Hetzner Cloud Pricing After the April 2026 Increase](https://www.bitdoze.com/hetzner-cloud-cost-optimized-plans/).
+Do zweryfikowania ponownie bezpośrednio na hetzner.com przed realnym zakupem — ceny się zmieniają.*
+
+## Dobre praktyki programistyczne i architektoniczne (wspólne dla wszystkich projektów)
+
+Poniższe zasady mają obowiązywać we wszystkich projektach tego zestawu (Angular, React, Vue,
+NestJS, infra), niezależnie od frameworka. Część jest już sprawdzona w praktyce w tour-guide
+(wymieniona z uzasadnieniem), część to nowe propozycje pod kątem tego, że tym razem mamy do
+czynienia z **kilkoma niezależnymi apkami spiętymi w jedną całość**, nie jednym monolitem.
+
+### Zasady ogólne (cross-technology)
+
+- **Weryfikuj, nie zakładaj.** Zanim zakoduje się integrację z zewnętrznym API/biblioteką,
+  potwierdzić realny kształt odpowiedzi/typów (żywy request, przeczytanie zainstalowanych typów
+  źródłowych) zamiast polegać na pamięci/dokumentacji. W tour-guide to się wielokrotnie opłaciło
+  (Waymarked Trails, Anthropic SDK tool types, ng-bootstrap `DayTemplateContext`) i tyle samo razy
+  zignorowanie tej zasady kosztowało realny czas na debugowanie.
+- **Małe, weryfikowalne kroki (vertical slices).** Każda funkcjonalność domykana od backendu przez
+  frontend do realnej weryfikacji (curl/test/browser), zanim zacznie się kolejną — nie budować
+  wielu warstw naraz "na wiarę".
+- **Jedno źródło prawdy dla współdzielonej logiki/stałych.** Klucze walidacji, mapowania,
+  konfiguracja progów — trzymane w jednym miejscu i importowane, nie kopiowane między
+  frontendem/backendem/apkami. Jeśli coś naprawdę musi istnieć w dwóch miejscach (np. inny język,
+  inny runtime), jawnie to nazwać jako świadomy wyjątek, nie przypadkową duplikację.
+- **Nie buduj abstrakcji/zabezpieczeń na zapas.** Wydzielaj współdzieloną logikę dopiero przy
+  3.–4. realnym powtórzeniu, nie przy drugim "na wszelki wypadek". Nie dodawaj inwariantów, o które
+  nikt nie prosił (np. kaskadowe resety stanu) — prostota i przewidywalność ponad "co jeśli".
+- **Jawność ponad domyślność.** Explicit types, explicit return types, explicit access modifiers,
+  explicit error states w UI — kod ma być czytelny bez czytania implementacji.
+- **Fakt zawsze wizualnie odróżniony od szacunku AI.** Gdziekolwiek UI pokazuje obok siebie dane
+  pewne (zmierzone, potwierdzone dokumentem, wprost wyciągnięte OCR-em z oficjalnego źródła) i dane
+  szacowane/generowane przez AI — muszą mieć różny język wizualny, nie tylko różny tekst. Nie nowa
+  zasada wymyślona na potrzeby portfolio — już sprawdzona w tour-guide
+  (`Forecast.source: 'forecast' | 'historical-estimate'` z osobnym banerem dla szacunków
+  pogodowych) i teraz świadomie powtórzona w Serwisancie (pieczątka pełna = fakt z OCR dowodu/
+  dowodu wykonania usługi, pieczątka tylko-obrys = szacowany interwał AI).
+- **Żyjący log decyzji.** Każdy projekt (i ten dokument) prowadzi sekcję "Historia decyzji" /
+  changelog uzasadnień — nie tylko *co* zostało zrobione, ale *dlaczego*, żeby nie odkrywać tego
+  samego dylematu po raz drugi.
+
+### Frontend (Angular / React / Vue — wspólne zasady, różna implementacja)
+
+- **Rozdział dumb/smart (presentational/container).** Komponenty prezentacyjne przyjmują dane przez
+  props/inputs i emitują zdarzenia — bez własnego stanu biznesowego, bez wołania API. Komponenty
+  kontenerowe trzymają stan i logikę pobierania danych. (Angular: `input()`/`output()` + `inject()`
+  w kontenerach; React: hooks + props-only components; Vue: `defineProps`/`defineEmits` +
+  composables).
+- **Struktura folderów wg przepływu użytkownika, nie warstwy technicznej** — folder na funkcję
+  (np. `plan-setup/`, `poi-picker/`), nie `components/`/`services/`/`utils/` na cały projekt.
+  Serwisy/logika cross-cutting mieszkają w jednym wspólnym miejscu (`core/` albo odpowiednik).
+- **Reaktywne pobieranie danych vs. jednorazowe akcje — różne narzędzia do różnych kształtów
+  problemu.** Dane ładowane/odświeżane reaktywnie (GET-y zależne od stanu) idą przez dedykowany
+  prymityw danego frameworka (Angular: `resource()`/`rxResource()`/`httpResource()`; React:
+  TanStack Query lub odpowiednik; Vue: composable + `ref`/Pinia). Jednorazowe mutacje wyzwalane
+  submitem/klikiem zostają zwykłym wywołaniem, bez sztucznego wciskania w reaktywny wrapper.
+- **Design tokens, nie hardkodowane wartości.** Kolory, spacing, breakpointy — z jednego pliku
+  tokenów/zmiennych per apka, referencjonowane, nie wpisywane na sztywno w komponentach. Zanim
+  doda się nową wartość, sprawdzić czy nie ma już pasującej w istniejącej skali.
+- **Stany loading/error komponentyzowane raz, używane wszędzie** — jeden wspólny loader/skeleton
+  per apka, a nie osobny hand-rolled spinner w każdym miejscu. Placeholder loading powinien być
+  zbliżony kształtem do docelowej treści (unikanie layout shift), a stan `loading` na przycisku nie
+  może zmieniać jego rozmiaru (np. label ukryty przez `visibility`, nie usunięty z DOM).
+- **Brak inline styles.** Layout/spacing przez istniejący system (utility classes/tokens), reszta
+  w plikach stylów komponentu.
+- **Dostępność jako standard, nie afterthought** — realne elementy semantyczne, `aria-label` tam
+  gdzie trzeba, touch targety ~44px, nawigacja klawiaturą tam, gdzie to sensowne.
+
+### Backend / API
+
+- **Jeden moduł na jedną domenę biznesową**, rejestrowany centralnie — nie mieszać niepowiązanych
+  odpowiedzialności w jednym serwisie.
+- **Walidacja na granicy systemu** (DTO/schema validation na wejściu każdego endpointu), nie ufać
+  danym z klienta głębiej niż to konieczne.
+- **Bramkowanie kosztownych operacji (AI, zewnętrzne płatne API) za autoryzacją i/lub cache'em** —
+  generuj raz, cache'uj, oddawaj za darmo przy kolejnych odczytach; nie generuj ponownie bez
+  realnego powodu.
+- **Idempotencja tam, gdzie to możliwe** (np. operacja "finalizuj" wywołana drugi raz nie powinna
+  się wywalić ani zduplikować efektu).
+- **Sekrety tylko w zmiennych środowiskowych, nigdy w repo** — i pilnować formatu `.env` (jedna
+  wartość na linię; wielokrotne cudzysłowy w jednej linii to sygnał ostrzegawczy, patrz realny
+  incydent w tour-guide, gdzie sklejony klucz zepsuł parsowanie `DATABASE_URL`).
+
+### Weryfikacja / jakość
+
+- **Lint + build + test uruchamiane zawsze** po zmianie w danym projekcie — tanie, łapią realne
+  regresje, nigdy nie pomijane.
+- **Ręczna/manualna weryfikacja skalowana do realnego ryzyka zmiany** — nowy ekran/flow: pełny
+  przegląd end-to-end; drobna zmiana w już działającym ekranie: weryfikacja tylko zmienionego
+  fragmentu.
+- **Realne dane/requesty ponad zamockowane założenia** przy weryfikacji integracji z zewnętrznymi
+  API.
+
+### Nowe zasady proponowane pod kątem architektury wieloapkowej/mikrofrontendowej
+
+- **Każda apka musi działać samodzielnie, niezależnie od shellu.** Mikrofrontend nie może być
+  zbudowany tak, że działa wyłącznie osadzony w portfolio — to osłabiłoby zarówno wartość
+  demonstracyjną (każdy projekt to osobne case study), jak i odporność całości na awarię shellu.
+- **Współdzielony kontrakt, nie współdzielony kod.** Rzeczy naprawdę wspólne (np. wspólne tokeny
+  designu dla spójności marki portfolio, prosty "manifest" do rejestrowania widgetów w shellu)
+  żyją jako osobny, zwersjonowany, jawnie dokumentowany kontrakt — nie przez kopiowanie plików
+  między repozytoriami.
+- **Wersjonowanie i kompatybilność między shellem a remote'ami jawnie dokumentowane** — przy 3
+  różnych frameworkach cicha niekompatybilność (np. zmiana kształtu propsów Web Componentu) jest
+  łatwa do przeoczenia; każda apka eksponowana jako mikrofrontend dostaje krótką notkę "co shell
+  może od niej oczekiwać".
+- **Health check per serwis** (już sprawdzony wzorzec z tour-guide) — każdy backend wystawia prosty
+  endpoint statusu, przydatny zarówno lokalnie, jak i w orkiestracji kontenerów.
+- **Infrastruktura jako kod od samego początku** (co najmniej `docker-compose` do lokalnego
+  odzwierciedlenia produkcji) — skoro wybrano wariant "inżynierski" hostingu, environment
+  lokalny i produkcyjny nie powinny się rozjeżdżać.
+- **Pipeline CI w jasnych, kolejnych etapach** (lint → build → test → deploy, fail-fast) — każdy
+  projekt tego samego kształtu, żeby dało się to łatwo porównać/pokazać w portfolio jako spójny
+  standard, nie przypadkowy zestaw skryptów per projekt.
+
+## Design system — "Editorial Garage" (zablokowany kierunek wizualny portfolio shell)
+
+Kierunek ustalony 2026-07-23 po przejrzeniu 4 wariantów (moodboard: Dark Editorial, Bold Mono
+Grid, Swiss Grid, Warm Paper Editorial) i zmiksowaniu ich pod kątem "designer UX + layout
+magazynu o klasycznej motoryzacji". Dotyczy **portfolio shell**, nie tour-guide ani apki
+finansowej — każdy projekt ma świadomie inny charakter (patrz sekcja "Wizja" wyżej).
+
+**Idea przewodnia:** masthead magazynu (Octane/Petrolicious) + karta techniczna z broszury
+klasycznego auta + rysunek techniczny (hairline, siatka). Motyw siatki/koordynatów (litery+cyfry)
+jest wspólny dla planszy gry w statki i dla "kart technicznych" projektów — to jeden system, nie
+dwa sklejone motywy.
+
+### Paleta
+
+| Rola | Kolor | Hex |
+|---|---|---|
+| Tło (papier) | kremowy | `#f2ece0` |
+| Tekst główny (atrament) | prawie czarny, ciepły | `#201d19` |
+| Tekst drugorzędny | ciemny szarobrąz | `#5a5347` |
+| Hairline / obramowania kontenerów | brązowy beż | `#97815f` |
+| Hairline wewnętrzny (cieńszy podział) | ciemniejszy brązowy beż | `#7d6a4c` |
+| Akcent primary | zieleń wyścigowa | `#0b3d2e` |
+| Akcent secondary | mosiądz | `#a9772f` |
+| Stan zablokowany/nieaktywny | wyciszony beż-szary | `#c7bfae` |
+
+**Poprawka kontrastu (2026-07-24):** oryginalne wartości tekstu drugorzędnego i obu hairline'ów
+dawały kontrast wobec tła poniżej progu WCAG dla obramowań/tekstu (realnie wyliczone: tekst
+drugorzędny ~5.0:1 — technicznie przechodziło AA, ale blisko granicy; hairline ~1.28:1,
+hairline wewnętrzny ~1.54:1 — oba dużo poniżej wymaganych 3:1 dla granic komponentów UI, stąd
+realny problem "nie widać obramowań" zgłoszony przez właściciela). Powyższe wartości dają: tekst
+drugorzędny ~6.46:1, hairline ~3.18:1, hairline wewnętrzny ~4.42:1 — ten sam ciepły charakter,
+po prostu ciemniejszy o tyle, żeby faktycznie było widać. Przy okazji poprawiono błędny opis w tej
+tabeli — hairline wewnętrzny był numerycznie ciemniejszy niż hairline zewnętrzny mimo opisu
+"jaśniejszy beż" (literówka/przeoczenie sprzed tej korekty, nie celowa decyzja).
+
+### Typografia
+
+- **Nagłówki / masthead** — serif (`Georgia, ui-serif, serif` — świadomie bez zależności od
+  zewnętrznego fontu przez CDN, patrz ograniczenie widgetów Imagine, do rewizji przy realnej
+  implementacji, gdzie można doładować font przez `@font-face`/self-hosted). Waga 700 dla
+  głównego tytułu, italic dla linii akcentującej (np. drugi wers hero, cytaty).
+- **Dane techniczne / etykiety / CTA** — monospace (`ui-monospace, monospace`), zawsze uppercase,
+  `letter-spacing: 0.08–0.1em` — symuluje płytkę/kartę techniczną.
+- **Body/opis** — systemowy sans-serif, zwykła waga, kolor drugorzędny.
+
+### Zasady kompozycji
+
+- Hairline (1px linie) zamiast cieni/grubych obwódek — brak gradientów/tekstur/dekoracji, spójne
+  z ogólną zasadą "flat" przyjętą już w tour-guide.
+- Motyw siatki/koordynatów powtarza się konsekwentnie jako spójny język wizualny (plansza gry,
+  karty techniczne, docelowo być może też nagłówki sekcji).
+- Stan zablokowany: zamaskowany tekst (kropki) + etykieta "ZABLOKOWANE" w kolorze neutralnym.
+  Stan odblokowany: pełny kolor atramentu + strzałka w kolorze akcentu primary.
+
+### Komponenty zidentyfikowane w makiecie (kandydaci do wydzielenia jako reużywalne)
+
+- **Masthead bar** — nazwa + nawigacja + numer "wydania" (np. `VOL. 01 — 2026`)
+- **Spec-plate box** — karta techniczna z wierszami etykieta/wartość, hairline między wierszami
+- **Coordinate grid** — plansza z literami/cyframi jako nagłówki, komórki hit/miss/pusta
+- **CTA badge** — bordered rectangle, monospace uppercase, bez wypełnienia (outline)
+- **Skip-link** — subtelny, dashed underline, mono, zawsze dostępny obok mechaniki gry (patrz
+  zasada UX w sekcji "Gamifikacja" wyżej — gra nigdy nie blokuje dostępu do treści)
+
+### Do ustalenia później
+
+- Wersja mobilna (plansza prawdopodobnie musi się skalować/zwężać; spec-plate box może
+  przechodzić pod planszę zamiast obok)
+- Zachowanie mastheadu na wąskich ekranach (chowana nawigacja?)
+- Docelowa liczba/rozmieszczenie "celów" na planszy (roboczo: 6, jeden na sekcję portfolio)
+- Realny font serif/mono do samodzielnego hostowania (na razie system fallback w makietach)
+
+## Otwarte pytania / do ustalenia w kolejnych krokach
+
+Duże decyzje (koncept, framework i design wszystkich 4 projektów; architektura mikrofrontendu;
+szkielet hostingu) są już zamknięte — patrz sekcje wyżej i "Historia decyzji" niżej. Zostały
+głównie detale wykonawcze:
+
+- Nazwa domeny (osobista decyzja właściciela) — reszta struktury domenowej (subdomeny per apka,
+  Cloudflare) już ustalona w sekcji "Hosting / infrastruktura".
+- Traefik vs. nginx jako reverse proxy — Traefik jako robocza rekomendacja, do potwierdzenia przy
+  realnym wdrożeniu.
+- Backupy (Hetzner automatyczne vs. cron `pg_dump` → Object Storage) — niekrytyczne na start.
+- Wersje mobilne makiet (plansza w statki, spec-plate boxy, pieczątki Serwisanta na wąskim
+  ekranie).
+- Realne fonty serif/mono do samodzielnego hostowania dla portfolio shellu (na razie system
+  fallback w makietach).
+
+## Roadmap — kolejność budowy
+
+Ten sam duch co w tour-guide: mały, weryfikowalny szkielet najpierw, potem kolejne warstwy — nie
+wszystko naraz. Kolejność nie jest przypadkowa — każda faza dowodzi, że poprzednia faktycznie
+działa, zanim doda się złożoność.
+
+**Faza 1 — Fundament (dowód, że cała infrastruktura działa)**
+1. ✅ Repo portfolio shell (React + Vite) — kod w `C:\portfolio-shell`, osobny folder od
+   tour-guide. Design tokens "Editorial Garage" wdrożone jako realne CSS custom properties
+   (`src/styles/tokens.css`), masthead+hero jako realny komponent (`src/App.tsx`), nie tylko
+   makieta z tej rozmowy.
+2. ✅ Dockerfile (multi-stage: build w node, serwowanie przez nginx + SPA fallback) i
+   `docker-compose.yml` z labelami Traefik — gotowe, czekają na realny VPS.
+3. ⬜ VPS Hetzner postawiony, Traefik uruchomiony, Cloudflare DNS spięty z domeną — wymaga akcji
+   właściciela (konto/płatność), nie do zrobienia z tego środowiska. Checklist krok po kroku w
+   `C:\portfolio-shell\README.md`.
+4. ⬜ CI/CD (`.github/workflows/deploy.yml`, gotowy kod) przechodzi end-to-end — wymaga repo
+   GitHub + sekretów (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`) i działającego VPS z kroku 3.
+
+**✅ Luka zamknięta (2026-07-24):** `npm run lint`, `npm run build` (`tsc -b && vite build`) oraz
+realny `docker build`/`docker run` przetestowane na żywo — wszystko przechodzi czysto (build 138ms,
+kontener odpowiada `200` na `/` i poprawnie robi SPA fallback na nieznanej ścieżce dzięki regule w
+`nginx.conf`). Przy okazji dodano `*.tsbuildinfo` do `.gitignore` (artefakt builda TS, nie powinien
+się plątać w repo) i usunięto osierocony `.git/index.lock`. Szkielet Fazy 1 jest więc realnie
+potwierdzony, nie tylko syntaktycznie poprawny — zostają wyłącznie kroki 3-4 (VPS/domena/sekrety),
+które wymagają akcji właściciela.
+
+Cel: udowodnić cały łańcuch (build → deploy → TLS → DNS) na najmniejszym możliwym projekcie, zanim
+dojdzie realna złożoność — dokładnie ta sama zasada co "health check endpoint jako pierwszy krok"
+w tour-guide.
+
+**Faza 2 — Landing kompletny**
+5. ✅ Interaktywna plansza w statki + spis treści z odblokowywaniem — na razie odblokowuje
+   placeholdery (żaden projekt jeszcze nie istnieje pod spodem). Zbudowane jako
+   `src/features/toc/` (folder-na-funkcję, zgodnie z zasadą struktury wg przepływu użytkownika):
+   `use-battleship.ts` (czysta logika gry), `Board.tsx` (dumb, plansza w motywie "coordinate
+   grid"), `ProjectCard.tsx` (dumb, "spec-plate box" — zablokowany: zamaskowany tekst kropkami +
+   plakietka "ZABLOKOWANE"; odblokowany: pełny tytuł/opis + plakietka "ODBLOKOWANE →" w kolorze
+   akcentu primary), `Toc.tsx` (smart, spina hook z planszą/kartami).
+   **Poprawione 2026-07-24 na prawdziwe statki (realny feedback po pierwszej wersji z jednopolowymi
+   "statkami" na siatce 6×6):** siatka **10×10** (A-J / 1-10), 6 realnych statków o rozmiarach
+   **1,1,2,3,4,5** (klasyczny zestaw 1-5 + dodatkowy 1x1, żeby dopasować liczbę statków do liczby
+   sekcji — potwierdzone z właścicielem, druga opcja była redukcja do 5 sekcji), każdy losowo
+   poziomo albo pionowo, rozstawiane przez proste losowanie z odrzucaniem kolizji
+   (`placeOneShip` — losowa pozycja+orientacja, max 500 prób, przy 16 zajętych polach na 100
+   praktycznie zawsze trafia od razu). Sekcja odblokowuje się dopiero po **zatopieniu całego
+   statku** (wszystkie jego pola trafione), nie po pierwszym trafieniu — realna mechanika
+   "sunk", nie tylko find-the-cell. Rozmiar komórek zmniejszony (32px desktop / 24px ≤480px)
+   żeby 10 kolumn zmieściło się bez przewijania — świadomy kompromis poniżej "touch target ~44px"
+   z ogólnych dobrych praktyk, akceptowalny dla gęstej siatki gry (ten sam kompromis, jaki robią
+   wszystkie realne appki w statki na mobile).
+   **Realny bug złapany i naprawiony podczas tej samej refaktoryzacji:** pierwsza wersja logiki
+   zatapiania czytała stan `revealed` bezpośrednio z domknięcia zamiast przez funkcyjny
+   `setState(prev => ...)` — pod React 19 automatic batching (i StrictMode, którego ta appka
+   używa) wiele zbitych aktualizacji w tym samym ticku nadpisywało się nawzajem zamiast się
+   kumulować (złapane żywym testem: strzelanie po całej planszy naraz dawało tylko 1 zarejestrowane
+   pole zamiast 16). Naprawione przez scalenie `revealed`+`lastResult` w jeden atomowy stan
+   aktualizowany wyłącznie przez `setGame(prev => ...)` — dokładnie zasada "Weryfikuj, nie
+   zakładaj" z sekcji dobrych praktyk, tym razem złapana testem w przeglądarce, nie tylko lintem.
+   Zweryfikowane żywo: pełne ostrzelanie planszy → 16 trafień/84 pudła/6 odblokowanych sekcji
+   (16 = suma rozmiarów statków); sekwencyjne strzelanie pojedynczo → potwierdzony stan pośredni
+   "trafienie, statek jeszcze nie zatopiony" (sekcja zostaje zablokowana) aż do ostatniego pola
+   statku, dopiero wtedy "Zatopiony! Odblokowano: ...".
+   Dostępność: `aria-label` per pole planszy, wynik ognia ogłaszany przez `role="status"
+   aria-live="polite"`, odkryte pola dostają `disabled`.
+6. ✅ Skip-link zbudowany od razu ze slajsem #5, nie odłożony — zgodnie z własnym zastrzeżeniem UX
+   z sekcji "Gamifikacja" ("gra musi być opcjonalna"), więc funkcjonalnie musiał istnieć od
+   pierwszej wersji planszy, nie mógł czekać na osobny krok. Kliknięcie odblokowuje od razu
+   wszystkie karty (bez ruszania stanu samej planszy), stylizowany zgodnie z design systemem (mono,
+   `text-decoration: underline dashed`).
+   **Komunikat wyniku strzału przeniesiony pod planszę (2026-07-24, realny feedback):** wcześniej
+   `role="status"` renderował się na samym dole całej sekcji `Toc` (pod kartami, wizualnie daleko
+   od planszy, w którą się właśnie kliknęło). Przeniesiony do nowego `.toc__board-col` (Plansza +
+   status w jednej kolumnie flex), bezpośrednio pod planszą — zweryfikowane `getBoundingClientRect`
+   (16px odstępu od dołu planszy, nie setki pikseli niżej przy kartach).
+   **Wersja mobilna — baseline fix, nie pełny polish:** żywa weryfikacja w przeglądarce na 320px
+   złapała realny bug (plansza szersza niż dostępna przestrzeń przy stałym 44px paddingu
+   `.landing` → poziome przewijanie strony) — dokładnie to, co ten dokument już przewidywał w
+   sekcji "Do ustalenia później" ("plansza prawdopodobnie musi się skalować"). Naprawione media
+   queries (`max-width: 480px`): mniejszy padding `.landing` + mniejsze komórki planszy — ponownie
+   dostrojone po przejściu na siatkę 10×10 (24px komórki ≤480px). Zweryfikowane na żywo: 320px i
+   375px → `overflowX: 0`; desktop → plansza i karty faktycznie obok siebie (`sideBySide: true`).
+   Spec-plate boxy przechodzą pod planszą na wąskich ekranach za darmo (istniejący `flex-wrap` w
+   `.toc__layout`). **Nadal otwarte, do ew. osobnego polish-passu:** dokładniejsze dostrojenie
+   wizualne mobilnego układu poza samym "nic nie ucieka poza ekran" — patrz nadal aktualna notatka
+   w sekcji "Do ustalenia później".
+   **Przy okazji, ✅ poprawka kontrastu design tokenów (2026-07-24, realny feedback
+   właściciela):** patrz sekcja "Design system — Editorial Garage" → "Paleta" wyżej po pełny
+   szczegół (wartości hex, wyliczone współczynniki WCAG przed/po). W skrócie:
+   `--eg-hairline`/`--eg-hairline-inner` (obramowania — w tym samych klikalnych pól planszy) i
+   `--eg-ink-secondary` (tekst drugorzędny) przyciemnione tak, żeby realnie przejść próg 3:1
+   (obramowania)/4.5:1 (tekst) zamiast ledwo go nie osiągać. Zweryfikowane żywo przez
+   `getComputedStyle` na realnie wyrenderowanej stronie (nie tylko w plikach źródłowych), że nowe
+   wartości faktycznie się aplikują.
+   **Trzy dalsze usprawnienia (2026-07-24, realny feedback po drugiej rundzie grania):**
+   (a) **kropka pudła realnie widoczna** — poprzednio to był sam glif `·` w kolorze
+   `--eg-muted` (kontrast ~1.55:1, praktycznie niewidoczny, zgłoszone wprost). Zastąpione
+   prawdziwym kształtem: pseudo-element `::after` (koło 7px/5px na ≤480px) w kolorze
+   `--eg-ink-secondary` na nowym, lekko przyciemnionym tle `--eg-miss-bg` (`#e4dccd`, nowy token)
+   zamiast czystego `--eg-paper` — pudło teraz czytelnie różni się od nieodkrytego pola, nie tylko
+   od trafienia. (b) **hover** — cała komórka dostaje `transform: scale(1.15)` + zmianę koloru
+   obramowania (czysty CSS `:hover`, flat, bez cieni/gradientów, zgodnie z zasadami kompozycji
+   wyżej), a dodatkowo (stan w Reakcie, nie samym CSS, bo trzeba podświetlić *inne* elementy)
+   najechanie na pole podświetla jego literę kolumny i numer wiersza w nagłówkach na
+   `--eg-accent-secondary` pogrubioną czcionką — mały "celownik współrzędnych" spójny z motywem
+   coordinate-grid, nie generyczny efekt hover. (c) **"(Art)yleria"** — nowy specjalny strzał:
+   przycisk uzbraja tryb (2 użycia na grę, stała `ARTILLERY_CHARGES`), kolejne kliknięcie dowolnego
+   pola sprawdza od razu kwadrat 3×3 wokół niego (`getSquareArea(center, ARTILLERY_RADIUS=1)`,
+   współdzielona geometria między logiką strzału a podglądem obszaru na hover w `Board.tsx`, jedno
+   źródło prawdy), zużywa jedno ładowanie i rozbraja się automatycznie. Odblokowuje sekcję tak samo
+   jak zwykły strzał — dopiero po zatopieniu całego trafionego statku, burst tylko przyspiesza
+   odkrywanie wielu pól naraz. Status ogłasza zbiorczy wynik ("sprawdzono 9 pól — 2 trafienia, 7
+   pudeł. Zatopiono: X.").
+   **Realny bug złapany podczas weryfikacji tej rundy (nie kosmetyczny, dotyczyłby prawdziwych
+   użytkowników w niektórych warunkach):** `transition: background-color 120ms`/`transition: color
+   120ms` na komórkach/nagłówkach potrafiły "zamrozić" odczyt stylu na wartości sprzed zmiany —
+   złapane wyłącznie dzięki temu, że weryfikacja szła przez realne `getComputedStyle` na żywo
+   wyrenderowanej stronie (nie przez czytanie samego kodu źródłowego, które wyglądało poprawnie).
+   Naprawione przez usunięcie tych dwóch przejść (kolor trafienia/pudła i podświetlenie nagłówka
+   mają się zmieniać od razu, bez animacji — nie tracą nic użytecznego, `transform`/`border-color`
+   na hover zostały, bo dotyczą wyłącznie `:hover`). Potwierdzone: świeże pola pudła/trafienia po
+   tej poprawce od razu pokazują docelowy kolor bez żadnych obejść.
+   **Czwarte usprawnienie (2026-07-24, realny feedback — "statki się nie stykają"):** klasyczna
+   zasada battleship, wcześniej nieobecna — `placeOneShip` sprawdzał tylko nakładanie się
+   (`occupied`), nie sąsiedztwo. Dodane: `neighbors8(coordinate)` (8 kierunków, łącznie z
+   przekątnymi) i jeden zbiorczy `blocked` (zajęte pola + ich pełna otoczka) — nowy statek nie może
+   wylądować na żadnym polu z `blocked`, więc żadne dwa statki nigdy się nie stykają, nawet rogami.
+   **Zabezpieczenie odporności:** bufor "bez stykania" zmniejsza dostępną przestrzeń, więc
+   pojedyncze losowanie czasem mogłoby nie znaleźć miejsca pod koniec — zamiast wywalać całą appkę
+   (`throw`), `placeShips()` teraz próbuje całe rozstawienie od nowa (świeża losowa kolejność/
+   pozycje statków) do 100 razy, zanim naprawdę się podda.
+   **Zweryfikowane nie przez czytanie kodu, tylko realną symulacją:** jednorazowy skrypt Node
+   (kopia dokładnie tego samego algorytmu, usunięty po teście) uruchomiony 5000 razy — zero
+   naruszeń stykania, zero nakładania, zero awarii wymagających retry, zawsze dokładnie 16 pól
+   (suma rozmiarów statków) na rozstawienie. Potwierdzone też w realnej appce: pełne ostrzelanie
+   planszy nadal daje 16 trafień/84 pudła/6 odblokowanych sekcji.
+
+**Faza 3 — Projekt 01: tour-guide jako pierwszy Web Component**
+7. Wydzielenie wybranego fragmentu tour-guide (np. mapa) jako Angular Elements custom element —
+   realny kod z `MICROFRONTEND_POC_NOTES.md` jako punkt wyjścia.
+8. Deploy tour-guide (frontend + backend + baza) na tym samym VPS, subdomena
+   `tourguide.<domena>`, tym samym pipeline'em co portfolio shell.
+9. Karta "Projekt 01" w portfolio przestaje być placeholderem — realny link + osadzony widget.
+
+**Faza 4 — Projekt 02: Insider (Vue)**
+10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
+    Marketaux), plakietka "SUGESTIA AI · NIE PORADA" obecna od pierwszej wersji, nie dobudowana
+    później.
+11. Deploy, subdomena, karta w portfolio odblokowana naprawdę.
+
+**Faza 5 — Projekt 03: Serwisant (Angular)**
+12. Profil pojazdu (formularz + OCR dowodu rejestracyjnego), podstawowy timeline na bazie ręcznie
+    wpisanej historii — najpierw prostszy przypadek, bez OCR książki serwisowej.
+13. OCR książki serwisowej/faktur + pętla odhaczenie → zdjęcie dowodu wykonania → aktualizacja.
+14. Deploy, subdomena, karta w portfolio odblokowana naprawdę.
+
+**Faza 6 — Polish**
+15. Publiczna strona statusu (Uptime Kuma), spięta z health-checkami wszystkich apek.
+16. Realne fonty self-hosted (serif/mono dla portfolio shellu).
+17. Backupy (Hetzner albo cron `pg_dump`).
+18. Wersje mobilne pozostałych makiet (Insider, Serwisant).
+19. Krótkie case-study/README per projekt tłumaczące decyzje architektoniczne — ten dokument jako
+    surowiec źródłowy.
+
+## Historia decyzji (chronologicznie)
+
+- 2026-07-23: ustalono, że portfolio to appka, nie statyczna strona; każdy projekt może mieć inny
+  design; potwierdzono kierunek "eksploracja/ruch" jako wspólny mianownik zainteresowań.
+- 2026-07-23: wybrano grę w statki (nie breakout) jako mechanikę odblokowywania sekcji portfolio.
+- 2026-07-23: wybrano wariant infrastruktury "bardziej inżynierski" (VPS + Docker + CI/CD od zera)
+  zamiast prostych platform typu Vercel/Railway.
+- 2026-07-23: zdefiniowano Projekt 2 — apka z insiderskimi newsami finansowymi + AI-generowane
+  sugestie inwestycyjne, z naciskiem na disclaimery/odpowiedzialny język UI.
+- 2026-07-23: użytkownik poprosił o zaproponowanie frameworka dla Projektu 2 — robocza propozycja:
+  React (do potwierdzenia).
+- 2026-07-23: potwierdzono ostateczny podział — Portfolio shell = React, Projekt 2 (apka
+  finansowa) = Vue.
+- 2026-07-23: dopisano sekcję dobrych praktyk programistycznych/architektonicznych wspólnych dla
+  wszystkich projektów (część wyniesiona z doświadczeń tour-guide, część nowa pod kątem
+  architektury wieloapkowej/mikrofrontendowej).
+- 2026-07-23: zablokowano kierunek wizualny portfolio shell — "Editorial Garage" (masthead
+  magazynu o klasycznej motoryzacji + karta techniczna + rysunek techniczny/siatka), zbudowano
+  interaktywną makietę landing page z działającą mechaniką planszy w statki; spisano jako design
+  system (paleta, typografia, komponenty).
+- 2026-07-23: korekta — właściciel portfolio to **Kuba S.**, nie "Kuba W." (błąd w makietach z tej
+  sesji, do poprawienia przy realnej implementacji).
+- 2026-07-23: doprecyzowano, że karta Insidera pokazana wcześniej w design systemie portfolio to
+  chrome shellu, nie design samej apki Insider — Insider dostaje własny kierunek.
+- 2026-07-23: zablokowano design system Insidera — "Night Desk" (ciemny terminal inwestora,
+  bursztynowy akcent, funkcyjna zieleń/czerwień), odrzucając jaśniejszy wariant "Clear Desk" jako
+  mniej odróżnialny w zestawie trzech projektów.
+- 2026-07-23: zbudowano i zweryfikowano na żywo POC mikrofrontendu (Shadow DOM izolacja stylów +
+  symulacja cyklu życia single-spa) — zdecydowano o **Web Components** jako podejściu do
+  kompozycji mikrofrontendów w portfolio. Szczegóły i realny kod referencyjny w
+  `MICROFRONTEND_POC_NOTES.md`.
+- 2026-07-24: zdefiniowano Projekt 3 — "Serwisant", asystent obsługi serwisowej samochodu
+  (OCR dowodu rejestracyjnego, analiza zdjęć książki serwisowej/faktur, timeline serwisowy z
+  priorytetyzacją). Zidentyfikowano kluczowe ograniczenie: brak darmowego źródła prawdy dla
+  oficjalnych interwałów serwisowych producenta — historia użytkownika jako twardy grunt prawdy,
+  sugestie AI jawnie oznaczone jako orientacyjne. Framework i finalny kierunek wizualny ("Workshop
+  Docket" roboczo) jeszcze nieustalone.
+- 2026-07-24: potwierdzono framework Serwisanta — Angular (powtórka stacku tour-guide, świadomie,
+  na dowód głębi kompetencji). Zablokowano design system "Workshop Docket". Dodano dwie nowe
+  funkcje: śledzenie terminu SKP jako twardego faktu z OCR dowodu rejestracyjnego, oraz pętlę
+  odhaczenie→zdjęcie dowodu wykonania→aktualizacja historii. Wyniesiono z tego generalną zasadę
+  "fakt zawsze wizualnie odróżniony od szacunku AI" do sekcji dobrych praktyk, z odwołaniem do
+  istniejącego precedensu w tour-guide (`Forecast.source`).
+- 2026-07-24: rozpisano konkretny plan hostingu — Hetzner CX33 (4 vCPU/8GB, €6.49/mies., ceny
+  sprawdzone na żywo po podwyżce z kwietnia 2026), Traefik + Let's Encrypt, Cloudflare DNS,
+  wspólny Postgres z osobnymi bazami logicznymi per apka, CI/CD przez GitHub Actions → ghcr.io →
+  SSH deploy, status/monitoring przez self-hosted Uptime Kuma.
+- 2026-07-24: spisano roadmap budowy — 6 faz, od dowodu działania infrastruktury (Faza 1) przez
+  landing, kolejno tour-guide → Insider → Serwisant jako Web Componenty, aż po polish. Kolejność
+  projektów (tour-guide → Insider → Serwisant) wynika z tego, że tour-guide już istnieje i jest
+  najbardziej zaawansowany — najmniejsze ryzyko na pierwszy realny deploy przez nowy pipeline.
+- 2026-07-24: rozpoczęto realnie Fazę 1 — kod portfolio shellu (React + Vite, Editorial Garage
+  jako CSS custom properties, Dockerfile, docker-compose z labelami Traefik, workflow GitHub
+  Actions) napisany w nowym, osobnym folderze `C:\portfolio-shell`. Napotkane i poprawione po
+  drodze: `docker-compose.yml` miał niespójność (`build: .` zamiast `image:` mimo że deploy robi
+  `docker compose pull`) — złapane i naprawione w tej samej sesji. Środowisko miało zablokowany
+  dostęp do rejestru npm, więc `npm install`/`npm run build` nie zostały automatycznie
+  zweryfikowane — jawnie zaznaczone jako pierwszy krok do zrobienia przez właściciela, nie
+  przemilczane. Pełna checklista pozostałych kroków (VPS, domena, sekrety GitHub) w
+  `C:\portfolio-shell\README.md`.
+- 2026-07-24: zamknięto znaną lukę z poprzedniego wpisu — `npm run lint`/`npm run build`/
+  `docker build`/`docker run` faktycznie odpalone i zweryfikowane (nie tylko poprawność
+  składniowa plików). Wynik: wszystko działa bez poprawek w kodzie aplikacji; jedyna poprawka to
+  dodanie `*.tsbuildinfo` do `.gitignore`.
+- 2026-07-24: zbudowano Fazę 2, krok 5 (plansza w statki + spis treści z odblokowywaniem) i krok 6
+  (skip-link + baseline mobilny) — patrz szczegóły przy tych krokach w Roadmapie wyżej. Żywa
+  weryfikacja w przeglądarce (nie tylko lint/build) złapała realny bug: plansza nie mieściła się na
+  320px-szerokim ekranie (40px poziomego przewijania) — naprawione media query'ami, potwierdzone
+  ponowną weryfikacją na 320px/375px/desktop.
+- 2026-07-24: realny feedback po pierwszej wersji planszy — cztery poprawki naraz: (1) prawdziwe
+  statki wielopolowe (1,1,2,3,4,5) na siatce 10×10 zamiast jednopolowych "statków" na 6×6, z
+  odblokowaniem dopiero po zatopieniu całego statku (potwierdzono z właścicielem dopasowanie 6
+  statków do 6 sekcji); (2) komunikat wyniku strzału przeniesiony bezpośrednio pod planszę; (3)
+  poprawiony kontrast `--eg-hairline`/`--eg-hairline-inner`/`--eg-ink-secondary` (realnie wyliczone
+  współczynniki WCAG, nie tylko subiektywna ocena). Przy okazji złapano i naprawiono realny bug w
+  logice zatapiania (stan czytany z domknięcia zamiast przez funkcyjny `setState`, gubiący
+  trafienia pod React 19 batching) — złapany żywym testem w przeglądarce (masowe ostrzelanie
+  planszy), nie przez lint/typecheck.
+- 2026-07-24: druga runda realnego feedbacku po zagraniu w plansze — kropka pudła (była prawie
+  niewidoczna), hover z podświetleniem współrzędnych, i nowy specjalny strzał "(Art)yleria"
+  (kwadrat 3×3, 2 użycia na grę) — patrz szczegóły przy kroku 5 w Roadmapie wyżej. Po drodze
+  złapany kolejny realny bug tej samej klasy co poprzedni ("weryfikuj, nie zakładaj"):
+  `transition` na tle/kolorze potrafiło zamrozić odczyt stylu na starej wartości — złapane tylko
+  dzięki testowaniu przez faktyczne `getComputedStyle` na żywej stronie, nie przez czytanie kodu.
+- 2026-07-24: dodano klasyczną zasadę "statki się nie stykają" (nawet rogami) do rozstawiania
+  statków — realny feedback, "chcę żeby to wyglądało i działało ładnie od początku do końca".
+  Zweryfikowane 5000-krotną symulacją algorytmu w osobnym, jednorazowym skrypcie (nie w samej
+  appce) — zero naruszeń, zero awarii; `placeShips()` dodatkowo dostał odporność na nieudane
+  losowanie (retry całego rozstawienia, nie tylko jednego statku).

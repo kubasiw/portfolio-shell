@@ -1,0 +1,133 @@
+.board {
+  display: inline-block;
+}
+
+.board__grid {
+  display: grid;
+  grid-template-columns: 22px repeat(10, 32px);
+  gap: 3px;
+}
+
+.board__corner {
+  width: 22px;
+  height: 22px;
+}
+
+.board__col-header,
+.board__row-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--eg-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--eg-ink-secondary);
+  text-transform: uppercase;
+}
+
+.board__col-header {
+  height: 22px;
+}
+
+.board__row-header {
+  width: 22px;
+}
+
+.board__col-header--active,
+.board__row-header--active {
+  color: var(--eg-accent-secondary);
+  font-weight: 700;
+}
+
+.board__cell {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--eg-font-mono);
+  font-size: 14px;
+  border: 1px solid var(--eg-hairline);
+  background: var(--eg-paper);
+  color: var(--eg-ink);
+  padding: 0;
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+.board__cell--unknown {
+  cursor: pointer;
+}
+
+.board__cell--unknown:hover {
+  border-color: var(--eg-accent-secondary);
+  transform: scale(1.15);
+  position: relative;
+  z-index: 1;
+}
+
+.board__cell--hit {
+  background: var(--eg-accent-primary);
+  border-color: var(--eg-accent-primary);
+  color: var(--eg-paper);
+  cursor: default;
+}
+
+.board__cell--miss {
+  background: var(--eg-miss-bg);
+  border-color: var(--eg-hairline-inner);
+  color: var(--eg-ink-secondary);
+  cursor: default;
+}
+
+.board__cell--miss::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--eg-ink-secondary);
+}
+
+/* Podgląd obszaru "(Art)yleria" — kwadrat 3×3 wokół pola pod kursorem, gdy strzał jest
+   uzbrojony. Przerywana obwódka spójna z motywem dashed-hairline użytym gdzie indziej
+   (skip-link, stepper). */
+.board__cell--preview {
+  border-style: dashed;
+  border-color: var(--eg-accent-secondary);
+  background: var(--eg-preview-bg);
+}
+
+.board--armed .board__cell {
+  cursor: crosshair;
+}
+
+@media (max-width: 480px) {
+  .board__grid {
+    grid-template-columns: 16px repeat(10, 24px);
+    gap: 2px;
+  }
+
+  .board__corner {
+    width: 16px;
+    height: 16px;
+  }
+
+  .board__row-header {
+    width: 16px;
+  }
+
+  .board__col-header {
+    height: 16px;
+    font-size: 8px;
+  }
+
+  .board__cell {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .board__cell--miss::after {
+    width: 5px;
+    height: 5px;
+  }
+}
