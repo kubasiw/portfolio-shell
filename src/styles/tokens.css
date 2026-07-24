@@ -28,6 +28,13 @@
    */
   --eg-miss-bg: #e4dccd;
   --eg-preview-bg: #e7dac5;
+  /*
+   * unlocked-bg dodane 2026-07-24 — spis treści: różnica koloru tekstu sama w sobie była za
+   * słabym sygnałem "to jest odblokowane" (realny feedback). Blade zielonkawe tło (mix z
+   * --eg-accent-primary) w połączeniu z zieloną obwódką daje odblokowanej karcie wyraźnie inny
+   * "ciężar" niż zablokowanej, nie tylko inny kolor jednej linii tekstu.
+   */
+  --eg-unlocked-bg: #cfd2c5;
 
   /* typografia */
   --eg-font-serif: Georgia, 'Iowan Old Style', ui-serif, serif;

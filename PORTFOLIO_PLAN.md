@@ -475,6 +475,17 @@ działa, zanim doda się złożoność.
    `C:\portfolio-shell\README.md`.
 4. ⬜ CI/CD (`.github/workflows/deploy.yml`, gotowy kod) przechodzi end-to-end — wymaga repo
    GitHub + sekretów (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`) i działającego VPS z kroku 3.
+   **Pierwszy realny bug złapany na żywym GitHub Actions (2026-07-24):** `build-and-deploy` failował
+   na `docker/build-push-action@v6` z `ERROR: denied: installation not allowed to Create
+   organization package` — domyślny `GITHUB_TOKEN` nie miał uprawnienia `packages: write` do
+   utworzenia nowego pakietu w `ghcr.io` (pierwszy push obrazu pod tę nazwę, więc pakiet jeszcze nie
+   istniał). Naprawione dodaniem jawnego bloku `permissions: { contents: read, packages: write }`
+   na poziomie joba — bezpieczniejsze niż poleganie na domyślnych uprawnieniach repo/organizacji
+   (Settings → Actions → Workflow permissions), bo działa niezależnie od tego ustawienia.
+   **Niegroźne, do zignorowania:** log workflow ostrzega też o deprecacji Node 20 na runnerach
+   GitHub Actions (dotyczy wewnętrznego runtime'u jednej z użytych akcji, nie naszego własnego
+   `actions/setup-node` kroku, który i tak używa Node 22) — to nie błąd, samo się rozwiąże, gdy
+   maintainerzy tamtej akcji zaktualizują swój runtime.
 
 **✅ Luka zamknięta (2026-07-24):** `npm run lint`, `npm run build` (`tsc -b && vite build`) oraz
 realny `docker build`/`docker run` przetestowane na żywo — wszystko przechodzi czysto (build 138ms,
@@ -593,6 +604,19 @@ w tour-guide.
    naruszeń stykania, zero nakładania, zero awarii wymagających retry, zawsze dokładnie 16 pól
    (suma rozmiarów statków) na rozstawienie. Potwierdzone też w realnej appce: pełne ostrzelanie
    planszy nadal daje 16 trafień/84 pudła/6 odblokowanych sekcji.
+   **Piąte usprawnienie (2026-07-24, realny feedback po deployu — "ciężko rozróżnić zablokowane i
+   odblokowane"):** oryginalny design (sam kolor tekstu — muted vs ink, patrz sekcja "Editorial
+   Garage" niżej) był za słabym sygnałem w praktyce. Wzmocnione na poziomie całej karty, nie tylko
+   jednej linii tekstu: `.spec-plate--locked` dostaje jaśniejszą obwódkę (`--eg-muted`, 1px),
+   `.spec-plate--unlocked` dostaje zieloną obwódkę 2px (`--eg-accent-primary`) + nowe, blade
+   zielonkawe tło (`--eg-unlocked-bg: #cfd2c5`, nowy token — mix `--eg-paper`/`--eg-accent-primary`
+   ~15%, wystarczająco widoczny odcień bez łamania płaskiej, beznagradientowej estetyki). Plakietka
+   statusu odblokowanego jest teraz **wypełniona** (`background: accent-primary`, tekst w kolorze
+   paper) zamiast samego obrysu — poprzednio obrys+kolor tekstu to były jedyne dwa sygnały, teraz
+   obwódka/tło/plakietka razem dają wyraźnie inny "ciężar wizualny" karty. Zweryfikowane przez
+   `getComputedStyle` na żywo (locked: obwódka 1px `#c7bfae`, tło przezroczyste; unlocked: obwódka
+   2px `#0b3d2e`, tło `#cfd2c5`, plakietka wypełniona), kontrast opisu wobec nowego tła
+   przeliczony (~4.9:1, wciąż AA), brak przewijania po zmianie na 320px.
 
 **Faza 3 — Projekt 01: tour-guide jako pierwszy Web Component**
 7. Wydzielenie wybranego fragmentu tour-guide (np. mapa) jako Angular Elements custom element —
@@ -710,3 +734,10 @@ w tour-guide.
   Zweryfikowane 5000-krotną symulacją algorytmu w osobnym, jednorazowym skrypcie (nie w samej
   appce) — zero naruszeń, zero awarii; `placeShips()` dodatkowo dostał odporność na nieudane
   losowanie (retry całego rozstawienia, nie tylko jednego statku).
+- 2026-07-24: pierwszy realny push+deploy przez CI/CD, złapany prawdziwy bug na GitHub Actions —
+  `docker/build-push-action` failował na braku uprawnień do utworzenia nowego pakietu w `ghcr.io`
+  (`denied: installation not allowed to Create organization package`). Naprawione jawnym blokiem
+  `permissions: packages: write` na poziomie joba. Przy okazji: realny feedback po zobaczeniu
+  wdrożonej strony — zablokowane/odblokowane karty spisu treści za mało się różniły (sam kolor
+  tekstu); wzmocnione o kolor/grubość obwódki, tło całej karty i wypełnioną plakietkę stanu
+  odblokowanego.

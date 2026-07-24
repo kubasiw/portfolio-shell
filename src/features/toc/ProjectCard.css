@@ -3,6 +3,21 @@
   padding: 14px 16px;
 }
 
+/*
+ * Kontrast zablokowane/odblokowane wzmocniony 2026-07-24 (realny feedback — "ciężko rozróżnić").
+ * Sama różnica koloru tekstu nie wystarczała; teraz różni się też obwódka, grubość obwódki
+ * i tło całej karty, nie tylko jedna linia w środku.
+ */
+.spec-plate--locked {
+  border-color: var(--eg-muted);
+}
+
+.spec-plate--unlocked {
+  border-width: 2px;
+  border-color: var(--eg-accent-primary);
+  background: var(--eg-unlocked-bg);
+}
+
 .spec-plate__rows {
   display: flex;
   flex-direction: column;
@@ -57,7 +72,9 @@
 }
 
 .spec-plate__badge--unlocked {
-  color: var(--eg-accent-primary);
+  background: var(--eg-accent-primary);
+  color: var(--eg-paper);
+  border-color: var(--eg-accent-primary);
 }
 
 .spec-plate__description {
