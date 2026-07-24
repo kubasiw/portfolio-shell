@@ -486,6 +486,11 @@ działa, zanim doda się złożoność.
    GitHub Actions (dotyczy wewnętrznego runtime'u jednej z użytych akcji, nie naszego własnego
    `actions/setup-node` kroku, który i tak używa Node 22) — to nie błąd, samo się rozwiąże, gdy
    maintainerzy tamtej akcji zaktualizują swój runtime.
+   **Potwierdzone po tym fixie:** `build`/`lint`/`docker build`/push do `ghcr.io` przechodzą
+   realnie na żywym GitHub Actions, nie tylko lokalnie. Krok "Deploy over SSH" dalej failuje
+   (`error: missing server host`) — to oczekiwane i świadomie zostawione czerwone, dopóki VPS i
+   sekrety (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`) faktycznie nie istnieją; właściciel wybrał nie
+   dodawać teraz "graceful skip" warunkowego, skoro VPS i tak wkrótce powstaje.
 
 **✅ Luka zamknięta (2026-07-24):** `npm run lint`, `npm run build` (`tsc -b && vite build`) oraz
 realny `docker build`/`docker run` przetestowane na żywo — wszystko przechodzi czysto (build 138ms,
