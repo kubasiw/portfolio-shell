@@ -726,7 +726,28 @@ w tour-guide.
    pakiety GHCR, brakujący klucz SSH do automatycznego deployu, i etykieta
    `traefik.docker.network` dla kontenera na dwóch sieciach) — pełny opis w "Historia decyzji"
    niżej, wpis pod tą samą datą.
-9. Karta "Projekt 01" w portfolio przestaje być placeholderem — realny link + osadzony widget.
+9. ✅ **Karta "Projekt 01" przestaje być placeholderem (2026-07-27).** Nowy `TourGuideWidget.tsx`
+   (ładuje `https://tourguide.kubsiw.com/elements/main.js` dokładnie raz, przez moduł-poziomowy
+   guard `widgetScriptRequested` + sprawdzenie `customElements.get(...)` — zabezpiecza przed
+   podwójną rejestracją tego samego custom elementu, np. przy React StrictMode w dev) renderuje
+   `<tour-guide-mini-map area-id="krakow-demo">` w odblokowanej karcie `tour-guide`, plus realny
+   link "Zobacz cały projekt →" do `https://tourguide.kubsiw.com`. Nowy typ w
+   `tour-guide-mini-map.d.ts` (moduł augmentation `react`'s `JSX.IntrinsicElements`) — bez tego
+   TypeScript nie zna tego customowego tagu.
+   **Szósty realny bug złapany dopiero przy prawdziwym osadzeniu (nie do wykrycia przez
+   `curl`):** `<script type="module">` **zawsze** przechodzi przez CORS przy pobieraniu,
+   niezależnie od atrybutu `crossorigin` — inaczej niż klasyczne skrypty. `curl` na
+   `/elements/main.js` zwracał 200 OK (nie egzekwuje CORS), ale w realnej przeglądarce, z
+   portfolio-shell jako innym originem, ładowanie failowało `TypeError: Failed to fetch` —
+   złapane wyłącznie przez faktyczny test w przeglądarce z dwóch różnych originów (dev server
+   portfolio-shellu + `curl`/`fetch` bezpośrednio przeciw prod). Naprawione w tour-guide
+   (`nginx.conf`, `Access-Control-Allow-Origin: *` dla `/elements/`), opis pełny w jego własnym
+   `CLAUDE.md`. Po fixie zweryfikowane: shadow root faktycznie zawiera realny Leaflet + markery
+   POI, nie tylko pusty custom element.
+   **Zweryfikowane end-to-end lokalnie (2026-07-27):** `.tour-guide-widget`/`tour-guide-mini-map`/
+   `.spec-plate__cta` renderują się poprawnie w DOM po zatopieniu statku, CTA wskazuje realny URL.
+   Realny render Leaflet w shadow roocie z portfolio-shell osadzonego cross-origin — do
+   potwierdzenia po zdeployowaniu poprawki CORS w tour-guide (osobny commit, ten sam dzień).
 
 **Faza 4 — Projekt 02: Insider (Vue)**
 10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/

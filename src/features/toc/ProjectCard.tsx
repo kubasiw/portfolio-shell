@@ -1,10 +1,17 @@
 import type { Section } from './sections';
+import { TourGuideWidget } from './TourGuideWidget';
 import './ProjectCard.css';
 
 interface ProjectCardProps {
   section: Section;
   locked: boolean;
 }
+
+// Jedyna sekcja z realnym, wdrożonym projektem pod spodem na razie (Faza 3, krok 9 z
+// PORTFOLIO_PLAN.md) — Insider/Serwisant dostaną tę samą obsługę, gdy same zostaną wdrożone
+// (Fazy 4-5), nie wcześniej.
+const TOUR_GUIDE_SECTION_ID = 'tour-guide';
+const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
@@ -29,7 +36,24 @@ export function ProjectCard({ section, locked }: ProjectCardProps) {
           </span>
         </div>
       </div>
-      {!locked && <p className="spec-plate__description">{section.description}</p>}
+      {!locked && (
+        <>
+          <p className="spec-plate__description">{section.description}</p>
+          {section.id === TOUR_GUIDE_SECTION_ID && (
+            <>
+              <TourGuideWidget />
+              <a
+                className="spec-plate__cta"
+                href={TOUR_GUIDE_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Zobacz cały projekt →
+              </a>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 }

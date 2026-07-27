@@ -83,3 +83,34 @@
   line-height: 1.5;
   color: var(--eg-ink-secondary);
 }
+
+/*
+ * min-height redukuje layout shift, zanim skrypt widgetu się załaduje i custom element
+ * "awansuje" do realnej treści (Leaflet potrzebuje realnej wysokości kontenera; ta wartość
+ * przybliża naturalną wysokość poi-map w tour-guide — nie pixel-perfect, tylko żeby karta
+ * nie skakała).
+ */
+.tour-guide-widget {
+  margin: 12px 0 0;
+  min-height: 320px;
+  border: 1px solid var(--eg-hairline-inner);
+  overflow: hidden;
+}
+
+.spec-plate__cta {
+  display: inline-block;
+  margin-top: 10px;
+  border: 1px solid var(--eg-accent-primary);
+  padding: 4px 10px;
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-accent-primary);
+  text-decoration: none;
+}
+
+.spec-plate__cta:hover {
+  background: var(--eg-accent-primary);
+  color: var(--eg-paper);
+}
