@@ -80,17 +80,19 @@
   border-bottom: 2px solid transparent;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .masthead__nav button {
-    transition: color 150ms ease, border-color 150ms ease;
-  }
-}
-
 .masthead__nav button:hover {
   color: var(--eg-navy);
 }
 
-.masthead__nav-item--active {
+/*
+ * `.masthead__nav button.masthead__nav-item--active` (nie sam `.masthead__nav-item--active`) —
+ * realny bug złapany na żywo: sama klasa ma specyficzność 0-1-0, a `.masthead__nav button`
+ * (klasa + element) to 0-1-1, więc `color: inherit` z tamtej reguły wygrywało mimo poprawnie
+ * dodanej klasy `--active` na elemencie. Ta sama klasa błędu co już nieraz w tym zestawie
+ * projektów (ancestor-scoped/compound selektor bijący płaski pojedynczy — patrz też CLAUDE.md
+ * tour-guide, Leaflet).
+ */
+.masthead__nav button.masthead__nav-item--active {
   color: var(--eg-navy);
   border-bottom-color: var(--eg-navy);
 }

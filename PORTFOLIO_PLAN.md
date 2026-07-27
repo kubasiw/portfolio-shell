@@ -933,6 +933,19 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
    wspierana funkcja platformy webowej. Poza tym w pełni zweryfikowane: grupowe podświetlenie,
    przełączanie między linkami, wyłączanie drugim kliknięciem, zero przewijania w poziomie na
    375px.
+   **Dwa realne bugi złapane po realnym feedbacku właściciela ("Kontakt" wizualnie się nie
+   wyróżniał mimo klasy `--active` na elemencie), nie na oko:** (1) `.masthead__nav-item--active`
+   (specyficzność 0-1-0) przegrywał z `.masthead__nav button` (klasa+element, 0-1-1) — dokładnie
+   ta sama klasa błędu selektorów co już nieraz w tym zestawie projektów (ancestor/compound
+   selektor bijący płaski pojedynczy, patrz Leaflet w CLAUDE.md tour-guide). Naprawione zmianą
+   selektora na `.masthead__nav button.masthead__nav-item--active` (0-2-1). (2) Po tej poprawce
+   `getComputedStyle` dalej pokazywał stary (szary) kolor — dokładnie ten sam artefakt tego
+   środowiska testowego co przy planszy w statki (Faza 2, krok 6): `transition: color/border-color`
+   na `.masthead__nav button` w połączeniu z programową zmianą klasy zamrażało odczyt na wartości
+   sprzed zmiany. Potwierdzone (nie zgadywane) przez `transition:none` wymuszone ręcznie na
+   elemencie — kolor natychmiast pokazywał się poprawnie. Naprawione tak samo jak wtedy: usunięcie
+   tego konkretnego przejścia zamiast dalszego dochodzenia — ten sam, już ustalony w tym projekcie
+   kompromis (kolor zmienia się od razu, bez animacji, nic realnie nie tracąc).
 
 **Faza 4 — Projekt 02: Insider (Vue)**
 10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
