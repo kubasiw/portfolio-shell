@@ -28,6 +28,26 @@
   background: var(--eg-paper);
 }
 
+/*
+ * Dziecko sticky mastheadu — porusza się razem z nim automatycznie (bez własnej logiki sticky),
+ * bo sticky element jest poprawnym containing blockiem dla position:absolute. Zachodzi lekko na
+ * hero pod spodem (bottom ujemny) — sygnalizuje, że cały projekt portfolio też jest "w budowie",
+ * nie tylko pojedyncze sekcje.
+ */
+.masthead__stamp {
+  position: absolute;
+  bottom: -18px;
+  right: 20px;
+  transform: rotate(-7deg);
+}
+
+@media (max-width: 480px) {
+  .masthead__stamp {
+    right: 12px;
+    transform: rotate(-7deg) scale(0.85);
+  }
+}
+
 .masthead__name {
   font-family: var(--eg-font-serif);
   font-style: italic;

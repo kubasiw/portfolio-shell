@@ -816,33 +816,40 @@ c. ✅ **Zmiana etykiety przycisku (2026-07-27).** `'Pokaż planszę w statki �
    `'Otwórz grę w statki →'` w `Toc.tsx`'s `actionLabel` — tylko wariant "przywróć zwiniętą
    planszę po skipie"; pierwsze CTA (`!skipped`) zostało bez zmian.
 
-d. ⬜ **Layout "w przygotowaniu" dla odblokowanych-ale-pustych sekcji.** Dotyczy `insider`,
-   `serwisant`, `about`, `skills`, `contact` w `sections.ts` — wszystkie mają dziś tylko opis w
-   `spec-plate`, bez realnej treści pod spodem (jedyny wyjątek: `tour-guide`, ma już
-   `TourGuideWidget`). Research trendów UX 2026 (progress-indicator/motion-jako-komunikacja,
-   progressive disclosure) potwierdza kierunek: stan "in progress" powinien być **funkcjonalny,
-   nie tylko dekoracyjny** — jasno komunikować co się dzieje, nie być samym ładnym placeholderem.
-   **Konkretna propozycja, spójna z istniejącym motywem spec-plate/coordinate-grid:**
-   - Nowy wariant `spec-plate--in-progress` (obok istniejących `--locked`/`--unlocked`) —
-     odblokowana karta bez gotowej treści dostaje **przerywaną (dashed) obwódkę** w kolorze
-     akcentu secondary (mosiądz `--eg-accent-secondary`) zamiast pełnej zielonej — czytelne trzecie
-     stadium między "zablokowane" (beż, tekst zamaskowany kropkami) i "gotowe" (zielone, pełna
-     treść), bez wprowadzania koloru spoza już ustalonej palety.
-   - Plakietka statusu: `"W BUDOWIE"`, mono, uppercase, tylko obrys — świadomie **nie** wypełniona,
-     żeby się nie mylić wizualnie z plakietką "ODBLOKOWANE →", której pełne wypełnienie zostaje
-     zarezerwowane wyłącznie dla gotowej treści (ta sama zasada "fakt/gotowe zawsze wizualnie
-     odróżnione od tymczasowego/szacowanego" co w sekcji dobrych praktyk, tu zastosowana do stanu
-     UI zamiast do danych AI).
-   - Mały, cienki progress-indicator zamiast statycznego tekstu: pozioma hairline-kreska z
-     częściowym wypełnieniem (realnie licząc z kroków Roadmapy tego dokumentu, nie zmyślony
-     procent) + etykieta mono typu `"FAZA 4 · KROK 1/2"` — czyni placeholder policzalnym, nie
-     fikcyjnym ładowaniem.
-   - Motyw coordinate-grid pasuje tu naturalnie: cienka siatka kropek/plusów w tle karty (czysty
-     CSS `background-image: radial-gradient(...)`, bez obrazków/importów) jako subtelne
-     nawiązanie do "rysunku technicznego w budowie" — do zweryfikowania na żywo, czy nie odwraca
-     uwagi od tekstu opisu i nie psuje jego kontrastu.
-   - Źródła researchu: [UX/UI design trends 2026 — calm interfaces, progressive disclosure](https://elements.envato.com/learn/ux-ui-design-trends),
-     [12 UX/UI trends 2026 — motion as functional communication layer](https://www.uxpin.com/studio/blog/ui-ux-design-trends/).
+d. ✅ **Zamiast dashed-border wariantu — pieczątka "w budowie" (2026-07-27, zbudowane).**
+   Oryginalny research-owy pomysł niżej (dashed border + osobna plakietka outline + hairline
+   progress-indicator + tło coordinate-grid) został **zastąpiony**, nie dobudowany — właściciel
+   poprosił wprost o inny, bardziej wizualny kierunek: prawdziwą pieczątkę/stempel w rogu karty.
+   Nowy dumb `src/components/Stamp.tsx` (+ `Stamp.css`, reużywany w dwóch miejscach, patrz punkt
+   niżej) — podwójna ramka (`border: 3px double`), **pełne, nieprzezroczyste tło `--eg-paper`**
+   (świadomie nie półprzezroczyste — pierwsza wersja mockupu prześwitywała, poprawione po
+   feedbacku), lekka rotacja (`rotate(-8deg)`), tekst "W budowie" + "wkrótce", w nowym trzecim
+   kolorze **`--eg-crimson` (`#7a2a24`)**, nie zielonym/mosiądzowym (oba już zajęte znaczeniowo).
+   **Uzasadnienie koloru** (przedyskutowane z właścicielem przed kodowaniem): karmazyn/oxblood jest
+   *bardziej* autentyczny dla estetyki pieczątki niż zieleń (prawdziwe stemple — APPROVED/PAID —
+   klasycznie są czerwone/granatowo-czarne), a trzeci, wyraźnie inny kolor dla trzeciego stanu
+   ("w budowie" ≠ zablokowane ≠ odblokowane) jest spójny z już ustaloną zasadą "fakt zawsze
+   wizualnie odróżniony od szacunku" z tour-guide. Ryzyko "czerwień = błąd" złagodzone stonowanym,
+   nie jaskrawym odcieniem (kontrast ~8.2:1 wobec `--eg-paper`, sprawdzone) + zawsze z tekstem, nigdy
+   samym kolorem. Renderowana tylko na kartach bez realnej treści pod spodem —
+   `IN_PROGRESS_SECTION_IDS = insider/serwisant/about/skills` w `ProjectCard.tsx` (tour-guide i
+   contact ją pomijają, mają już realną zawartość). Zweryfikowane na żywo: dokładnie te 4 sekcje
+   mają pieczątkę, tour-guide/contact nie mają; zero przewijania w poziomie na 375px.
+   **Zaprojektowane najpierw jako podgląd wizualny** (3 warianty stylu, potem doprecyzowane do
+   jednego po realnym feedbacku o przezroczystości i kolorze) — ten sam tryb co inne większe
+   decyzje wizualne w tym dokumencie.
+   *(Oryginalny, zastąpiony pomysł, zachowany dla kontekstu):* dashed border w mosiądzu +
+   plakietka outline "W BUDOWIE" + hairline progress-indicator ("FAZA 4 · KROK 1/2") + subtelne tło
+   coordinate-grid. Źródła researchu z tamtej propozycji: [UX/UI design trends 2026 — calm interfaces, progressive disclosure](https://elements.envato.com/learn/ux-ui-design-trends),
+   [12 UX/UI trends 2026 — motion as functional communication layer](https://www.uxpin.com/studio/blog/ui-ux-design-trends/).
+
+d2. ✅ **Pieczątka też na mastheadzie (2026-07-27) — sygnalizuje, że całe portfolio jest w
+   budowie, nie tylko pojedyncze sekcje.** Ten sam `<Stamp>` jako dziecko `.masthead` (już
+   `position: sticky`, więc jest poprawnym containing blockiem dla `position: absolute` — pieczątka
+   porusza się razem z nagłówkiem przy scrollu bez żadnej dodatkowej logiki sticky). Pozycjonowana
+   z ujemnym `bottom`, więc lekko zachodzi na hero pod spodem — celowe, sygnalizuje "cały projekt",
+   nie tylko sekcję. Zweryfikowane na żywo (nie tylko wizualnie): `getBoundingClientRect()` po
+   przewinięciu potwierdza, że pieczątka faktycznie pozostaje przypięta razem z mastheadem.
 
 e. ⬜ **`about`/`skills`/`contact` jako pełnoekranowy widok "w ramach" istniejącej appki.**
    Prawdopodobnie stan komponentu (np. `selectedSection` w `Toc`/`App`), nie osobna trasa/router —

@@ -1,4 +1,5 @@
 import './App.css';
+import { Stamp } from './components/Stamp';
 import { Toc } from './features/toc/Toc';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
           <span>Kontakt</span>
         </nav>
         <span className="masthead__vol">VOL. 01 — 2026</span>
+        <Stamp main="W budowie" sub="2026" className="masthead__stamp" />
       </header>
 
       <main className="hero">

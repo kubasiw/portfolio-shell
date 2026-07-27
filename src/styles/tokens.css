@@ -22,6 +22,13 @@
   --eg-accent-secondary: #a9772f; /* mosiądz */
   --eg-muted: #c7bfae; /* zablokowane/nieaktywne */
   /*
+   * crimson dodany 2026-07-27 dla pieczątki "w budowie" — trzeci, wyraźnie inny stan
+   * (zablokowane=beż, odblokowane=zielony, w budowie=karmazyn), ten sam duch co "fakt zawsze
+   * wizualnie odróżniony od szacunku" w tour-guide. Stonowany oxblood, nie jaskrawa czerwień
+   * alarmowa — kontrast ~8.2:1 wobec --eg-paper (sprawdzone, nie na oko).
+   */
+  --eg-crimson: #7a2a24;
+  /*
    * miss-bg/preview-bg dodane 2026-07-24 dla planszy w statki — pudło samo w sobie (bez tła)
    * było prawie niewidoczne na --eg-paper; teraz ma własne, delikatnie przyciemnione tło plus
    * realną kropkę (nie tylko glif tekstowy). preview-bg to podgląd obszaru "(Art)yleria".

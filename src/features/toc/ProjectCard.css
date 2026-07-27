@@ -1,6 +1,21 @@
 .spec-plate {
+  position: relative;
   border: 1px solid var(--eg-hairline);
   padding: 14px 16px;
+}
+
+.spec-plate__stamp {
+  position: absolute;
+  top: -14px;
+  right: -16px;
+  transform: rotate(-8deg);
+}
+
+@media (max-width: 480px) {
+  .spec-plate__stamp {
+    right: -6px;
+    transform: rotate(-8deg) scale(0.85);
+  }
 }
 
 /*

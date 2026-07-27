@@ -1,5 +1,6 @@
 import type { Section } from './sections';
 import { ContactLinks } from './ContactLinks';
+import { Stamp } from '../../components/Stamp';
 import { TourGuideWidget } from './TourGuideWidget';
 import './ProjectCard.css';
 
@@ -15,6 +16,11 @@ const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 const CONTACT_SECTION_ID = 'contact';
 
+// Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
+// "w budowie" w rogu. Usunąć z tego zestawu, gdy dana sekcja dostanie realną zawartość
+// (Faza 3.5, punkty d/e/f/g z PORTFOLIO_PLAN.md).
+const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant', 'about', 'skills']);
+
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
@@ -25,6 +31,9 @@ export function ProjectCard({ section, locked }: ProjectCardProps) {
       id={`section-${section.id}`}
       className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'}`}
     >
+      {!locked && IN_PROGRESS_SECTION_IDS.has(section.id) && (
+        <Stamp main="W budowie" sub="wkrótce" className="spec-plate__stamp" />
+      )}
       <div className="spec-plate__rows">
         <div className="spec-plate__row">
           <span className="spec-plate__label">Sekcja</span>
