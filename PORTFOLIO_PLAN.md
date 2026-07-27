@@ -746,8 +746,13 @@ w tour-guide.
    POI, nie tylko pusty custom element.
    **Zweryfikowane end-to-end lokalnie (2026-07-27):** `.tour-guide-widget`/`tour-guide-mini-map`/
    `.spec-plate__cta` renderują się poprawnie w DOM po zatopieniu statku, CTA wskazuje realny URL.
-   Realny render Leaflet w shadow roocie z portfolio-shell osadzonego cross-origin — do
-   potwierdzenia po zdeployowaniu poprawki CORS w tour-guide (osobny commit, ten sam dzień).
+   **Potwierdzone na żywo na `www.kubsiw.com` przez właściciela (2026-07-27), po zdeployowaniu
+   poprawki CORS w tour-guide:** realna mapa (kafle + markery POI) i link "Zobacz cały projekt →"
+   widoczne po zatopieniu statku "Projekt 01" — pierwszy prawdziwy mikrofrontend w tym zestawie
+   faktycznie działa end-to-end, nie tylko lokalnie/teoretycznie. (Własna automatyczna weryfikacja
+   w przeglądarce w tym środowisku pokazywała nieaktualny, zcache'owany bundle mimo twardego
+   odświeżenia — potwierdzone jako artefakt narzędzia testowego, nie prawdziwy problem strony,
+   skoro bezpośrednia obserwacja właściciela w realnej przeglądarce była jednoznaczna.)
 
 **Faza 4 — Projekt 02: Insider (Vue)**
 10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
