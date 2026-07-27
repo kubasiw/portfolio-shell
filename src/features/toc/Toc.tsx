@@ -36,6 +36,9 @@ export function Toc() {
     toggleArtillery,
   } = useBattleship();
   const [skipped, setSkipped] = useState(false);
+  // Niezależny od `skipped` — jedyny sposób wejścia w ten stan to skip (skip ustawia oba naraz),
+  // ale odtąd przełącza się osobno w obie strony (patrz przycisk w .toc__intro niżej).
+  const [boardCollapsed, setBoardCollapsed] = useState(false);
 
   const effectiveUnlocked = useMemo((): ReadonlySet<string> => {
     if (skipped) {
@@ -46,18 +49,40 @@ export function Toc() {
 
   const statusMessage = buildStatusMessage(lastResult);
 
+  const handleActionClick = (): void => {
+    if (!skipped) {
+      setSkipped(true);
+      setBoardCollapsed(true);
+      return;
+    }
+    setBoardCollapsed((prev) => !prev);
+  };
+
+  const actionLabel = !skipped
+    ? 'Przejdź od razu do treści →'
+    : boardCollapsed
+      ? 'Pokaż planszę w statki →'
+      : 'Schowaj planszę ↑';
+
   return (
     <section className="toc" aria-labelledby="toc-heading">
       <div className="toc__intro">
-        <h2 id="toc-heading" className="toc__heading">
-          Spis treści — zatop statek, żeby odkryć
-        </h2>
-        <button type="button" className="toc__skip" onClick={() => setSkipped(true)}>
-          Przejdź od razu do treści →
+        <div>
+          <h2 id="toc-heading" className="toc__heading">
+            {skipped ? 'Spis treści' : 'Spis treści — zatop statek, żeby odkryć'}
+          </h2>
+          <p
+            className={`toc__subheading ${!skipped || boardCollapsed ? 'toc__subheading--hidden' : ''}`}
+          >
+            Wszystko już odblokowane — i tak możesz zagrać w statki, jeśli chcesz.
+          </p>
+        </div>
+        <button type="button" className="toc__skip" onClick={handleActionClick}>
+          {actionLabel}
         </button>
       </div>
 
-      <div className="toc__layout">
+      <div className={`toc__layout ${boardCollapsed ? 'toc__layout--collapsed' : ''}`}>
         <div className="toc__board-col">
           <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
 

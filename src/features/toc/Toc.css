@@ -19,6 +19,28 @@
   margin: 0;
 }
 
+.toc__subheading {
+  font-family: var(--eg-font-sans);
+  font-size: 13px;
+  color: var(--eg-ink-secondary);
+  margin: 4px 0 0;
+  max-height: 40px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.toc__subheading--hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toc__subheading {
+    transition: max-height 220ms ease, opacity 160ms ease, margin-top 220ms ease;
+  }
+}
+
 .toc__skip {
   background: none;
   border: none;
@@ -44,6 +66,16 @@
   flex-wrap: wrap;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .toc__layout {
+    transition: gap 280ms ease;
+  }
+}
+
+.toc__layout--collapsed {
+  gap: 0;
+}
+
 .toc__board-col {
   display: flex;
   flex-direction: column;
@@ -54,14 +86,50 @@
    * .toc__cards pod planszę — złapane realnie (2026-07-24), nie tylko teoretycznie.
    */
   min-width: 0;
+  /*
+   * Szerokość na sztywno (nie auto/content-based) — potrzebna, żeby móc animować do/z 0.
+   * Wartość dokładnie odpowiada rzeczywistej szerokości siatki planszy (22px + 10×32px +
+   * 9×3px gap = 372px, patrz Board.css) — nie przypadkowa.
+   */
+  width: 372px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toc__board-col {
+    transition: width 280ms ease, opacity 200ms ease;
+  }
+}
+
+.toc__layout--collapsed .toc__board-col {
+  width: 0;
+  opacity: 0;
+}
+
+@media (max-width: 480px) {
+  .toc__board-col {
+    /* Odpowiada mobilnej szerokości siatki w Board.css: 16px + 10×24px + 9×2px gap = 274px. */
+    width: 274px;
+  }
 }
 
 .toc__cards {
   flex: 1 1 260px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 12px;
   min-width: 260px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toc__cards {
+    transition: grid-template-columns 280ms ease;
+  }
+}
+
+.toc__layout--collapsed .toc__cards {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
 .toc__artillery {

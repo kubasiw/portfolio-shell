@@ -753,6 +753,38 @@ w tour-guide.
    w przeglądarce w tym środowisku pokazywała nieaktualny, zcache'owany bundle mimo twardego
    odświeżenia — potwierdzone jako artefakt narzędzia testowego, nie prawdziwy problem strony,
    skoro bezpośrednia obserwacja właściciela w realnej przeglądarce była jednoznaczna.)
+   **Zwijanie planszy po skipie, z animacją (2026-07-27, realny feedback).** Kliknięcie "Przejdź od
+   razu do treści" wcześniej tylko odblokowywało karty — sama plansza (i cała jej szerokość)
+   zostawała na ekranie bez żadnego funkcjonalnego powodu. Teraz skip dodatkowo zwija planszę
+   (`boardCollapsed`, stan niezależny od `skipped` — jedyne wejście do tego stanu to skip, ale
+   odtąd przełącza się osobno w obie strony), a przycisk (ten sam element co dotychczasowy
+   skip-link, tylko zmieniona etykieta/akcja — nie osobny "floating button" gdzieś indziej w
+   layoucie, po realnej uwadze że nawet mały boczny pasek "nadal zajmuje szerokość") pozwala
+   pokazać/schować ją ponownie w dowolnym momencie. Po ponownym pokazaniu nagłówek zmienia się na
+   neutralny "Spis treści" + podpis "Wszystko już odblokowane — i tak możesz zagrać w statki, jeśli
+   chcesz" — plansza przestaje sprawiać wrażenie, że coś jeszcze blokuje.
+   **Animacja zaprojektowana bez JS-owego przeliczania pozycji (FLIP):** `.toc__board-col` ma
+   sztywną szerokość (372px desktop / 274px mobile — dokładnie licząc z rozmiarów siatki w
+   `Board.css`, nie przypadkowa), którą transicjonuje do/z `0` razem z `opacity` i `gap` całego
+   `.toc__layout`; `.toc__cards` zamieniony z `flex-column` na `display:grid` (wizualnie identyczne
+   przy jednej kolumnie) właśnie po to, żeby `grid-template-columns` też mogło się animować — w
+   efekcie liczba kolumn kart rośnie **stopniowo w trakcie** zwijania planszy (żywy reflow za
+   darmo, bo szerokość dostępna dla siatki i tak rośnie klatka po klatce), zamiast skoczyć naraz na
+   końcu. Świadomie **bez** animowania repozycjonowania samych kart między układami — złożoność
+   (i ryzyko niespójności między silnikami przy interpolacji `repeat(auto-fill,...)`) nie
+   uzasadniała zysku dla tak małego, pobocznego elementu UI. Wszystkie przejścia zapięte w
+   `@media (prefers-reduced-motion: no-preference)` — przy tym ustawieniu stany przełączają się
+   bez animacji.
+   **Zaprojektowane i zweryfikowane najpierw jako osobny, interaktywny podgląd** (nie od razu w
+   kodzie appki) — żywy mockup na realnych tokenach Editorial Garage, z rzeczywistym przełącznikiem
+   stanu (nie tylko statyczne zrzuty 3 stanów), pozwolił złapać i poprawić dwie rzeczy przed
+   dotknięciem prawdziwego kodu: (1) pierwsza wersja miała osobny "reopen strip" zajmujący kolumnę
+   nawet po zwinięciu planszy — słusznie zgłoszone jako wciąż zabierające szerokość, poprawione
+   przeniesieniem przycisku w miejsce już istniejącego skip-linka w nagłówku (zero dodatkowej
+   kolumny w ogóle); (2) sama animacja przetestowana na żywo w przeglądarce (kliknięcia +
+   `getComputedStyle`/`getBoundingClientRect` przed i po), nie tylko obejrzana. Zweryfikowane
+   analogicznie w prawdziwym kodzie: `boardColWidth` 372→0→372 (desktop), 274→0 (mobile), siatka
+   kart 1→3 kolumny, `unlockedCount` 6/6, zero poziomego przewijania na 375px.
 
 **Faza 4 — Projekt 02: Insider (Vue)**
 10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
