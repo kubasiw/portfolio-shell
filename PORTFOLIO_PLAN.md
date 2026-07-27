@@ -901,6 +901,25 @@ i. ✅ **Sticky footer (2026-07-27).** Zgodnie z własną rekomendacją w tym pu
    Źródła researchu: [Website footer designs 2026 — minimal & sticky patterns](https://www.sitebuilderreport.com/inspiration/website-footer-designs),
    [10 modern footer UX patterns for 2026](https://www.eleken.co/blog-posts/footer-ux).
 
+j. ⬜ **Pomysł zapisany, jeszcze nie zaimplementowany (2026-07-27) — linki `.masthead__nav`
+   ("Projekty"/"O mnie"/"Kontakt") mają realnie działać, nie być samymi `<span>`.** Klik na
+   "Projekty" podświetla naraz wszystkie karty projektowe (tour-guide/insider/serwisant) w spisie
+   treści + smooth-scrolluje do pierwszej z nich; "O mnie"/"Kontakt" tak samo, ale tylko do
+   jednej, swojej karty. Klikany element nagłówka dostaje stan "aktywny" (podkreślenie mosiądzem);
+   klik na TEN SAM link drugi raz czyści oba stany naraz (nawigację i podświetlenie kart) —
+   przełączenie na INNY link po prostu przenosi podświetlenie, bez potrzeby najpierw odklikiwać.
+   **Zaprojektowany i zweryfikowany żywy mockup** (nie tylko opis) — kliknięcia rzeczywiście
+   grupowo podświetlają karty, przełączają się między linkami czyszcząc poprzedni stan, i w pełni
+   czyszczą się po drugim kliknięciu tego samego linku; smooth-scroll (`scrollIntoView({behavior:
+   'smooth', block:'center'})`) faktycznie przewija do pierwszej pasującej karty.
+   **Kluczowa decyzja projektowa:** podświetlenie-przez-nawigację to stan *tymczasowy* (nie
+   trwały status jak zablokowane/odblokowane/w budowie), więc dostaje osobny mechanizm — `outline`
+   (nie `border`) w mosiądzu (`--eg-accent-secondary`, jedyny z trójki akcentów jeszcze
+   niezarezerwowany na stały status — zielony=odblokowane, karmazyn=w budowie), z `outline-offset`,
+   żeby nie kolidować wizualnie z istniejącą, trwałą 2px zieloną obwódką odblokowanych kart.
+   Do zaimplementowania w prawdziwym kodzie (`App.tsx`/`Toc.tsx`) później, nie teraz — właściciel
+   poprosił o zapisanie tego jako przemyślanej koncepcji na przyszłość.
+
 **Faza 4 — Projekt 02: Insider (Vue)**
 10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
     Marketaux), plakietka "SUGESTIA AI · NIE PORADA" obecna od pierwszej wersji, nie dobudowana
