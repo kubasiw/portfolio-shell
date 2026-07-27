@@ -1,0 +1,33 @@
+.contact-links {
+  margin-top: 10px;
+}
+
+.contact-links__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  text-decoration: none;
+  color: var(--eg-ink);
+}
+
+.contact-links__row + .contact-links__row {
+  border-top: 1px solid var(--eg-hairline-inner);
+}
+
+.contact-links__row:hover .contact-links__value {
+  color: var(--eg-accent-primary);
+}
+
+.contact-links__label {
+  font-family: var(--eg-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+}
+
+.contact-links__value {
+  font-size: 13px;
+}

@@ -24,6 +24,13 @@ function App() {
       </main>
 
       <Toc />
+
+      <footer className="site-footer">
+        <a className="site-footer__link" href="#section-contact">
+          Kontakt ↑
+        </a>
+        <span className="site-footer__year">© 2026 Kuba S.</span>
+      </footer>
     </div>
   );
 }

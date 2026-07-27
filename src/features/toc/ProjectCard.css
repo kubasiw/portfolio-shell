@@ -95,6 +95,16 @@
   min-height: 320px;
   border: 1px solid var(--eg-hairline-inner);
   overflow: hidden;
+  /*
+   * isolation:isolate — Leaflet wewnątrz widgetu ustawia własne, wysokie z-index na warstwach
+   * kafli/markerów/kontrolek (200-1000). Bez nowego kontekstu stackowania te wartości konkurują
+   * bezpośrednio z resztą strony (masthead/stopka) na poziomie CAŁEGO dokumentu — realny bug
+   * złapany na żywo: karta poprawnie chowała się pod sticky stopką przy scrollu, ale sama mapa
+   * "prześwitywała" nad nią, bo jej wewnętrzny z-index wygrywał globalnie mimo że wizualnie
+   * przewinęła się niżej. isolation:isolate zamyka te wartości wewnątrz tego elementu — teraz
+   * cały widget stackuje się jak zwykły, bezstanowy blok w normalnym porządku DOM.
+   */
+  isolation: isolate;
 }
 
 .spec-plate__cta {

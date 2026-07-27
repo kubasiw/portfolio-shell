@@ -786,6 +786,114 @@ w tour-guide.
    analogicznie w prawdziwym kodzie: `boardColWidth` 372→0→372 (desktop), 274→0 (mobile), siatka
    kart 1→3 kolumny, `unlockedCount` 6/6, zero poziomego przewijania na 375px.
 
+**Faza 3.5 — Landing: header, gra, treść sekcji, footer (przed Insiderem)**
+
+Zebrane 2026-07-27 — uwagi/pomysły właściciela, do przepracowania w kodzie (zakładka "code")
+zanim ruszy Faza 4 (Insider). Każdy punkt niżej to osobny, weryfikowalny krok, w duchu "małe
+kroki" z sekcji dobrych praktyk — nie wszystko naraz. Numeracja literowa (a–i), świadomie
+osobna od głównej sekwencji 1-19 wyżej, żeby wstawienie tej fazy nie wymagało przenumerowania
+już opisanych kroków Fazy 4-6.
+
+a. ✅ **Floating/sticky masthead (2026-07-27).** `.masthead` dostał `position: sticky; top: 0`
+   + jawne tło `--eg-paper` (bez tego przewijana treść przeświecałaby przez niego) — ten sam
+   wzorzec co sticky nav w tour-guide. Istniejący dolny hairline wystarczył jako oddzielenie od
+   treści, bez dokładania cienia (ta sama, już sprawdzona decyzja co w tour-guide). Zweryfikowane
+   na żywo: `elementFromPoint` przy `scrollY: 800` nadal trafia w `.masthead`, nie w przewiniętą
+   treść pod spodem.
+
+b. ⬜ **Plansza w statki: 10×10 → 9×9.** Zmiana `BOARD_ROWS`/`BOARD_COLS` (`use-battleship.ts`) z
+   10 na 9. **Realna konsekwencja do rozstrzygnięcia przy kodowaniu, nie tylko kosmetyczna:**
+   obecny zestaw 6 statków (1,1,2,3,4,5 = 16 pól) i logika `placeShips`/bufor "bez stykania"
+   (Faza 2, krok 5) była dostrajana i zweryfikowana (5000-krotna symulacja) pod 100 pól — na 81
+   polach ten sam zestaw powinien się nadal zmieścić (mniej gęsto niż na 10×10 w najgorszym
+   wypadku), ale wymaga tej samej metody weryfikacji jak poprzednio (jednorazowy, usuwany po
+   teście skrypt Node symulujący rozstawienie N razy — nie "wygląda ok" na oko), zgodnie z zasadą
+   "weryfikuj, nie zakładaj". Rozmiar komórki (dziś 32px/24px ≤480px) może dać się nieznacznie
+   zwiększyć przy mniejszej liczbie kolumn — sprawdzić na żywo na 320px, czy to daje margines na
+   powiększenie bez ponownego poziomego przewijania.
+
+c. ✅ **Zmiana etykiety przycisku (2026-07-27).** `'Pokaż planszę w statki →'` →
+   `'Otwórz grę w statki →'` w `Toc.tsx`'s `actionLabel` — tylko wariant "przywróć zwiniętą
+   planszę po skipie"; pierwsze CTA (`!skipped`) zostało bez zmian.
+
+d. ⬜ **Layout "w przygotowaniu" dla odblokowanych-ale-pustych sekcji.** Dotyczy `insider`,
+   `serwisant`, `about`, `skills`, `contact` w `sections.ts` — wszystkie mają dziś tylko opis w
+   `spec-plate`, bez realnej treści pod spodem (jedyny wyjątek: `tour-guide`, ma już
+   `TourGuideWidget`). Research trendów UX 2026 (progress-indicator/motion-jako-komunikacja,
+   progressive disclosure) potwierdza kierunek: stan "in progress" powinien być **funkcjonalny,
+   nie tylko dekoracyjny** — jasno komunikować co się dzieje, nie być samym ładnym placeholderem.
+   **Konkretna propozycja, spójna z istniejącym motywem spec-plate/coordinate-grid:**
+   - Nowy wariant `spec-plate--in-progress` (obok istniejących `--locked`/`--unlocked`) —
+     odblokowana karta bez gotowej treści dostaje **przerywaną (dashed) obwódkę** w kolorze
+     akcentu secondary (mosiądz `--eg-accent-secondary`) zamiast pełnej zielonej — czytelne trzecie
+     stadium między "zablokowane" (beż, tekst zamaskowany kropkami) i "gotowe" (zielone, pełna
+     treść), bez wprowadzania koloru spoza już ustalonej palety.
+   - Plakietka statusu: `"W BUDOWIE"`, mono, uppercase, tylko obrys — świadomie **nie** wypełniona,
+     żeby się nie mylić wizualnie z plakietką "ODBLOKOWANE →", której pełne wypełnienie zostaje
+     zarezerwowane wyłącznie dla gotowej treści (ta sama zasada "fakt/gotowe zawsze wizualnie
+     odróżnione od tymczasowego/szacowanego" co w sekcji dobrych praktyk, tu zastosowana do stanu
+     UI zamiast do danych AI).
+   - Mały, cienki progress-indicator zamiast statycznego tekstu: pozioma hairline-kreska z
+     częściowym wypełnieniem (realnie licząc z kroków Roadmapy tego dokumentu, nie zmyślony
+     procent) + etykieta mono typu `"FAZA 4 · KROK 1/2"` — czyni placeholder policzalnym, nie
+     fikcyjnym ładowaniem.
+   - Motyw coordinate-grid pasuje tu naturalnie: cienka siatka kropek/plusów w tle karty (czysty
+     CSS `background-image: radial-gradient(...)`, bez obrazków/importów) jako subtelne
+     nawiązanie do "rysunku technicznego w budowie" — do zweryfikowania na żywo, czy nie odwraca
+     uwagi od tekstu opisu i nie psuje jego kontrastu.
+   - Źródła researchu: [UX/UI design trends 2026 — calm interfaces, progressive disclosure](https://elements.envato.com/learn/ux-ui-design-trends),
+     [12 UX/UI trends 2026 — motion as functional communication layer](https://www.uxpin.com/studio/blog/ui-ux-design-trends/).
+
+e. ⬜ **`about`/`skills`/`contact` jako pełnoekranowy widok "w ramach" istniejącej appki.**
+   Prawdopodobnie stan komponentu (np. `selectedSection` w `Toc`/`App`), nie osobna trasa/router —
+   portfolio nie ma dziś routingu, i reszta appki (gra w statki, skip, zwijanie planszy) już działa
+   jako czysty stan, nie URL; do potwierdzenia przy kodowaniu, czy to świadomie zostaje tak, czy
+   jednak warto dodać `react-router` tylko dla tych trzech widoków (np. pod kątem głębokiego
+   linkowania/SEO). Guzik "Wróć do spisu treści" + animacja przejścia — kandydat na mechanikę:
+   ten sam wzorzec co zwijanie planszy po skipie (Faza 2, krok 6) — czysty CSS transition na
+   wymiarach/opacity, zapięty pod `prefers-reduced-motion`, bez FLIP/JS-owego przeliczania pozycji,
+   żeby nie dokładać złożoności bez realnej potrzeby.
+
+f. ⬜ **Sekcja "O mnie" — galeria zdjęć pasji.** Kilkanaście zdjęć, przewijane/wybierane z gridu;
+   po wybraniu — mniejszy kwadrat z kilkoma zdaniami o danej pasji, w pasującej czcionce (pomysł
+   właściciela, otwarty na lepszy, jeśli się znajdzie). Otwarte do ustalenia przy realizacji:
+   dokładny układ (lightbox nad gridem vs. karta rozwijana w miejscu obok zdjęcia), źródło zdjęć
+   (właściciel dostarczy realne pliki, nie placeholdery/stocki — spójne z zasadą "realne dane ponad
+   zamockowane założenia"), i czy opisowy kwadrat żyje jako nakładka (overlay) czy sąsiaduje ze
+   zdjęciem. Warto rozważyć 2-3 warianty i skonsultować przed kodowaniem — ten sam tryb decyzyjny
+   co przy innych większych wyborach wizualnych w tym dokumencie (np. 4 warianty przed wyborem
+   Editorial Garage).
+
+g. ⬜ **Sekcja "Umiejętności" — zwykły tekst + lista.** User's własne słowa: "sam nie wiem" —
+   najprostszy, niezaangażowany slot na start (zredagowany tekst + lista technologii/praktyk,
+   czerpiąca prawdopodobnie wprost z sekcji "Dobre praktyki programistyczne i architektoniczne"
+   tego dokumentu jako źródła treści, nie tylko z pamięci). Rewizja layoutu, jeśli po zobaczeniu
+   realnej treści na żywo okaże się zbyt sucha.
+
+h. ✅ **Sekcja "Kontakt" — najprostszy slot (2026-07-27).** Nowy dumb `ContactLinks.tsx` — trzy
+   klikalne wiersze (mailto e-mail, LinkedIn, GitHub — realne dane właściciela, nie placeholdery),
+   wizualnie mirror `spec-plate__row` (mono etykieta + wartość), renderowany w `ProjectCard` tylko
+   dla `section.id === 'contact'` po odblokowaniu. `ProjectCard`'s root dostał `id="section-{id}"`
+   na każdej karcie — potrzebne pod link ze stopki (patrz punkt i niżej).
+
+i. ✅ **Sticky footer (2026-07-27).** Zgodnie z własną rekomendacją w tym punkcie — zwykły
+   `position: sticky; bottom: 0` na końcu normalnego przepływu strony (nie floating/fixed-overlay),
+   więc zero ryzyka zasłaniania treści; przypina się do dołu viewportu tylko na krótszych stronach.
+   Minimalny: link "Kontakt ↑" (do `#section-contact`) + rok/copyright w mono, bez multi-kolumnowego
+   wzorca korporacyjnego, bez ikon (brak fontu ikon w tym projekcie, świadomie pominięte na razie).
+   **Realny bug złapany od razu po zbudowaniu, nie teoretycznie (realny feedback właściciela po
+   scrollu):** karta "Projekt 01" poprawnie chowała się pod stopką przy przewijaniu, ale sama mapa
+   Leaflet w środku "prześwitywała" nad nią — Leaflet ustawia własne, wysokie `z-index` (200-1000)
+   na warstwach kafli/markerów/kontrolek, a bez kontenowanego kontekstu stackowania wokół widgetu te
+   wartości konkurowały bezpośrednio ze stopką na poziomie całego dokumentu i wygrywały, mimo że
+   karta wizualnie przewinęła się niżej. Naprawione jednym `isolation: isolate` na
+   `.tour-guide-widget` — zamyka wewnętrzny z-index Leafletu w tym elemencie, cała karta stackuje
+   się odtąd jak zwykły blok w normalnym porządku DOM. Zweryfikowane precyzyjnie (nie na oko):
+   `elementFromPoint` dokładnie w miejscu nałożenia się prostokątów widgetu i stopki (kilka
+   pozycji scrolla) trafiał w `<footer>`, nie w żaden element Leafletu.
+   Źródła researchu: [Website footer designs 2026 — minimal & sticky patterns](https://www.sitebuilderreport.com/inspiration/website-footer-designs),
+   [10 modern footer UX patterns for 2026](https://www.eleken.co/blog-posts/footer-ux).
+
 **Faza 4 — Projekt 02: Insider (Vue)**
 10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
     Marketaux), plakietka "SUGESTIA AI · NIE PORADA" obecna od pierwszej wersji, nie dobudowana
@@ -1003,3 +1111,14 @@ w tour-guide.
   `docker exec tour-guide-frontend wget http://tour-guide-backend:3000/...` (prawdziwy test
   między-kontenerowy) i finalnie `curl -v https://tourguide.kubsiw.com/api/health` (przez
   Traefika, prawdziwy certyfikat Let's Encrypt) potwierdziły pełną trasę.
+- 2026-07-27: właściciel zebrał serię uwag/pomysłów do landing page'a portfolio (przed startem
+  Fazy 4 — Insider) — spisane jako nowa **Faza 3.5** w Roadmapie wyżej (sticky masthead, plansza
+  9×9, zmiana etykiety przycisku gry, "in progress" layout dla odblokowanych-ale-pustych sekcji,
+  pełnoekranowy widok o-mnie/umiejętności/kontakt z animacją powrotu, galeria zdjęć pasji w
+  sekcji o-mnie, sticky/floating footer). Dla dwóch pytań, gdzie właściciel wprost poprosił o
+  research trendów UX 2026 ("in progress" layout, footer sticky/floating), przeprowadzono
+  wyszukiwanie i skonkretyzowano propozycje zgodne z już ustalonym Editorial Garage (nowy wariant
+  `spec-plate--in-progress` z przerywaną obwódką akcentu secondary + plakietka "W BUDOWIE" +
+  hairline progress-indicator; minimalny sticky footer, świadomie bez kopiowania ciężkiego
+  multi-kolumnowego wzorca korporacyjnego) — pełny szczegół i źródła przy Fazie 3.5. Właściciel
+  planuje teraz przejść do zakładki code i pracować nad tymi punktami z odwołaniem do tego pliku.

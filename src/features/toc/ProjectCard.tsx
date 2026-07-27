@@ -1,4 +1,5 @@
 import type { Section } from './sections';
+import { ContactLinks } from './ContactLinks';
 import { TourGuideWidget } from './TourGuideWidget';
 import './ProjectCard.css';
 
@@ -12,6 +13,7 @@ interface ProjectCardProps {
 // (Fazy 4-5), nie wcześniej.
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
+const CONTACT_SECTION_ID = 'contact';
 
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
@@ -19,7 +21,10 @@ function maskText(text: string): string {
 
 export function ProjectCard({ section, locked }: ProjectCardProps) {
   return (
-    <div className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'}`}>
+    <div
+      id={`section-${section.id}`}
+      className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'}`}
+    >
       <div className="spec-plate__rows">
         <div className="spec-plate__row">
           <span className="spec-plate__label">Sekcja</span>
@@ -52,6 +57,7 @@ export function ProjectCard({ section, locked }: ProjectCardProps) {
               </a>
             </>
           )}
+          {section.id === CONTACT_SECTION_ID && <ContactLinks />}
         </>
       )}
     </div>

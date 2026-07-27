@@ -61,7 +61,7 @@ export function Toc() {
   const actionLabel = !skipped
     ? 'Przejdź od razu do treści →'
     : boardCollapsed
-      ? 'Pokaż planszę w statki →'
+      ? 'Otwórz grę w statki →'
       : 'Schowaj planszę ↑';
 
   return (

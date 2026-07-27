@@ -16,6 +16,16 @@
   align-items: baseline;
   border-bottom: 1px solid var(--eg-hairline-inner);
   padding: 16px 0;
+  /*
+   * Sticky, nie fixed — ten sam wzorzec co nav w tour-guide (CLAUDE.md, "Nav/shell polish").
+   * Tło jawnie ustawione na --eg-paper (identyczne z tłem strony) — bez tego sticky element
+   * byłby przezroczysty i treść przewijałaby się "przez" niego. Oddzielenie od treści pod spodem
+   * to sam istniejący dolny hairline, bez cienia — ta sama, już sprawdzona decyzja co w tour-guide.
+   */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--eg-paper);
 }
 
 .masthead__name {
@@ -65,4 +75,45 @@
   color: var(--eg-ink-secondary);
   line-height: 1.6;
   margin: 0;
+}
+
+/*
+ * sticky (nie fixed) na dole zwykłego przepływu strony — zostaje przypięta do dołu viewportu
+ * tylko na krótkich stronach (mniej treści niż wysokość ekranu), w normalnym przypadku po prostu
+ * siedzi na końcu strony jak każdy inny footer. Świadomie NIE floating/fixed-overlay — realne
+ * ryzyko zasłaniania treści na mobile/krótkich sekcjach, którego zwykły sticky-na-dnie nie ma
+ * (patrz PORTFOLIO_PLAN.md, Faza 3.5 punkt i).
+ */
+.site-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 40px;
+  padding: 14px 0;
+  border-top: 1px solid var(--eg-hairline-inner);
+  background: var(--eg-paper);
+}
+
+.site-footer__link {
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+}
+
+.site-footer__link:hover {
+  color: var(--eg-accent-primary);
+}
+
+.site-footer__year {
+  font-family: var(--eg-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--eg-ink-secondary);
 }
