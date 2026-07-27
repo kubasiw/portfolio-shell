@@ -681,7 +681,8 @@ w tour-guide.
    wcześniej failował na budżecie stylu Leaflet CSS; drugi nowy — CORS backendu musiał obsłużyć
    wiele originów, nie tylko jeden hardkodowany). Deploy pod realną subdomeną i wpięcie w
    portfolio-shell (kroki 8-9 poniżej) czekają na VPS.
-8. ✅ **Kod gotowy, deploy na VPS czeka na Twoją akcję (2026-07-27).** `backend/Dockerfile`
+8. ✅ **Kod gotowy i wdrożony na VPS (2026-07-27) — `https://tourguide.kubsiw.com` działa.**
+   `backend/Dockerfile`
    (multi-stage, kopiuje pełen `node_modules` do runtime — prościej niż rozdzielać prod/dev deps,
    `prisma migrate deploy` przy każdym starcie kontenera, idempotentne), `frontend/Dockerfile`
    (buduje OBA cele — główną appkę i widget — do jednego nginx: appka pod `/`, widget pod
@@ -719,9 +720,12 @@ w tour-guide.
    wzmianek `localhost:3000` w obu, `/api` relatywne wyłącznie w głównej appce, absolutny URL
    wyłącznie w widgecie. Backend też dostał `app.setGlobalPrefix('api')` (jeden powód istnienia
    `/api` na wszystkich routach — patrz `CLAUDE.md` tour-guide) i rozszerzony CORS o `kubsiw.com`/
-   `tourguide.kubsiw.com`. Pełna checklista wdrożenia (Postgres + baza + sekrety + pierwszy
-   `docker compose up`) w `INFRA_SETUP.md`, kroki 10-11 — wymaga Twojej akcji na VPS, nie do
-   zrobienia z tego środowiska.
+   `tourguide.kubsiw.com`. **Deploy na VPS dokończony tego samego dnia** — Postgres postawiony,
+   baza `tour_guide` utworzona, sekrety dodane, pierwszy `docker compose up` udany; cztery kolejne
+   realne bugi złapane i naprawione po drodze (kolejność `prisma generate`/lint w CI, prywatne
+   pakiety GHCR, brakujący klucz SSH do automatycznego deployu, i etykieta
+   `traefik.docker.network` dla kontenera na dwóch sieciach) — pełny opis w "Historia decyzji"
+   niżej, wpis pod tą samą datą.
 9. Karta "Projekt 01" w portfolio przestaje być placeholderem — realny link + osadzony widget.
 
 **Faza 4 — Projekt 02: Insider (Vue)**
@@ -901,12 +905,43 @@ w tour-guide.
   wstrzyknięty bezpośrednio przez `element.textContent =`, ten sam mechanizm co devtools) —
   potwierdzone `sameLine: true` i `boardColWidth: 372` niezmienione, przy desktopie i mobile, plus
   pełna realna gra (16 trafień/84 pudła/6 sekcji) wciąż działa poprawnie.
-- 2026-07-27: przygotowany (kod + lokalna weryfikacja w Dockerze), ale jeszcze nie wdrożony na VPS,
-  cały deploy tour-guide (Faza 3, krok 8) — Dockerfile'e obu serwisów, `deploy-docker-compose.yml`,
-  wspólny `postgres-docker-compose.yml` (zgodnie z oryginalnym planem, nie dedykowany Postgres per
-  apka — potwierdzone jako właściwy wybór, skoro realny VPS ma 4GB, nie 8GB RAM), CI/CD w
-  tour-guide. Trzy realne bugi złapane po drodze (szczegóły przy kroku 8 w Roadmapie wyżej) —
+- 2026-07-27: przygotowany (kod + lokalna weryfikacja w Dockerze) deploy tour-guide (Faza 3,
+  krok 8) — Dockerfile'e obu serwisów, `deploy-docker-compose.yml`, wspólny
+  `postgres-docker-compose.yml` (zgodnie z oryginalnym planem, nie dedykowany Postgres per apka —
+  potwierdzone jako właściwy wybór, skoro realny VPS ma 4GB, nie 8GB RAM), CI/CD w tour-guide.
+  Trzy realne bugi złapane przy przygotowaniu kodu (szczegóły przy kroku 8 w Roadmapie wyżej) —
   najpoważniejszy: relatywny `/api` w widgecie byłby błędny na cudzej domenie (rozwiązuje się
   względem gospodarza, nie źródła skryptu), naprawiony osobnym absolutnym URL-em tylko dla tego
-  celu builda. Deploy na VPS (Postgres + baza + sekrety + pierwszy `docker compose up`) czeka na
-  akcję właściciela — pełna checklista w `INFRA_SETUP.md`, kroki 10-11.
+  celu builda.
+  **✅ Deploy na VPS dokończony tego samego dnia** — `https://tourguide.kubsiw.com` i
+  `/api/health` oba realnie działają przez Traefika. (Odniesienie do "`INFRA_SETUP.md`, kroki
+  10-11" z wcześniejszej wersji tej notatki było nieaktualne/nigdy nierozpisane — ten plik kończy
+  się na kroku 10, tour-guide nie ma własnego; sama checklista jednak trafna, wykonana poniżej).
+  Po drodze złapane i naprawione **jeszcze cztery** realne problemy, żadnego wcześniej
+  nieprzewidzianego w kodzie: (1) kolejność kroków w CI — `npm run lint` uruchamiał się **przed**
+  `npx prisma generate`, więc każde wywołanie Prisma było dla eslinta typu `error` (259 błędów
+  `no-unsafe-*`) — ten sam gotcha co lokalny (patrz `CLAUDE.md` tour-guide), tylko złapany dopiero
+  w CI; naprawione zamianą kolejności tych dwóch kroków. (2) `docker compose pull` na VPS zwracał
+  `unauthorized` dla obrazów tour-guide — pakiety na `ghcr.io` domyślnie prywatne nawet przy
+  publicznym repo (osobne ustawienie od widoczności repo); naprawione logowaniem VPS-a do
+  `ghcr.io` tokenem (`docker login ghcr.io`, PAT ze scope `read:packages`) zamiast przełączania
+  widoczności pakietu — rozwiązuje to też przyszłe automatyczne deploye przez CI, nie tylko
+  ręczny pull. (3) automatyczny deploy przez GitHub Actions (`appleboy/ssh-action`) wymagał
+  klucza SSH — nigdy wcześniej nie utworzonego (logowaliśmy się do tej pory hasłem z maila
+  Hetznera); wygenerowany (`ssh-keygen`), dodany do `~/.ssh/authorized_keys` na VPS, i te same 3
+  sekrety (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`) dodane do **obu** repo (portfolio-shell i
+  tour-guide — GitHub nie współdzieli sekretów między repo automatycznie). (4) **najpoważniejszy,
+  ogólny dla każdej przyszłej apki z backendem+bazą**: backend podłączony do dwóch sieci Dockera
+  (`web` dla Traefika, `db-internal` dla Postgresa) dawał `504 Gateway Timeout` — Traefik bez
+  wyraźnej wskazówki nie wie, której sieci użyć do routingu, i mógł wybrać `db-internal`, do
+  której sam nie należy (stąd zawieszone połączenie zamiast szybkiego błędu). Naprawione dodaniem
+  etykiety `traefik.docker.network=web` na serwisie backendu w `deploy-docker-compose.yml`.
+  **Zapamiętać na Insider/Serwisant:** każdy przyszły serwis podłączony jednocześnie do `web` i
+  `db-internal` (czyli każdy backend z własną bazą) potrzebuje tej samej etykiety
+  `traefik.docker.network=web` od razu, nie dopiero po złapaniu identycznego 504.
+  Zweryfikowane end-to-end: `docker exec ... curl localhost:3000/api/health` (bezpośrednio w
+  kontenerze) działało od razu — myląco sugerując "wszystko OK", zanim złapano, że to nie jest
+  test przez sieć Dockera, tylko przez współdzieloną przestrzeń nazw kontenera; dopiero
+  `docker exec tour-guide-frontend wget http://tour-guide-backend:3000/...` (prawdziwy test
+  między-kontenerowy) i finalnie `curl -v https://tourguide.kubsiw.com/api/health` (przez
+  Traefika, prawdziwy certyfikat Let's Encrypt) potwierdziły pełną trasę.
