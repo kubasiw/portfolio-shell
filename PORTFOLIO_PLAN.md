@@ -681,8 +681,47 @@ w tour-guide.
    wcześniej failował na budżecie stylu Leaflet CSS; drugi nowy — CORS backendu musiał obsłużyć
    wiele originów, nie tylko jeden hardkodowany). Deploy pod realną subdomeną i wpięcie w
    portfolio-shell (kroki 8-9 poniżej) czekają na VPS.
-8. Deploy tour-guide (frontend + backend + baza) na tym samym VPS, subdomena
-   `tourguide.<domena>`, tym samym pipeline'em co portfolio shell.
+8. ✅ **Kod gotowy, deploy na VPS czeka na Twoją akcję (2026-07-27).** `backend/Dockerfile`
+   (multi-stage, kopiuje pełen `node_modules` do runtime — prościej niż rozdzielać prod/dev deps,
+   `prisma migrate deploy` przy każdym starcie kontenera, idempotentne), `frontend/Dockerfile`
+   (buduje OBA cele — główną appkę i widget — do jednego nginx: appka pod `/`, widget pod
+   `/elements/`), `deploy-docker-compose.yml` w tour-guide (Traefik rozdziela `tourguide.kubsiw.com`
+   między backend i frontend przez `PathPrefix('/api')`, zero potrzeby osobnej subdomeny `api.*`),
+   `postgres-docker-compose.yml` w portfolio-shell (**wspólny Postgres na VPS, zgodnie z
+   oryginalnym planem hostingu** — potwierdzone jeszcze bardziej zasadne niż na starcie, skoro
+   realny VPS to CPX22/4GB, nie oryginalnie planowane 8GB), nowy `.github/workflows/deploy.yml` w
+   tour-guide (3 joby: `frontend`/`backend` równolegle lintują/budują/testują/pushują własny obraz
+   do `ghcr.io`, `deploy` czeka na oba i robi SSH). Wszystko **realnie zbudowane i przetestowane
+   lokalnie w Dockerze** (nie tylko `docker build` — kontener backendu odpalony przeciw prawdziwemu
+   Postgresowi, `prisma migrate deploy` zastosował 11 istniejących migracji, `/api/health` → 200;
+   kontener frontendu sprawdzony na `/`, SPA fallback, i `/elements/main.js`).
+   **Trzy realne bugi złapane przy budowie, nie tylko teoretycznie:**
+   (1) `dist/frontend-element/browser/main.js` miał `outputHashing: "all"` — nazwa pliku zmieniała
+   się przy każdym buildzie (`main-HJDCUCSM.js`), a portfolio-shell musi wskazać ten skrypt na
+   sztywno w `<script src>`. Naprawione: `outputHashing: "none"` tylko dla `build-element` (główna
+   appka zostaje hashowana, tam to nie problem — jej `index.html` sam zawsze wskazuje właściwy
+   hash). (2) `prisma migrate deploy` w kontenerze failował "`datasource.url` property is required"
+   mimo ustawionego `DATABASE_URL` — `prisma.config.ts` (skąd realnie pochodzi ten URL) leży w
+   korzeniu backendu, nie w folderze `prisma/`, więc nie został skopiowany do runtime stage
+   Dockerfile'a; dodanie `COPY prisma.config.ts` naprawiło to od razu. Ten sam bug ujawnił drugi,
+   od razu poprawiony przy okazji: `nest build` kompiluje do `dist/src/main.js`, nie `dist/main.js`
+   (brak `rootDir` w `tsconfig.json`) — `package.json`'s `start:prod` miał ten sam błąd, nigdy
+   wcześniej realnie nieużywany/niezłapany. (3) **Najpoważniejszy, złapany przed wdrożeniem, nie
+   po fakcie:** pierwsza wersja `api-base-url.prod.ts` używała **relatywnego** `/api` dla WIDGETU
+   też — poprawne dla głównej appki (ten sam origin co backend), ale błędne dla widgetu, który z
+   założenia żyje osadzony na **cudzej** domenie (portfolio-shell, `kubsiw.com`): relatywny
+   `fetch('/api/...')` rozwiązuje się zawsze względem domeny strony-gospodarza, nie względem tego,
+   skąd pochodzi sam `<script>`, niezależnie od tego, jak został załadowany — podstawowa, jednoznaczna
+   zasada resolvowania URL-i w przeglądarce. Naprawione osobnym plikiem
+   `api-base-url.element.ts` z absolutnym `https://tourguide.kubsiw.com/api`, podpiętym tylko pod
+   `fileReplacements` celu `build-element` — główna appka nadal poprawnie używa relatywnego `/api`.
+   Zweryfikowane realnie (nie tylko rozumowaniem): grep na zbudowanych bundlach potwierdza zero
+   wzmianek `localhost:3000` w obu, `/api` relatywne wyłącznie w głównej appce, absolutny URL
+   wyłącznie w widgecie. Backend też dostał `app.setGlobalPrefix('api')` (jeden powód istnienia
+   `/api` na wszystkich routach — patrz `CLAUDE.md` tour-guide) i rozszerzony CORS o `kubsiw.com`/
+   `tourguide.kubsiw.com`. Pełna checklista wdrożenia (Postgres + baza + sekrety + pierwszy
+   `docker compose up`) w `INFRA_SETUP.md`, kroki 10-11 — wymaga Twojej akcji na VPS, nie do
+   zrobienia z tego środowiska.
 9. Karta "Projekt 01" w portfolio przestaje być placeholderem — realny link + osadzony widget.
 
 **Faza 4 — Projekt 02: Insider (Vue)**
@@ -862,3 +901,12 @@ w tour-guide.
   wstrzyknięty bezpośrednio przez `element.textContent =`, ten sam mechanizm co devtools) —
   potwierdzone `sameLine: true` i `boardColWidth: 372` niezmienione, przy desktopie i mobile, plus
   pełna realna gra (16 trafień/84 pudła/6 sekcji) wciąż działa poprawnie.
+- 2026-07-27: przygotowany (kod + lokalna weryfikacja w Dockerze), ale jeszcze nie wdrożony na VPS,
+  cały deploy tour-guide (Faza 3, krok 8) — Dockerfile'e obu serwisów, `deploy-docker-compose.yml`,
+  wspólny `postgres-docker-compose.yml` (zgodnie z oryginalnym planem, nie dedykowany Postgres per
+  apka — potwierdzone jako właściwy wybór, skoro realny VPS ma 4GB, nie 8GB RAM), CI/CD w
+  tour-guide. Trzy realne bugi złapane po drodze (szczegóły przy kroku 8 w Roadmapie wyżej) —
+  najpoważniejszy: relatywny `/api` w widgecie byłby błędny na cudzej domenie (rozwiązuje się
+  względem gospodarza, nie źródła skryptu), naprawiony osobnym absolutnym URL-em tylko dla tego
+  celu builda. Deploy na VPS (Postgres + baza + sekrety + pierwszy `docker compose up`) czeka na
+  akcję właściciela — pełna checklista w `INFRA_SETUP.md`, kroki 10-11.

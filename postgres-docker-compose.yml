@@ -1,0 +1,31 @@
+# Wspólny Postgres dla wszystkich apek na VPS (tour_guide, docelowo insider/serwisant jako
+# osobne logiczne bazy w tym samym kontenerze) — decyzja z PORTFOLIO_PLAN.md, sekcja
+# "Hosting / infrastruktura": oszczędniejsze na RAM-ie (VPS = CPX22, 4GB) niż osobny kontener
+# Postgres per apka.
+#
+# Świadomo NIE w sieci `web` (ta jest dla Traefika/publicznego ruchu HTTP) — Postgres żyje w
+# osobnej, wewnętrznej sieci `db-internal`, do której podłączają się tylko backendy apek, nigdy
+# Traefik. Ten stack ją tworzy; backendy referencyjnie dołączają jako `external: true`, dokładnie
+# tak samo jak każda apka dołącza do `web` utworzonej przez traefik-docker-compose.yml.
+#
+# PRZED WDROŻENIEM: utwórz obok tego pliku na VPS plik .env z realnym hasłem:
+#   POSTGRES_PASSWORD=<losowe silne hasło>
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - db-internal
+
+networks:
+  db-internal:
+    name: db-internal
+
+volumes:
+  postgres-data:

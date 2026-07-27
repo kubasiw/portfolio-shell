@@ -192,7 +192,63 @@ opisane w README).
 Otwórz `https://kubsiw.com` w przeglądarce — powinieneś zobaczyć landing portfolio-shellu,
 z prawdziwą kłódką HTTPS (certyfikat od Let's Encrypt, wystawiony automatycznie przez Traefik).
 
-## 10. Podstawowe bezpieczeństwo (warto, ale nie blokuje niczego powyżej)
+## 10. Wspólny Postgres (przed pierwszym deployem tour-guide)
+
+Zgodnie z planem hostingu — jeden kontener Postgres na VPS, osobne logiczne bazy per apka.
+
+```
+mkdir -p ~/postgres && cd ~/postgres
+```
+
+Wgraj tam `postgres-docker-compose.yml` z repo `portfolio-shell` (`scp` albo `nano` + wklejenie),
+obok niego stwórz `.env`:
+```
+POSTGRES_PASSWORD=<wygeneruj silne losowe hasło, np. openssl rand -base64 24>
+```
+
+Odpal:
+```
+docker compose up -d
+```
+
+To tworzy sieć `db-internal` (analogicznie do `web` z Traefika) i uruchamia sam serwer Postgres —
+**bazy per apka trzeba stworzyć ręcznie, raz, przy dodawaniu każdej nowej apki** (init-skrypty
+Postgresa działają tylko przy pierwszym starcie pustego wolumenu, więc nie da się tego
+zautomatyzować dla apek dodawanych później):
+```
+docker exec -it postgres psql -U postgres -c "CREATE DATABASE tour_guide;"
+```
+
+## 11. Deploy tour-guide (Faza 3, krok 8 z PORTFOLIO_PLAN.md)
+
+Wymaga: kroku 10 wyżej (Postgres + baza `tour_guide` istnieje), DNS rekordu `tourguide` (już w
+tabeli w kroku 7), i repo GitHub `tour-guide` + sekretów (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`,
+te same co portfolio-shell, mogą być identyczne sekrety w obu repo).
+
+```
+mkdir -p ~/tour-guide && cd ~/tour-guide
+```
+
+Wgraj tam `deploy-docker-compose.yml` z repo `tour-guide` (nie mylić z `docker-compose.yml` w tym
+samym repo — ten drugi to lokalny dev-only Postgres, zostaje na Twoim komputerze). Podmień
+`TWOJ-USERNAME` na login GitHub. Obok stwórz `backend.env` z realnymi sekretami:
+```
+DATABASE_URL="postgresql://postgres:<hasło z kroku 10>@postgres:5432/tour_guide?schema=public"
+JWT_SECRET="<wygeneruj, np. openssl rand -base64 32>"
+JWT_EXPIRES_IN="1d"
+ANTHROPIC_API_KEY="<realny klucz>"
+```
+
+Pierwsze uruchomienie ręczne (zanim GitHub Actions zacznie robić to automatycznie):
+```
+docker compose -f deploy-docker-compose.yml pull
+docker compose -f deploy-docker-compose.yml up -d
+```
+
+Weryfikacja: `https://tourguide.kubsiw.com` pokazuje landing tour-guide,
+`https://tourguide.kubsiw.com/api/health` zwraca `200`.
+
+## 12. Podstawowe bezpieczeństwo (warto, ale nie blokuje niczego powyżej)
 
 Nie krytyczne na start, ale warto zrobić w ciągu pierwszych dni:
 - Firewall na Hetznerze (zakładka **Firewalls** w panelu) — otwórz tylko porty 22 (SSH), 80, 443.
