@@ -4,6 +4,15 @@
   padding: 14px 16px;
   outline: 3px solid transparent;
   outline-offset: 4px;
+  /*
+   * isolation:isolate — bez tego karta (i jej pieczątka "w budowie", z własnym z-index:2 na
+   * .spec-plate__stamp) nie miała żadnego kontekstu stackowania, więc ten z-index konkurował
+   * bezpośrednio ze stopką (.site-footer) na poziomie CAŁEJ strony i wygrywał niezależnie od
+   * scrolla — realny bug zgłoszony przez właściciela: karta poprawnie chowała się pod stopką,
+   * ale sama pieczątka "prześwitywała" nad nią. Ta sama przyczyna i ten sam fix co wcześniej
+   * dla mapy Leaflet w .tour-guide-widget (patrz PORTFOLIO_PLAN.md, Faza 3.5 punkt i).
+   */
+  isolation: isolate;
 }
 
 @media (prefers-reduced-motion: no-preference) {

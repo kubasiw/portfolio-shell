@@ -88,10 +88,13 @@
   min-width: 0;
   /*
    * Szerokość na sztywno (nie auto/content-based) — potrzebna, żeby móc animować do/z 0.
-   * Wartość dokładnie odpowiada rzeczywistej szerokości siatki planszy (22px + 10×32px +
-   * 9×3px gap = 372px, patrz Board.css) — nie przypadkowa.
+   * Rzeczywista szerokość siatki planszy to 22px + 10×32px + 9×3px gap = 372px (patrz Board.css)
+   * + 8px bufora — bez niego `overflow: hidden` (potrzebny do tej samej animacji) przycinał prawą
+   * krawędź hover-owego `transform: scale(1.15)` na skrajnie prawej kolumnie planszy (realny bug
+   * zgłoszony przez właściciela, nie teoretyczny) — plansza rośnie w prawo z tego samego 372px
+   * boxa, ale ma teraz 8px wolnej przestrzeni zanim cokolwiek zostanie obcięte.
    */
-  width: 372px;
+  width: 380px;
   opacity: 1;
   overflow: hidden;
 }
@@ -109,8 +112,8 @@
 
 @media (max-width: 480px) {
   .toc__board-col {
-    /* Odpowiada mobilnej szerokości siatki w Board.css: 16px + 10×24px + 9×2px gap = 274px. */
-    width: 274px;
+    /* Mobilna siatka w Board.css: 16px + 10×24px + 9×2px gap = 274px + 6px bufora hover. */
+    width: 280px;
   }
 }
 
