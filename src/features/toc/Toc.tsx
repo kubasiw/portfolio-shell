@@ -1,9 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Board } from './Board';
 import { ProjectCard } from './ProjectCard';
+import type { NavTarget } from './sections';
 import { SECTIONS } from './sections';
 import { useBattleship } from './use-battleship';
 import './Toc.css';
+
+interface TocProps {
+  activeNavTarget: NavTarget | null;
+}
 
 function buildStatusMessage(
   lastResult: ReturnType<typeof useBattleship>['lastResult'],
@@ -25,7 +30,7 @@ function buildStatusMessage(
   return `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`;
 }
 
-export function Toc() {
+export function Toc({ activeNavTarget }: TocProps) {
   const {
     cellStatus,
     unlockedSectionIds,
@@ -112,6 +117,7 @@ export function Toc() {
               key={section.id}
               section={section}
               locked={!effectiveUnlocked.has(section.id)}
+              highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
             />
           ))}
         </div>

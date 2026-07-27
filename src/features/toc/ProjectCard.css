@@ -2,6 +2,25 @@
   position: relative;
   border: 1px solid var(--eg-hairline);
   padding: 14px 16px;
+  outline: 3px solid transparent;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spec-plate {
+    transition: outline-color 250ms ease;
+  }
+}
+
+/*
+ * Podświetlenie przez nawigację w headerze — stan TYMCZASOWY (nie trwały status jak
+ * zablokowane/odblokowane/w budowie), więc osobny mechanizm: outline (nie border/tło), żeby nigdy
+ * nie kolidować z istniejącą, trwałą obwódką/tłem tamtych stanów. Granat (--eg-navy) — jedyny
+ * chłodny akcent w tej ciepłej palecie, celowo zarezerwowany wyłącznie dla tego jednego,
+ * przejściowego znaczenia.
+ */
+.spec-plate--nav-highlighted {
+  outline-color: var(--eg-navy);
 }
 
 .spec-plate__stamp {

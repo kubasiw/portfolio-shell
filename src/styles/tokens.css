@@ -29,6 +29,16 @@
    */
   --eg-crimson: #7a2a24;
   /*
+   * navy dodany 2026-07-27 — cały dotychczasowy zestaw (piasek, miedź, zieleń, karmazyn) jest
+   * ciepły; granat to świadomie pierwszy chłodny akcent w palecie, zarezerwowany wyłącznie dla
+   * TYMCZASOWEGO stanu "podświetlone przez nawigację w headerze" (nie trwały status jak
+   * zablokowane/odblokowane/w budowie — stąd inny mechanizm: outline, nie border/tło). Nawiązuje
+   * też do właściwego motywu "rysunku technicznego" Editorial Garage — prawdziwe kalki
+   * techniczne/blueprinty są klasycznie granatowym tuszem na kremowym tle. Kontrast ~9.78:1
+   * wobec --eg-paper (sprawdzone, nie na oko).
+   */
+  --eg-navy: #1e3a5f;
+  /*
    * miss-bg/preview-bg dodane 2026-07-24 dla planszy w statki — pudło samo w sobie (bez tła)
    * było prawie niewidoczne na --eg-paper; teraz ma własne, delikatnie przyciemnione tło plus
    * realną kropkę (nie tylko glif tekstowy). preview-bg to podgląd obszaru "(Art)yleria".

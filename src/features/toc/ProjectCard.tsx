@@ -7,6 +7,7 @@ import './ProjectCard.css';
 interface ProjectCardProps {
   section: Section;
   locked: boolean;
+  highlighted: boolean;
 }
 
 // Jedyna sekcja z realnym, wdrożonym projektem pod spodem na razie (Faza 3, krok 9 z
@@ -25,11 +26,13 @@ function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
 
-export function ProjectCard({ section, locked }: ProjectCardProps) {
+export function ProjectCard({ section, locked, highlighted }: ProjectCardProps) {
   return (
     <div
       id={`section-${section.id}`}
-      className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'}`}
+      className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'} ${
+        highlighted ? 'spec-plate--nav-highlighted' : ''
+      }`}
     >
       {!locked && IN_PROGRESS_SECTION_IDS.has(section.id) && (
         <Stamp main="W budowie" sub="wkrótce" className="spec-plate__stamp" />

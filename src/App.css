@@ -65,6 +65,36 @@
   color: var(--eg-ink-secondary);
 }
 
+/*
+ * Reset przeglądarkowego stylu <button> — bez tego nie dziedziczyłby fontu/koloru z .masthead__nav
+ * (domyślny UA stylesheet ustawia formularzowym elementom własną czcionkę systemową).
+ */
+.masthead__nav button {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .masthead__nav button {
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+}
+
+.masthead__nav button:hover {
+  color: var(--eg-navy);
+}
+
+.masthead__nav-item--active {
+  color: var(--eg-navy);
+  border-bottom-color: var(--eg-navy);
+}
+
 .masthead__vol {
   font-family: var(--eg-font-mono);
   font-size: 10px;
