@@ -9,6 +9,14 @@
   top: -14px;
   right: -16px;
   transform: rotate(-8deg);
+  /*
+   * z-index — bez tego, w gridzie (plansza zwinięta, kilka kolumn kart) sąsiednia karta w DOM-ie
+   * przykrywała wystający kawałek pieczątki: .spec-plate ma position:relative bez własnego
+   * z-index (auto), więc nie tworzy nowego kontekstu stackowania — pieczątka dziedziczyła
+   * pozycję swojej karty w kolejności DOM zamiast wygrywać z sąsiadem, mimo że wizualnie
+   * zachodzi na jego obszar. Realny bug złapany na żywo w prawdziwym gridzie, nie teoretyczny.
+   */
+  z-index: 2;
 }
 
 @media (max-width: 480px) {
