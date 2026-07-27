@@ -7,21 +7,27 @@
 .spec-plate__stamp {
   position: absolute;
   top: -14px;
-  right: -16px;
+  /*
+   * Lewa strona (nie prawa) — realny feedback: po prawej zasłaniała tytuł projektu (`.spec-plate__value`
+   * jest text-align:right, więc żyje właśnie w prawym rogu). Po lewej nachodzi tylko na etykietę
+   * "Sekcja", mniej istotną wizualnie.
+   */
+  left: -16px;
   transform: rotate(-8deg);
   /*
    * z-index — bez tego, w gridzie (plansza zwinięta, kilka kolumn kart) sąsiednia karta w DOM-ie
-   * przykrywała wystający kawałek pieczątki: .spec-plate ma position:relative bez własnego
-   * z-index (auto), więc nie tworzy nowego kontekstu stackowania — pieczątka dziedziczyła
+   * mogłaby przykrywać wystający kawałek pieczątki: .spec-plate ma position:relative bez własnego
+   * z-index (auto), więc nie tworzy nowego kontekstu stackowania — pieczątka dziedziczyłaby
    * pozycję swojej karty w kolejności DOM zamiast wygrywać z sąsiadem, mimo że wizualnie
-   * zachodzi na jego obszar. Realny bug złapany na żywo w prawdziwym gridzie, nie teoretyczny.
+   * zachodzi na jego obszar. Realny bug złapany na żywo w prawdziwym gridzie (gdy pieczątka była
+   * jeszcze po prawej) — zostawione jako defensywne zabezpieczenie także po zmianie strony.
    */
   z-index: 2;
 }
 
 @media (max-width: 480px) {
   .spec-plate__stamp {
-    right: -6px;
+    left: -6px;
     transform: rotate(-8deg) scale(0.85);
   }
 }
