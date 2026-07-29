@@ -1,6 +1,3 @@
-import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
-import contactCoverPhoto from '../../assets/about/old_phones.webp';
-import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
 import type { Section } from './sections';
 import { ContactLinks } from './ContactLinks';
 import { Stamp } from '../../components/Stamp';
@@ -20,42 +17,18 @@ interface ProjectCardProps {
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 const CONTACT_SECTION_ID = 'contact';
-const SKILLS_SECTION_ID = 'skills';
-// "O mnie" ma teraz realną zawartość pod spodem (galeria zdjęć, punkt f) — usunięte z
-// IN_PROGRESS_SECTION_IDS niżej zgodnie z jego własną zasadą, stempel "w budowie" nie ma już
-// zastosowania.
-const ABOUT_SECTION_ID = 'about';
 
 // Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
 // "w budowie" w rogu. Usunąć z tego zestawu, gdy dana sekcja dostanie realną zawartość
 // (Faza 3.5, punkty d/e/f/g z PORTFOLIO_PLAN.md).
 const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant']);
 
-// Renderowane zaraz po .spec-plate__rows (stała wysokość na każdej karcie), nie po opisie —
-// realny feedback: opis ma różną długość na różnych kartach, więc zdjęcie po nim lądowało na
-// innej wysokości na każdej karcie. Tuż po wierszach zawsze wyrówna się co do piksela,
-// niezależnie od długości opisu pod spodem, bez sztywnej wysokości/line-clamp na opisie.
-const COVER_PHOTOS: Partial<Record<string, { src: string; alt: string }>> = {
-  [ABOUT_SECTION_ID]: {
-    src: aboutCoverPhoto,
-    alt: 'Autoportret spod korony drzewa, w okularach przeciwsłonecznych',
-  },
-  [SKILLS_SECTION_ID]: {
-    src: skillsCoverPhoto,
-    alt: 'Kawa i deser na biurku, w tle monitory z kodem',
-  },
-  [CONTACT_SECTION_ID]: {
-    src: contactCoverPhoto,
-    alt: 'Kilka starych telefonów komórkowych na tacy, obok kawa',
-  },
-};
-
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
 
 export function ProjectCard({ section, locked, highlighted, onOpenDetail }: ProjectCardProps) {
-  const coverPhoto = COVER_PHOTOS[section.id];
+  const coverPhoto = section.coverPhoto;
 
   return (
     <div
@@ -90,7 +63,7 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
           {coverPhoto && (
             <img src={coverPhoto.src} alt={coverPhoto.alt} className="spec-plate__cover-photo" />
           )}
-          {section.id !== CONTACT_SECTION_ID && (
+          {!section.hideDescription && (
             <p className="spec-plate__description">{section.description}</p>
           )}
           {section.id === TOUR_GUIDE_SECTION_ID && (

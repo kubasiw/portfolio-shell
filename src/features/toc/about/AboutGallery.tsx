@@ -62,7 +62,7 @@ export function AboutGallery() {
             <div className="about-gallery__viewer">
               <button
                 type="button"
-                className="about-gallery__viewer-back"
+                className="about-gallery__viewer-back link-dashed"
                 onClick={() => setSelectedId(null)}
               >
                 ← Wróć do galerii

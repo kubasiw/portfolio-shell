@@ -21,3 +21,25 @@ body {
 a {
   color: inherit;
 }
+
+/* Wspólny styl "przełącznika tekstowego" (mono, uppercase, przerywane podkreślenie) — powielony
+   3x (spis treści/skip, widok szczegółowy/wróć, galeria/wróć do galerii) zanim wydzielony tutaj;
+   dziedziczący komponent trzyma tylko właściwości layoutu unikalne dla siebie (margin, align-self
+   itp.), nie powtarza już samego wyglądu linku. */
+.link-dashed {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-dashed:hover {
+  color: var(--eg-accent-primary);
+}

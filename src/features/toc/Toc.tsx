@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Board } from './Board';
 import { ProjectCard } from './ProjectCard';
 import { SectionDetail } from './SectionDetail';
-import type { NavTarget } from './sections';
+import type { NavTarget, Section } from './sections';
 import { SECTIONS } from './sections';
 import { useBattleship } from './use-battleship';
 import './Toc.css';
@@ -10,6 +10,7 @@ import './Toc.css';
 interface TocProps {
   activeNavTarget: NavTarget | null;
   openSectionId: string | null;
+  openSection: Section | null;
   onOpenSectionChange: (id: string | null) => void;
 }
 
@@ -33,7 +34,7 @@ function buildStatusMessage(
   return `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`;
 }
 
-export function Toc({ activeNavTarget, openSectionId, onOpenSectionChange }: TocProps) {
+export function Toc({ activeNavTarget, openSectionId, openSection, onOpenSectionChange }: TocProps) {
   const {
     cellStatus,
     unlockedSectionIds,
@@ -54,11 +55,6 @@ export function Toc({ activeNavTarget, openSectionId, onOpenSectionChange }: Toc
     }
     return unlockedSectionIds;
   }, [skipped, unlockedSectionIds]);
-
-  const openSection = useMemo(
-    () => SECTIONS.find((section) => section.id === openSectionId) ?? null,
-    [openSectionId],
-  );
 
   const statusMessage = buildStatusMessage(lastResult);
 
@@ -97,7 +93,7 @@ export function Toc({ activeNavTarget, openSectionId, onOpenSectionChange }: Toc
                 Wszystko już odblokowane — i tak możesz zagrać w statki, jeśli chcesz.
               </p>
             </div>
-            <button type="button" className="toc__skip" onClick={handleActionClick}>
+            <button type="button" className="link-dashed" onClick={handleActionClick}>
               {actionLabel}
             </button>
           </div>

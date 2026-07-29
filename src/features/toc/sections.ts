@@ -1,3 +1,7 @@
+import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
+import contactCoverPhoto from '../../assets/about/old_phones.webp';
+import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
+
 // Grupy linków nagłówka (.masthead__nav) — "Projekty" podświetla naraz wszystkie sekcje z tą
 // grupą, "O mnie"/"Kontakt" tylko swoją jedną. `null` = sekcja nigdy nie jest celem nawigacji
 // (dotyczy dziś tylko "skills" — nagłówek nie ma linku "Umiejętności").
@@ -12,6 +16,13 @@ export interface Section {
   // zawartość wprost w karcie: widget/link dla tour-guide, sam opis+pieczątka na razie dla
   // insider/serwisant) dostają wejście do pełnoekranowego widoku.
   hasDetailView: boolean;
+  // Renderowane w ProjectCard zaraz po .spec-plate__rows, przed opisem — tuż po stałej
+  // wysokości wierszy zawsze wyrówna się co do piksela między kartami, niezależnie od długości
+  // opisu/treści pod spodem (patrz .spec-plate--has-cover w Toc.css/ProjectCard.css). Dane tutaj,
+  // nie w osobnej mapie w ProjectCard.tsx — karta nie musi znać żadnych konkretnych id sekcji.
+  coverPhoto?: { src: string; alt: string };
+  // Kontakt: ContactLinks na karcie to już cała treść, zwykły opis nad nimi byłby powtórzeniem.
+  hideDescription?: boolean;
 }
 
 export const SECTIONS: Section[] = [
@@ -44,6 +55,10 @@ export const SECTIONS: Section[] = [
       'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko. Podpisy pod zdjęciami napisało AI — podobno bardzo kreatywnie (ono tak twierdzi).',
     navGroup: 'about',
     hasDetailView: true,
+    coverPhoto: {
+      src: aboutCoverPhoto,
+      alt: 'Autoportret spod korony drzewa, w okularach przeciwsłonecznych',
+    },
   },
   {
     id: 'skills',
@@ -51,6 +66,10 @@ export const SECTIONS: Section[] = [
     description: 'Dziewięć lat w Angularze i architekturze frontendu korporacyjnego.',
     navGroup: null,
     hasDetailView: true,
+    coverPhoto: {
+      src: skillsCoverPhoto,
+      alt: 'Kawa i deser na biurku, w tle monitory z kodem',
+    },
   },
   {
     id: 'contact',
@@ -60,5 +79,10 @@ export const SECTIONS: Section[] = [
     // Bez własnego pełnoekranowego widoku — ContactLinks bezpośrednio na kafelku to już cała
     // treść, "Zobacz →" prowadzące donikąd ponad to byłoby zbędne.
     hasDetailView: false,
+    coverPhoto: {
+      src: contactCoverPhoto,
+      alt: 'Kilka starych telefonów komórkowych na tacy, obok kawa',
+    },
+    hideDescription: true,
   },
 ];

@@ -1,8 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { AboutGallery } from './about/AboutGallery';
-import { SkillsDetail } from './skills/SkillsDetail';
+import { Suspense, lazy, useEffect, useRef } from 'react';
 import type { Section } from './sections';
 import './SectionDetail.css';
+
+// Leniwie ładowane — ~44 zdjęcia w about/passions.ts i cała treść CV/umiejętności nie są
+// potrzebne w głównym bundlu dla każdego odwiedzającego spis treści, tylko dla kogoś, kto
+// faktycznie kliknie "Zobacz →" na tej konkretnej karcie.
+const AboutGallery = lazy(() => import('./about/AboutGallery').then((m) => ({ default: m.AboutGallery })));
+const SkillsDetail = lazy(() => import('./skills/SkillsDetail').then((m) => ({ default: m.SkillsDetail })));
 
 interface SectionDetailProps {
   section: Section;
@@ -24,15 +28,17 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
       <button
         ref={backButtonRef}
         type="button"
-        className="section-detail__back"
+        className="section-detail__back link-dashed"
         onClick={onClose}
       >
         ← Wróć do spisu treści
       </button>
       <h2 className="section-detail__title">{section.title}</h2>
       <p className="section-detail__description">{section.description}</p>
-      {section.id === 'about' && <AboutGallery />}
-      {section.id === 'skills' && <SkillsDetail />}
+      <Suspense fallback={null}>
+        {section.id === 'about' && <AboutGallery />}
+        {section.id === 'skills' && <SkillsDetail />}
+      </Suspense>
       {section.id !== 'about' && section.id !== 'skills' && (
         <p className="section-detail__placeholder">Treść w przygotowaniu.</p>
       )}

@@ -97,24 +97,6 @@
   }
 }
 
-.toc__skip {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: var(--eg-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--eg-ink-secondary);
-  text-decoration: underline dashed;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-.toc__skip:hover {
-  color: var(--eg-accent-primary);
-}
-
 .toc__layout {
   display: flex;
   gap: 32px;
@@ -200,12 +182,14 @@
 }
 
 /*
- * Karty "w budowie" obok dużo wyższej karty (np. tour-guide z mapą) rozciągają się do wysokości
- * wiersza zamiast zostawiać pustą "dziurę" pod sobą — tylko przy zwiniętej planszy (rozwinięta:
- * jedna kolumna, każda karta sama w swoim wierszu, więc bez zmiany). Bez sztywnego capu wysokości
- * — na razie tylko tour-guide jest realnie wysoka, dodać limit dopiero gdy realnie zaboli.
+ * Karty "w budowie" (obok dużo wyższej karty, np. tour-guide z mapą) i karty ze zdjęciem
+ * (about/skills/kontakt, różna długość opisu/ContactLinks) rozciągają się do wysokości wiersza
+ * zamiast zostawiać pustą "dziurę" pod sobą — tylko przy zwiniętej planszy (rozwinięta: jedna
+ * kolumna, każda karta sama w swoim wierszu, więc bez zmiany). Bez sztywnego capu wysokości —
+ * na razie tylko tour-guide jest realnie wysoka, dodać limit dopiero gdy realnie zaboli.
  */
-.toc__layout--collapsed .spec-plate--in-progress {
+.toc__layout--collapsed .spec-plate--in-progress,
+.toc__layout--collapsed .spec-plate--has-cover {
   align-self: stretch;
 }
 
@@ -213,17 +197,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-8deg);
-}
-
-/*
- * Karty ze zdjęciem (about/skills/kontakt) — ten sam problem i to samo rozwiązanie co
- * --in-progress wyżej: różna długość opisu/dodatkowej treści (ContactLinks vs zwykły opis)
- * dawała różne wysokości kart w tym samym wierszu. Rozciągnięcie + przycisk "Zobacz" przypięty
- * do dołu (.spec-plate--has-cover .spec-plate__cta w ProjectCard.css) wyrównuje obie rzeczy
- * naraz: zdjęcie (już wyrównane samą kolejnością renderowania) i przycisk.
- */
-.toc__layout--collapsed .spec-plate--has-cover {
-  align-self: stretch;
 }
 
 .toc__artillery {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { Stamp } from './components/Stamp';
 import { Toc } from './features/toc/Toc';
@@ -15,8 +15,13 @@ function App() {
 
   // Widok szczegółowy nadpisuje, co pokazuje się jako aktywne w nagłówku — jesteśmy "w" tej
   // grupie, niezależnie od tego, co było ostatnio klikane (np. wejście na kartę "O mnie" przez
-  // "Zobacz →", bez przechodzenia przez nagłówek, i tak podświetla "O mnie").
-  const openSection = SECTIONS.find((section) => section.id === openSectionId) ?? null;
+  // "Zobacz →", bez przechodzenia przez nagłówek, i tak podświetla "O mnie"). Liczone raz tutaj
+  // (memoizowane) i przekazane niżej do Toc, zamiast żeby oba komponenty osobno skanowały
+  // SECTIONS po tym samym openSectionId.
+  const openSection = useMemo(
+    () => SECTIONS.find((section) => section.id === openSectionId) ?? null,
+    [openSectionId],
+  );
   const displayNavTarget = openSection ? openSection.navGroup : activeNavTarget;
 
   // Dwa kierunki, jeden mechanizm: (1) widok szczegółowy właśnie się otworzył -> przewiń do jego
@@ -133,6 +138,7 @@ function App() {
       <Toc
         activeNavTarget={activeNavTarget}
         openSectionId={openSectionId}
+        openSection={openSection}
         onOpenSectionChange={setOpenSectionId}
       />
 

@@ -4,22 +4,7 @@
 
 .section-detail__back {
   display: inline-block;
-  background: none;
-  border: none;
-  padding: 0;
   margin: 0 0 24px;
-  font-family: var(--eg-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--eg-ink-secondary);
-  text-decoration: underline dashed;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-.section-detail__back:hover {
-  color: var(--eg-accent-primary);
 }
 
 .section-detail__title {
