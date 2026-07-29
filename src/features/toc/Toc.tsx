@@ -130,16 +130,18 @@ export function Toc({ activeNavTarget }: TocProps) {
                 {statusMessage}
               </p>
             </div>
-            <div className="toc__cards">
-              {SECTIONS.map((section) => (
-                <ProjectCard
-                  key={section.id}
-                  section={section}
-                  locked={!effectiveUnlocked.has(section.id)}
-                  highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
-                  onOpenDetail={setOpenSectionId}
-                />
-              ))}
+            <div className="toc__cards-wrap">
+              <div className="toc__cards">
+                {SECTIONS.map((section) => (
+                  <ProjectCard
+                    key={section.id}
+                    section={section}
+                    locked={!effectiveUnlocked.has(section.id)}
+                    highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
+                    onOpenDetail={setOpenSectionId}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

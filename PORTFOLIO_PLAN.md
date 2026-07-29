@@ -956,6 +956,18 @@ i. ✅ **Sticky footer (2026-07-27).** Zgodnie z własną rekomendacją w tym pu
    pozycji scrolla) trafiał w `<footer>`, nie w żaden element Leafletu.
    Źródła researchu: [Website footer designs 2026 — minimal & sticky patterns](https://www.sitebuilderreport.com/inspiration/website-footer-designs),
    [10 modern footer UX patterns for 2026](https://www.eleken.co/blog-posts/footer-ux).
+   **Ten sam fix, zastosowany też do pieczątek "w budowie", spowodował realny regres — pieczątka
+   na skrajnej karcie wyglądała na ucinaną z lewej.** Root cause znaleziony ostatecznie po kilku
+   błędnych próbach (isolation na `.spec-plate`, potem na `.toc__cards` — obie clipują nadwieszkę
+   w gridzie): winowajcą było `overflow: hidden` na `.toc__view-panel-inner` (potrzebne do
+   animacji zwijania widoku). Gdy skrajna karta stoi tuż przy krawędzi tego panelu, jej nadwieszka
+   (stamp, nav-highlight outline) wychodzi poza panel i jest ucinana. Naprawione buforem:
+   `padding` + ujemny `margin` (lewo/prawo/dół, góra bez zmian) na `.toc__view-panel-inner` —
+   rezerwuje miejsce na nadwieszkę bez przesuwania widocznego layoutu. Mniejszy bufor pod
+   `max-width: 480px` (24px na desktopie przekraczałoby padding `.landing`, 16px, i wywołało realny
+   scroll poziomy). `isolation`/`z-index` na `.spec-plate` usunięte całkowicie — niepotrzebne.
+   Zweryfikowane geometrycznie (`getBoundingClientRect` pieczątki/outline vs panelu) na desktopie
+   i mobile, zero horizontal overflow.
 
 j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O mnie"/"Kontakt")
    realnie działają, nie są już samymi `<span>`.** Klik na "Projekty" podświetla naraz wszystkie

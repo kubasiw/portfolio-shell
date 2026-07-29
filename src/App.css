@@ -139,6 +139,7 @@
 .site-footer {
   position: sticky;
   bottom: 0;
+  z-index: 10; /* same as masthead — chrome always wins over ordinary content, no per-element isolation needed */
   display: flex;
   align-items: baseline;
   justify-content: space-between;

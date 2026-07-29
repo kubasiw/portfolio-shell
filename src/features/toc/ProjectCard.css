@@ -4,15 +4,8 @@
   padding: 14px 16px;
   outline: 3px solid transparent;
   outline-offset: 4px;
-  /*
-   * isolation:isolate — bez tego karta (i jej pieczątka "w budowie", z własnym z-index:2 na
-   * .spec-plate__stamp) nie miała żadnego kontekstu stackowania, więc ten z-index konkurował
-   * bezpośrednio ze stopką (.site-footer) na poziomie CAŁEJ strony i wygrywał niezależnie od
-   * scrolla — realny bug zgłoszony przez właściciela: karta poprawnie chowała się pod stopką,
-   * ale sama pieczątka "prześwitywała" nad nią. Ta sama przyczyna i ten sam fix co wcześniej
-   * dla mapy Leaflet w .tour-guide-widget (patrz PORTFOLIO_PLAN.md, Faza 3.5 punkt i).
-   */
-  isolation: isolate;
+  /* No isolation/z-index here — causes clipping of overflow (stamp, outline) when combined with
+     CSS grid. Footer/masthead stay on top via their own z-index instead (see App.css). */
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -35,22 +28,8 @@
 .spec-plate__stamp {
   position: absolute;
   top: -14px;
-  /*
-   * Lewa strona (nie prawa) — realny feedback: po prawej zasłaniała tytuł projektu (`.spec-plate__value`
-   * jest text-align:right, więc żyje właśnie w prawym rogu). Po lewej nachodzi tylko na etykietę
-   * "Sekcja", mniej istotną wizualnie.
-   */
-  left: -16px;
+  left: -16px; /* left, not right — right side would cover the project title */
   transform: rotate(-8deg);
-  /*
-   * z-index — bez tego, w gridzie (plansza zwinięta, kilka kolumn kart) sąsiednia karta w DOM-ie
-   * mogłaby przykrywać wystający kawałek pieczątki: .spec-plate ma position:relative bez własnego
-   * z-index (auto), więc nie tworzy nowego kontekstu stackowania — pieczątka dziedziczyłaby
-   * pozycję swojej karty w kolejności DOM zamiast wygrywać z sąsiadem, mimo że wizualnie
-   * zachodzi na jego obszar. Realny bug złapany na żywo w prawdziwym gridzie (gdy pieczątka była
-   * jeszcze po prawej) — zostawione jako defensywne zabezpieczenie także po zmianie strony.
-   */
-  z-index: 2;
 }
 
 @media (max-width: 480px) {
