@@ -58,6 +58,8 @@ export const SECTIONS: Section[] = [
     title: 'Kontakt',
     description: 'E-mail, LinkedIn, GitHub — napisz, jeśli chcesz porozmawiać.',
     navGroup: 'contact',
-    hasDetailView: true,
+    // Bez własnego pełnoekranowego widoku — ContactLinks bezpośrednio na kafelku to już cała
+    // treść, "Zobacz →" prowadzące donikąd ponad to byłoby zbędne.
+    hasDetailView: false,
   },
 ];

@@ -215,6 +215,17 @@
   transform: translate(-50%, -50%) rotate(-8deg);
 }
 
+/*
+ * Karty ze zdjęciem (about/skills/kontakt) — ten sam problem i to samo rozwiązanie co
+ * --in-progress wyżej: różna długość opisu/dodatkowej treści (ContactLinks vs zwykły opis)
+ * dawała różne wysokości kart w tym samym wierszu. Rozciągnięcie + przycisk "Zobacz" przypięty
+ * do dołu (.spec-plate--has-cover .spec-plate__cta w ProjectCard.css) wyrównuje obie rzeczy
+ * naraz: zdjęcie (już wyrównane samą kolejnością renderowania) i przycisk.
+ */
+.toc__layout--collapsed .spec-plate--has-cover {
+  align-self: stretch;
+}
+
 .toc__artillery {
   margin-top: 12px;
 }

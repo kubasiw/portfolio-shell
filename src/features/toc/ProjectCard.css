@@ -1,5 +1,7 @@
 .spec-plate {
   position: relative;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--eg-hairline);
   padding: 14px 16px;
   outline: 3px solid transparent;
@@ -186,4 +188,15 @@
 .spec-plate__cta:hover {
   background: var(--eg-accent-primary);
   color: var(--eg-paper);
+}
+
+/*
+ * Karty ze zdjęciem (about/skills/kontakt) rozciągają się do wysokości wiersza (patrz
+ * .spec-plate--has-cover w Toc.css) — przycisk "Zobacz" przypięty do dołu, żeby był wyrównany
+ * między kartami niezależnie od tego, ile treści ma każda z nich powyżej. Bez efektu na
+ * nierozciągniętych kartach (np. tour-guide) — margin:auto po prostu nie ma tam wolnej
+ * przestrzeni do wypełnienia.
+ */
+.spec-plate--has-cover .spec-plate__cta {
+  margin-top: auto;
 }

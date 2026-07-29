@@ -1,4 +1,5 @@
 import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
+import contactCoverPhoto from '../../assets/about/old_phones.webp';
 import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
 import type { Section } from './sections';
 import { ContactLinks } from './ContactLinks';
@@ -43,6 +44,10 @@ const COVER_PHOTOS: Partial<Record<string, { src: string; alt: string }>> = {
     src: skillsCoverPhoto,
     alt: 'Kawa i deser na biurku, w tle monitory z kodem',
   },
+  [CONTACT_SECTION_ID]: {
+    src: contactCoverPhoto,
+    alt: 'Kilka starych telefonów komórkowych na tacy, obok kawa',
+  },
 };
 
 function maskText(text: string): string {
@@ -57,7 +62,9 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       id={`section-${section.id}`}
       className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'} ${
         highlighted ? 'spec-plate--nav-highlighted' : ''
-      } ${!locked && IN_PROGRESS_SECTION_IDS.has(section.id) ? 'spec-plate--in-progress' : ''}`}
+      } ${!locked && IN_PROGRESS_SECTION_IDS.has(section.id) ? 'spec-plate--in-progress' : ''} ${
+        !locked && coverPhoto ? 'spec-plate--has-cover' : ''
+      }`}
     >
       {!locked && IN_PROGRESS_SECTION_IDS.has(section.id) && (
         <Stamp main="W budowie" sub="wkrótce" className="spec-plate__stamp" />
@@ -83,7 +90,9 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
           {coverPhoto && (
             <img src={coverPhoto.src} alt={coverPhoto.alt} className="spec-plate__cover-photo" />
           )}
-          <p className="spec-plate__description">{section.description}</p>
+          {section.id !== CONTACT_SECTION_ID && (
+            <p className="spec-plate__description">{section.description}</p>
+          )}
           {section.id === TOUR_GUIDE_SECTION_ID && (
             <>
               <TourGuideWidget />
