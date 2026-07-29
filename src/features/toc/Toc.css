@@ -175,6 +175,9 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+  /* start, nie stretch (domyślne dla grida) — karta z mapą (tour-guide) ma naturalnie dużo
+     większą wysokość niż reszta; bez tego cały jej wiersz rozciągał się do jej wysokości. */
+  align-items: start;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -184,7 +187,9 @@
 }
 
 .toc__layout--collapsed .toc__cards {
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  /* 260px (nie 220px) — po poszerzeniu .landing 220px dawało 4 wąskie kolumny (nierówny
+     podział 4+2 na 6 sekcji); 260px trzyma czytelne, węższe karty w 3 równych kolumnach. */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .toc__artillery {
