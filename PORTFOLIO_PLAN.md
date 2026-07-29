@@ -960,6 +960,14 @@ f. ✅ **Sekcja "O mnie" — galeria zdjęć pasji (zbudowane 2026-07-29). Waria
    punktu d nie jest obecnie renderowany — kod go zachowuje (generyczna obsługa `photos.length ===
    0`), na wypadek gdyby przyszły dział rzeczywiście wystartował bez zdjęć. Pełne mapowanie 44
    zdjęć → 4 działy w `src/features/toc/about/passions.ts`.
+   **Wydzielony 5. dział "Jedzonko" (2026-07-29), na wprost poproszony przez właściciela.**
+   Wszystkie 13 zdjęć jedzenia/restauracji — 12 dotąd w Fotografia + `harbor_dessert.webp` dotąd w
+   Wycieczki (jedyny food-shot tam, umieszczony z powodu wyraźnego kontekstu podróży w kadrze —
+   powód odpadł, gdy powstał dedykowany dział jedzenia) — przeniesione do nowego działu, podpisy
+   bez zmian. Fotografia spadła do 7 zdjęć (night_portrait, cat_eye, flowers_insects, my_mate,
+   bus_stop, leaf_light, night_drive — wszystkie faktycznie o technice/oku, nie o jedzeniu),
+   Wycieczki do 7. `fruit_market.webp` (stragan z owocami) został w Wycieczki — to scena
+   targowa/podróżnicza, nie danie do zjedzenia, więc nie pasuje do Jedzonka tak jak reszta.
 
 g. ⬜ **Sekcja "Umiejętności" — zwykły tekst + lista.** User's własne słowa: "sam nie wiem" —
    najprostszy, niezaangażowany slot na start (zredagowany tekst + lista technologii/praktyk,

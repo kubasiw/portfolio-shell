@@ -40,7 +40,7 @@ export const SECTIONS: Section[] = [
   {
     id: 'about',
     title: 'O mnie',
-    description: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja.',
+    description: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko.',
     navGroup: 'about',
     hasDetailView: true,
   },
