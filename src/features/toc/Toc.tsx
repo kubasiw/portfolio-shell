@@ -9,6 +9,8 @@ import './Toc.css';
 
 interface TocProps {
   activeNavTarget: NavTarget | null;
+  openSectionId: string | null;
+  onOpenSectionChange: (id: string | null) => void;
 }
 
 function buildStatusMessage(
@@ -31,7 +33,7 @@ function buildStatusMessage(
   return `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`;
 }
 
-export function Toc({ activeNavTarget }: TocProps) {
+export function Toc({ activeNavTarget, openSectionId, onOpenSectionChange }: TocProps) {
   const {
     cellStatus,
     unlockedSectionIds,
@@ -45,12 +47,6 @@ export function Toc({ activeNavTarget }: TocProps) {
   // Niezależny od `skipped` — jedyny sposób wejścia w ten stan to skip (skip ustawia oba naraz),
   // ale odtąd przełącza się osobno w obie strony (patrz przycisk w .toc__intro niżej).
   const [boardCollapsed, setBoardCollapsed] = useState(false);
-  // Faza 3.5, punkt e — stan komponentu (nie router), zgodnie z ustaleniem: id aktualnie otwartej
-  // sekcji "pełnoekranowej" (about/skills/contact) albo null, gdy jesteśmy w normalnym spisie
-  // treści. Nic pod spodem (plansza, jej stan) się nie odmontowuje przy otwarciu — tylko wizualnie
-  // znika, patrz .toc__view-panel w Toc.css — więc powrót zastaje planszę dokładnie tam, gdzie się
-  // ją zostawiło.
-  const [openSectionId, setOpenSectionId] = useState<string | null>(null);
 
   const effectiveUnlocked = useMemo((): ReadonlySet<string> => {
     if (skipped) {
@@ -138,7 +134,7 @@ export function Toc({ activeNavTarget }: TocProps) {
                     section={section}
                     locked={!effectiveUnlocked.has(section.id)}
                     highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
-                    onOpenDetail={setOpenSectionId}
+                    onOpenDetail={onOpenSectionChange}
                   />
                 ))}
               </div>
@@ -153,7 +149,7 @@ export function Toc({ activeNavTarget }: TocProps) {
       >
         <div className="toc__view-panel-inner">
           {openSection && (
-            <SectionDetail section={openSection} onClose={() => setOpenSectionId(null)} />
+            <SectionDetail section={openSection} onClose={() => onOpenSectionChange(null)} />
           )}
         </div>
       </div>
