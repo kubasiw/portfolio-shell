@@ -1,4 +1,5 @@
 import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
+import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
 import type { Section } from './sections';
 import { ContactLinks } from './ContactLinks';
 import { Stamp } from '../../components/Stamp';
@@ -18,6 +19,7 @@ interface ProjectCardProps {
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 const CONTACT_SECTION_ID = 'contact';
+const SKILLS_SECTION_ID = 'skills';
 // "O mnie" ma teraz realną zawartość pod spodem (galeria zdjęć, punkt f) — usunięte z
 // IN_PROGRESS_SECTION_IDS niżej zgodnie z jego własną zasadą, stempel "w budowie" nie ma już
 // zastosowania.
@@ -66,6 +68,13 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
             <img
               src={aboutCoverPhoto}
               alt="Autoportret spod korony drzewa, w okularach przeciwsłonecznych"
+              className="spec-plate__cover-photo"
+            />
+          )}
+          {section.id === SKILLS_SECTION_ID && (
+            <img
+              src={skillsCoverPhoto}
+              alt="Kawa i deser na biurku, w tle monitory z kodem"
               className="spec-plate__cover-photo"
             />
           )}
