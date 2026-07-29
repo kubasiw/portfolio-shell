@@ -969,11 +969,14 @@ f. ✅ **Sekcja "O mnie" — galeria zdjęć pasji (zbudowane 2026-07-29). Waria
    Wycieczki do 7. `fruit_market.webp` (stragan z owocami) został w Wycieczki — to scena
    targowa/podróżnicza, nie danie do zjedzenia, więc nie pasuje do Jedzonka tak jak reszta.
 
-g. ⬜ **Sekcja "Umiejętności" — zwykły tekst + lista.** User's własne słowa: "sam nie wiem" —
-   najprostszy, niezaangażowany slot na start (zredagowany tekst + lista technologii/praktyk,
-   czerpiąca prawdopodobnie wprost z sekcji "Dobre praktyki programistyczne i architektoniczne"
-   tego dokumentu jako źródła treści, nie tylko z pamięci). Rewizja layoutu, jeśli po zobaczeniu
-   realnej treści na żywo okaże się zbyt sucha.
+g. ✅ **Sekcja "Umiejętności" (2026-07-29).** Zaprojektowana jako klikalny mockup przed kodem
+   (ten sam tryb co inne większe decyzje wizualne), poprawiona po realnym feedbacku (lata pracy
+   9+ nie 8+, bez nazwy pracodawcy, DDD-przed-AI jako osobny cytat, React doprecyzowany jako
+   "nie tylko na potrzeby portfolio" — realny mały projekt w pracy). Dwie kolumny: "Fundament"
+   (CV: Angular/DDD/.NET/testy/DevOps) i "Zbudowane dla tego portfolio" (React/Vite, NestJS,
+   Docker/Traefik/VPS/CI-CD, Web Components, Vue oznaczone jako planowane). Blok o realnej pracy
+   z AI (Copilot codziennie w pracy vs. Claude Code na tym portfolio) i link do CV
+   (`public/cv/`). Nowy `features/toc/skills/SkillsDetail.tsx`, podpięty w `SectionDetail.tsx`.
 
 h. ✅ **Sekcja "Kontakt" — najprostszy slot (2026-07-27).** Nowy dumb `ContactLinks.tsx` — trzy
    klikalne wiersze (mailto e-mail, LinkedIn, GitHub — realne dane właściciela, nie placeholdery),
