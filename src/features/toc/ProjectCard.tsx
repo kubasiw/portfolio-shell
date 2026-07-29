@@ -1,3 +1,4 @@
+import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
 import type { Section } from './sections';
 import { ContactLinks } from './ContactLinks';
 import { Stamp } from '../../components/Stamp';
@@ -17,11 +18,15 @@ interface ProjectCardProps {
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 const CONTACT_SECTION_ID = 'contact';
+// "O mnie" ma teraz realną zawartość pod spodem (galeria zdjęć, punkt f) — usunięte z
+// IN_PROGRESS_SECTION_IDS niżej zgodnie z jego własną zasadą, stempel "w budowie" nie ma już
+// zastosowania.
+const ABOUT_SECTION_ID = 'about';
 
 // Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
 // "w budowie" w rogu. Usunąć z tego zestawu, gdy dana sekcja dostanie realną zawartość
 // (Faza 3.5, punkty d/e/f/g z PORTFOLIO_PLAN.md).
-const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant', 'about', 'skills']);
+const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant', 'skills']);
 
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
@@ -57,6 +62,13 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       {!locked && (
         <>
           <p className="spec-plate__description">{section.description}</p>
+          {section.id === ABOUT_SECTION_ID && (
+            <img
+              src={aboutCoverPhoto}
+              alt="Autoportret spod korony drzewa, w okularach przeciwsłonecznych"
+              className="spec-plate__cover-photo"
+            />
+          )}
           {section.id === TOUR_GUIDE_SECTION_ID && (
             <>
               <TourGuideWidget />

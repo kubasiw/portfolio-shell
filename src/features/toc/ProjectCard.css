@@ -120,6 +120,18 @@
   color: var(--eg-ink-secondary);
 }
 
+.spec-plate__cover-photo {
+  display: block;
+  width: 100%;
+  height: 272px;
+  margin-top: 12px;
+  border: 1px solid var(--eg-hairline);
+  /* contain, nie cover — zdjęcie ma własną, w stylu polaroidu ramkę wbudowaną w kadr;
+     cover ją przycinał. */
+  object-fit: contain;
+  background: var(--eg-divider);
+}
+
 /*
  * min-height redukuje layout shift, zanim skrypt widgetu się załaduje i custom element
  * "awansuje" do realnej treści (Leaflet potrzebuje realnej wysokości kontenera; ta wartość
