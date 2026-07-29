@@ -33,18 +33,25 @@
 .toc__view-panel-inner {
   overflow: hidden;
   min-height: 0;
-  /*
-   * padding + ujemny margin (lewo/prawo/dół) — bufor, żeby stamp/outline kart wychodzące poza
-   * własną kartę (spec-plate__stamp, spec-plate--nav-highlighted) nie były ucinane przez to
-   * overflow:hidden, kiedy karta stoi tuż przy krawędzi panelu (skrajna kolumna/wiersz siatki,
-   * szczególnie po zwinięciu planszy do width:0). Góra celowo pominięta — tam nic nie wychodzi.
-   */
+}
+
+/*
+ * padding + ujemny margin (lewo/prawo/dół) — bufor, żeby stamp/outline kart wychodzące poza
+ * własną kartę (spec-plate__stamp, spec-plate--nav-highlighted) nie były ucinane przez to
+ * overflow:hidden, kiedy karta stoi tuż przy krawędzi panelu (skrajna kolumna/wiersz siatki,
+ * szczególnie po zwinięciu planszy do width:0). Góra celowo pominięta — tam nic nie wychodzi.
+ * Tylko na otwartym panelu (`--open`) — realny bug złapany na żywo: bezwarunkowy padding-bottom
+ * dawał zwiniętemu (0fr) panelowi prawdziwą wysokość 24px zamiast 0, więc "ogon" collapsed
+ * spisu treści zachodził na górę widoku szczegółowego pod spodem, kradnąc kliknięcie przyciskowi
+ * "Wróć do spisu treści" (właściciel zgłosił: klikalny tylko wąski poziomy pasek tekstu).
+ */
+.toc__view-panel--open .toc__view-panel-inner {
   padding: 0 24px 24px;
   margin: 0 -24px -24px;
 }
 
 @media (max-width: 480px) {
-  .toc__view-panel-inner {
+  .toc__view-panel--open .toc__view-panel-inner {
     /* Mniejszy bufor — 24px tutaj przekraczałby padding .landing (16px) i wywołał realny
        poziomy scroll strony; stamp/outline na mobile też mają mniejszy zasięg. */
     padding: 0 12px 12px;
