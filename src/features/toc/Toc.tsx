@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Board } from './Board';
 import { ProjectCard } from './ProjectCard';
+import { SectionDetail } from './SectionDetail';
 import type { NavTarget } from './sections';
 import { SECTIONS } from './sections';
 import { useBattleship } from './use-battleship';
@@ -44,6 +45,12 @@ export function Toc({ activeNavTarget }: TocProps) {
   // Niezależny od `skipped` — jedyny sposób wejścia w ten stan to skip (skip ustawia oba naraz),
   // ale odtąd przełącza się osobno w obie strony (patrz przycisk w .toc__intro niżej).
   const [boardCollapsed, setBoardCollapsed] = useState(false);
+  // Faza 3.5, punkt e — stan komponentu (nie router), zgodnie z ustaleniem: id aktualnie otwartej
+  // sekcji "pełnoekranowej" (about/skills/contact) albo null, gdy jesteśmy w normalnym spisie
+  // treści. Nic pod spodem (plansza, jej stan) się nie odmontowuje przy otwarciu — tylko wizualnie
+  // znika, patrz .toc__view-panel w Toc.css — więc powrót zastaje planszę dokładnie tam, gdzie się
+  // ją zostawiło.
+  const [openSectionId, setOpenSectionId] = useState<string | null>(null);
 
   const effectiveUnlocked = useMemo((): ReadonlySet<string> => {
     if (skipped) {
@@ -51,6 +58,11 @@ export function Toc({ activeNavTarget }: TocProps) {
     }
     return unlockedSectionIds;
   }, [skipped, unlockedSectionIds]);
+
+  const openSection = useMemo(
+    () => SECTIONS.find((section) => section.id === openSectionId) ?? null,
+    [openSectionId],
+  );
 
   const statusMessage = buildStatusMessage(lastResult);
 
@@ -69,57 +81,78 @@ export function Toc({ activeNavTarget }: TocProps) {
       ? 'Otwórz grę w statki →'
       : 'Schowaj planszę ↑';
 
+  const detailOpen = openSectionId !== null;
+
   return (
     <section className="toc" aria-labelledby="toc-heading">
-      <div className="toc__intro">
-        <div>
-          <h2 id="toc-heading" className="toc__heading">
-            {skipped ? 'Spis treści' : 'Spis treści — zatop statek, żeby odkryć'}
-          </h2>
-          <p
-            className={`toc__subheading ${!skipped || boardCollapsed ? 'toc__subheading--hidden' : ''}`}
-          >
-            Wszystko już odblokowane — i tak możesz zagrać w statki, jeśli chcesz.
-          </p>
-        </div>
-        <button type="button" className="toc__skip" onClick={handleActionClick}>
-          {actionLabel}
-        </button>
-      </div>
-
-      <div className={`toc__layout ${boardCollapsed ? 'toc__layout--collapsed' : ''}`}>
-        <div className="toc__board-col">
-          <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
-
-          <div className="toc__artillery">
-            <button
-              type="button"
-              className={`toc__artillery-btn ${artilleryArmed ? 'toc__artillery-btn--armed' : ''}`}
-              onClick={toggleArtillery}
-              disabled={artilleryCharges <= 0}
-            >
-              🎯 (Art)yleria ({artilleryCharges})
+      <div
+        className={`toc__view-panel ${detailOpen ? '' : 'toc__view-panel--open'}`}
+        aria-hidden={detailOpen}
+      >
+        <div className="toc__view-panel-inner">
+          <div className="toc__intro">
+            <div>
+              <h2 id="toc-heading" className="toc__heading">
+                {skipped ? 'Spis treści' : 'Spis treści — zatop statek, żeby odkryć'}
+              </h2>
+              <p
+                className={`toc__subheading ${!skipped || boardCollapsed ? 'toc__subheading--hidden' : ''}`}
+              >
+                Wszystko już odblokowane — i tak możesz zagrać w statki, jeśli chcesz.
+              </p>
+            </div>
+            <button type="button" className="toc__skip" onClick={handleActionClick}>
+              {actionLabel}
             </button>
-            <p className="toc__artillery-hint">
-              {artilleryArmed
-                ? 'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.'
-                : 'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.'}
-            </p>
           </div>
 
-          <p className="toc__status" role="status" aria-live="polite">
-            {statusMessage}
-          </p>
+          <div className={`toc__layout ${boardCollapsed ? 'toc__layout--collapsed' : ''}`}>
+            <div className="toc__board-col">
+              <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
+
+              <div className="toc__artillery">
+                <button
+                  type="button"
+                  className={`toc__artillery-btn ${artilleryArmed ? 'toc__artillery-btn--armed' : ''}`}
+                  onClick={toggleArtillery}
+                  disabled={artilleryCharges <= 0}
+                >
+                  🎯 (Art)yleria ({artilleryCharges})
+                </button>
+                <p className="toc__artillery-hint">
+                  {artilleryArmed
+                    ? 'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.'
+                    : 'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.'}
+                </p>
+              </div>
+
+              <p className="toc__status" role="status" aria-live="polite">
+                {statusMessage}
+              </p>
+            </div>
+            <div className="toc__cards">
+              {SECTIONS.map((section) => (
+                <ProjectCard
+                  key={section.id}
+                  section={section}
+                  locked={!effectiveUnlocked.has(section.id)}
+                  highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
+                  onOpenDetail={setOpenSectionId}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="toc__cards">
-          {SECTIONS.map((section) => (
-            <ProjectCard
-              key={section.id}
-              section={section}
-              locked={!effectiveUnlocked.has(section.id)}
-              highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
-            />
-          ))}
+      </div>
+
+      <div
+        className={`toc__view-panel ${detailOpen ? 'toc__view-panel--open' : ''}`}
+        aria-hidden={!detailOpen}
+      >
+        <div className="toc__view-panel-inner">
+          {openSection && (
+            <SectionDetail section={openSection} onClose={() => setOpenSectionId(null)} />
+          )}
         </div>
       </div>
     </section>

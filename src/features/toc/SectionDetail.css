@@ -1,0 +1,39 @@
+.section-detail {
+  padding: 8px 0 40px;
+}
+
+.section-detail__back {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 24px;
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.section-detail__back:hover {
+  color: var(--eg-accent-primary);
+}
+
+.section-detail__title {
+  font-family: var(--eg-font-serif);
+  font-weight: 700;
+  font-size: 28px;
+  margin: 0 0 16px;
+}
+
+.section-detail__placeholder {
+  margin: 0;
+  padding: 48px 24px;
+  border: 1px dashed var(--eg-hairline-inner);
+  text-align: center;
+  font-size: 14px;
+  color: var(--eg-ink-secondary);
+}

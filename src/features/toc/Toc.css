@@ -3,6 +3,38 @@
   border-top: 1px solid var(--eg-hairline-inner);
 }
 
+/*
+ * Przełącznik spis-treści ↔ widok pełnoekranowy (Faza 3.5, punkt e) — technika
+ * `grid-template-rows: 0fr ↔ 1fr`, nowocześniejszy wariant tej samej idei co zwijanie planszy
+ * (Faza 2, krok 6: animowana, ograniczona właściwość + overflow:hidden na dziecku), ale bez
+ * zgadywania stałej wartości `max-height`/`width` — tu wysokość treści jest z założenia
+ * nieznana z góry (placeholder dziś, docelowo np. galeria zdjęć w "O mnie"), a `0fr`/`1fr`
+ * poprawnie animuje do/z prawdziwej, naturalnej wysokości niezależnie od tego, ile jej finalnie
+ * będzie. Oba panele (spis treści, widok szczegółowy) zawsze zostają zamontowane — nic się nie
+ * odmontowuje przy przełączeniu, więc stan planszy/gry pod spodem przetrwa powrót.
+ */
+.toc__view-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.toc__view-panel--open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toc__view-panel {
+    transition: grid-template-rows 320ms ease, opacity 220ms ease;
+  }
+}
+
+.toc__view-panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
 .toc__intro {
   display: flex;
   align-items: baseline;

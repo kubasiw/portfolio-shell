@@ -167,6 +167,10 @@
 .spec-plate__cta {
   display: inline-block;
   margin-top: 10px;
+  /* background/cursor jawnie ustawione — ta klasa żyje też na <button> (nie tylko <a>), więc bez
+     tego przeglądarkowy domyślny wygląd przycisku by przebijał. */
+  background: none;
+  cursor: pointer;
   border: 1px solid var(--eg-accent-primary);
   padding: 4px 10px;
   font-family: var(--eg-font-mono);

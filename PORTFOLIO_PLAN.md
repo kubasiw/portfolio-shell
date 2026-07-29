@@ -851,25 +851,81 @@ d2. ✅ **Pieczątka też na mastheadzie (2026-07-27) — sygnalizuje, że całe
    nie tylko sekcję. Zweryfikowane na żywo (nie tylko wizualnie): `getBoundingClientRect()` po
    przewinięciu potwierdza, że pieczątka faktycznie pozostaje przypięta razem z mastheadem.
 
-e. ⬜ **`about`/`skills`/`contact` jako pełnoekranowy widok "w ramach" istniejącej appki.**
-   Prawdopodobnie stan komponentu (np. `selectedSection` w `Toc`/`App`), nie osobna trasa/router —
-   portfolio nie ma dziś routingu, i reszta appki (gra w statki, skip, zwijanie planszy) już działa
-   jako czysty stan, nie URL; do potwierdzenia przy kodowaniu, czy to świadomie zostaje tak, czy
-   jednak warto dodać `react-router` tylko dla tych trzech widoków (np. pod kątem głębokiego
-   linkowania/SEO). Guzik "Wróć do spisu treści" + animacja przejścia — kandydat na mechanikę:
-   ten sam wzorzec co zwijanie planszy po skipie (Faza 2, krok 6) — czysty CSS transition na
-   wymiarach/opacity, zapięty pod `prefers-reduced-motion`, bez FLIP/JS-owego przeliczania pozycji,
-   żeby nie dokładać złożoności bez realnej potrzeby.
+e. ✅ **`about`/`skills`/`contact` jako pełnoekranowy widok "w ramach" istniejącej appki
+   (2026-07-27).** Zbudowane jako stan komponentu (`openSectionId` w `Toc`), nie router — zgodnie
+   z pierwotnym zamysłem, reszta appki (gra w statki, skip, zwijanie planszy) już działała jako
+   czysty stan, nie URL, więc to trzyma się tej samej konwencji. `sections.ts` dostał nowe pole
+   `hasDetailView: boolean` (tylko `about`/`skills`/`contact` — projekty mają własną, dopasowaną
+   zawartość wprost w karcie, nie potrzebują tego wejścia). Nowy dumb komponent `SectionDetail`
+   (tytuł sekcji + przycisk "← Wróć do spisu treści" + na razie pusty placeholder "Treść w
+   przygotowaniu." — realna zawartość "O mnie"/"Umiejętności"/"Kontakt" to osobne, kolejne kroki).
+   **Animacja: `grid-template-rows: 0fr ↔ 1fr`, nowocześniejszy wariant tej samej techniki co
+   zwijanie planszy (Faza 2, krok 6)** — ta sama idea (animowana, ograniczona właściwość +
+   `overflow: hidden` na dziecku, zero JS/FLIP, zapięte pod `prefers-reduced-motion`), ale bez
+   zgadywania stałej `max-height`/`width`: `0fr`/`1fr` poprawnie animuje do/z prawdziwej,
+   naturalnej wysokości treści niezależnie od tego, ile jej finalnie będzie (istotne, skoro punkt
+   f niżej doda realną galerię zdjęć o nieznanej dziś wysokości). Oba panele (spis treści, widok
+   szczegółowy) zostają zamontowane cały czas — nic się nie odmontowuje przy przełączeniu, więc
+   stan planszy/gry pod spodem (np. `boardCollapsed`) przetrwa powrót z widoku szczegółowego bez
+   żadnej dodatkowej logiki. Fokus przenoszony na przycisk powrotu przy otwarciu (dostępność).
+   **Zweryfikowane na żywo, nie tylko wizualnie** — w tej samej automatycznej przeglądarce, która
+   już wcześniej dwa razy pokazała identyczny artefakt (`transition` + programowa zmiana klasy =
+   niewiarygodny `getComputedStyle`, patrz punkty wcześniej w tym dokumencie), `getComputedStyle`
+   na obu panelach od razu po kliknięciu pokazywał wartości **zamienione miejscami** między
+   panelami — trzeci raz ten sam, teraz już rozpoznany artefakt, nie realny bug: z wymuszonym
+   `transition: none` te same odczyty pokazały poprawne, oczekiwane wartości (`0px`/opacity 0 dla
+   zwiniętego panelu, prawdziwa wysokość treści/opacity 1 dla otwartego). Potwierdzone też: powrót
+   przywraca poprzedni stan przycisku gry (`boardCollapsed`) bez zmian, `SectionDetail` poprawnie
+   odmontowuje się po zamknięciu, zero poziomego przewijania na 375px.
 
-f. ⬜ **Sekcja "O mnie" — galeria zdjęć pasji.** Kilkanaście zdjęć, przewijane/wybierane z gridu;
-   po wybraniu — mniejszy kwadrat z kilkoma zdaniami o danej pasji, w pasującej czcionce (pomysł
-   właściciela, otwarty na lepszy, jeśli się znajdzie). Otwarte do ustalenia przy realizacji:
-   dokładny układ (lightbox nad gridem vs. karta rozwijana w miejscu obok zdjęcia), źródło zdjęć
-   (właściciel dostarczy realne pliki, nie placeholdery/stocki — spójne z zasadą "realne dane ponad
-   zamockowane założenia"), i czy opisowy kwadrat żyje jako nakładka (overlay) czy sąsiaduje ze
-   zdjęciem. Warto rozważyć 2-3 warianty i skonsultować przed kodowaniem — ten sam tryb decyzyjny
-   co przy innych większych wyborach wizualnych w tym dokumencie (np. 4 warianty przed wyborem
-   Editorial Garage).
+f. ⬜ **Sekcja "O mnie" — galeria zdjęć pasji. Mechanika zablokowana 2026-07-27: wariant B, "siatka
+   się rozsuwa".** Właściciel przesłał realny zestaw ~12 zdjęć (styl: filmowy grain/przebarwienia,
+   spójny z aktualnym trendem fotograficznym "Lo-Fi Rebellion" 2026 — świadomie nie do
+   "wyczyszczenia", to jest pożądany, rozpoznawalny styl, nie usterka). Rozważono 3 warianty (research:
+   pattern "grid + klik → reveal" potwierdzony jako dominujący w portfolio 2026), zdecydowano się na
+   **B**, dokładnie zgodny z pierwotnym pomysłem właściciela: siatka kafelków-pasji (jedno
+   reprezentatywne zdjęcie na pasję); klik na kafelek → siatka znika, wchodzi pełnoekranowy widok z
+   jednym dużym zdjęciem, filmstripem pozostałych zdjęć tej pasji pod spodem, i podpisem (kursywa,
+   serif, 2-3 zdania) — plus "← Wróć do spisu treści" u góry, zgodnie z punktem e wyżej. Odrzucone
+   warianty: **A — "arkusz kontaktowy"** (duże zdjęcie przypięte na stałe, cienki pasek miniatur
+   wjeżdżający z boku, mniej ruchu/bardziej fotograficzny motyw) i **C — filmstrip/karuzela**
+   (najprostszy do zbudowania, ale najmniejszy efekt "wow"). Klikalna makieta wariantu B (5 kafelków:
+   Hiking, Rower, Motoryzacja, Fotografia, Siłownia/bieganie) zbudowana i pokazana właścicielowi jako
+   żywy prototyp przed kodowaniem — potwierdzona jako trafna.
+   **✅ Zdjęcia dostarczone, zoptymalizowane i skopiowane do repo (2026-07-29).** Oryginały (12
+   plików, 47.6 MB łącznie) wrzucone przez właściciela do `C:\portfolio-shell\about-photos\` —
+   diagnoza: 8/12 było zapisanych jako **PNG** (format bezstratny, zły wybór dla zdjęć z ziarnem
+   filmowym — szum defeatuje kompresję bezstratną, stąd np. `breakfast.png` 2142×2142 ważył 7.4 MB
+   podczas gdy JPEG o *większej* rozdzielczości `cat_eye.jpg` 3024×3024 ważył tylko 1.65 MB), część
+   w wymiarach znacznie przekraczających realną potrzebę wyświetlania (do 4096×4096). Skonwertowane
+   do WebP (dłuższy bok max 1800px, jakość 82) — **47.6 MB → 3.85 MB (−92%)**. Sprawdzone też EXIF
+   czterech .jpg pod kątem GPS — brak danych lokalizacyjnych, bez ryzyka prywatności przy publikacji.
+   Zoptymalizowane pliki skopiowane do `src/assets/about/*.webp` (gotowe do importu w komponencie);
+   oryginały + kopia robocza zostają w `about-photos/` jako materiał źródłowy, nieużywany
+   bezpośrednio przez appkę.
+   **Finalne mapowanie zdjęć na pasje (realne nazwy plików w `src/assets/about/`):**
+   - hiking (4): `couple_sea.webp` (leśna ścieżka do plaży o zmierzchu, 2 sylwetki), `mountain_cow.webp`
+     (mglista droga z krową przy płocie), `me_back_walk.webp` (sylwetka od tyłu na ścieżce przez
+     śródziemnomorskie zarośla), `me_back_lake.webp` (sylwetka w kapturze na pomoście nad jeziorem)
+   - rower (1): `cycling.webp` (kierownica z GPS-em, nocna jazda, rozmyte światła)
+   - motoryzacja (3): `garage.webp` (silnik pod otwartą maską, butelka oleju), `interior_volvo.webp`
+     (deska rozdzielcza, breloczek-samochodzik), `vespa.webp` (pomarańczowa Vespa w uliczce)
+   - fotografia — "oko na detal" (4): `breakfast.webp` (śniadanie z góry), `flowers_insects.webp`
+     (pszczoła/bzygowate na dzikiej róży), `my_mate.webp` (ręka głaszcząca kotka na ulicy),
+     `cat_eye.webp` (nazwa pliku ujawnia zamysł — demonstracja "cat-eye" bokeh, blur pierwszego
+     planu; rozstrzyga wcześniejszą wątpliwość "do przypisania przy realizacji" z poprzedniej wersji
+     tej notatki — jednoznacznie fotograficzna/techniczna klatka, nie hiking/bieganie)
+   **Puste pasje (siłownia, bieganie) — zdecydowano 2026-07-27: layout "w przygotowaniu".** Te dwie
+   pasje z `sections.ts`/"Wizja" nie mają jeszcze zdjęć w przesłanym zestawie — dostają na start ten
+   sam dashed/"W BUDOWIE" wzorzec zaprojektowany w punkcie d wyżej dla pustych kart projektowych (a
+   nie: pominięcie kafelka, ani osobne dosyłanie zdjęć teraz) — spójność jednego wizualnego języka
+   "w budowie" w całej apce, łatwe do podmiany na realne zdjęcia później bez zmiany struktury.
+   Otwarte do ustalenia przy realizacji: dokładny układ (lightbox nad gridem vs. karta rozwijana w
+   miejscu), źródło zdjęć finalnych (właściciel dostarczy realne pliki — spójne z zasadą "realne dane
+   ponad zamockowane założenia", niekoniecznie identyczne z podglądowym zestawem użytym do konsultacji
+   makiety), i format siatki (masonry/mieszany, nie sztywne kwadraty — realne zdjęcia mają bardzo
+   różne proporcje: kwadrat, portret, jeden krajobrazowy, sztywna siatka 1:1 obcinałaby kluczowe
+   kadry, np. ścieżkę do plaży czy uliczkę z Vespą).
 
 g. ⬜ **Sekcja "Umiejętności" — zwykły tekst + lista.** User's własne słowa: "sam nie wiem" —
    najprostszy, niezaangażowany slot na start (zredagowany tekst + lista technologii/praktyk,
@@ -1175,3 +1231,18 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   hairline progress-indicator; minimalny sticky footer, świadomie bez kopiowania ciężkiego
   multi-kolumnowego wzorca korporacyjnego) — pełny szczegół i źródła przy Fazie 3.5. Właściciel
   planuje teraz przejść do zakładki code i pracować nad tymi punktami z odwołaniem do tego pliku.
+- 2026-07-27: skonsultowano mechanikę galerii "O mnie" (punkt f Fazy 3.5) na żywej, klikalnej
+  makiece 3 wariantów — zablokowano **wariant B** ("siatka się rozsuwa": klik na kafelek pasji →
+  jedno duże zdjęcie + filmstrip + podpis kursywą), odrzucając "arkusz kontaktowy" (A) i prostą
+  karuzelę (C). Zdecydowano też, że puste pasje (siłownia, bieganie — brak zdjęć w zestawie)
+  dostają na start ten sam dashed "W BUDOWIE" layout co puste karty projektów (punkt d), nie są
+  pomijane ani blokowane na dosłanie zdjęć.
+- 2026-07-29: właściciel dostarczył realny zestaw 12 zdjęć do sekcji "O mnie"
+  (`about-photos/`, 47.6 MB) — zdiagnozowano i naprawiono: 8/12 plików było PNG (zły, bezstratny
+  format dla zdjęć z ziarnem filmowym), część w wymiarach do 4096×4096 znacznie przekraczających
+  realną potrzebę. Skonwertowane do WebP (max 1800px dłuższy bok, jakość 82) — 47.6 MB → 3.85 MB
+  (−92%). Sprawdzony i wykluczony realny problem prywatności (GPS w EXIF) przed publikacją.
+  Zoptymalizowane pliki skopiowane do `src/assets/about/`, finalne mapowanie zdjęć na pasje
+  (realne nazwy plików) dopisane do punktu f w Roadmapie — łącznie z rozstrzygnięciem wcześniejszej
+  otwartej wątpliwości (plik `cat_eye.webp` ujawnił przez nazwę, że to demonstracja "cat-eye"
+  bokeh, jednoznacznie fotograficzna, nie hiking/bieganie).

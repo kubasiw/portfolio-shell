@@ -8,6 +8,7 @@ interface ProjectCardProps {
   section: Section;
   locked: boolean;
   highlighted: boolean;
+  onOpenDetail: (id: string) => void;
 }
 
 // Jedyna sekcja z realnym, wdrożonym projektem pod spodem na razie (Faza 3, krok 9 z
@@ -26,7 +27,7 @@ function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
 
-export function ProjectCard({ section, locked, highlighted }: ProjectCardProps) {
+export function ProjectCard({ section, locked, highlighted, onOpenDetail }: ProjectCardProps) {
   return (
     <div
       id={`section-${section.id}`}
@@ -70,6 +71,15 @@ export function ProjectCard({ section, locked, highlighted }: ProjectCardProps) 
             </>
           )}
           {section.id === CONTACT_SECTION_ID && <ContactLinks />}
+          {section.hasDetailView && (
+            <button
+              type="button"
+              className="spec-plate__cta"
+              onClick={() => onOpenDetail(section.id)}
+            >
+              Zobacz →
+            </button>
+          )}
         </>
       )}
     </div>
