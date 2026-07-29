@@ -939,6 +939,27 @@ f. ✅ **Sekcja "O mnie" — galeria zdjęć pasji (zbudowane 2026-07-29). Waria
    `couple_sea.webp` + podpis, klik w filmstripie zmienia zdjęcie i podświetlenie, "Wróć do galerii"
    i "Wróć do spisu treści" oba działają niezależnie; 3 kolumny na desktopie, 1 na 375px, zero
    przewijania w poziomie.
+   **Taksonomia zmieniona (2026-07-29): 6 wąskich pasji → 4 szersze działy.** Właściciel przesłał
+   drugą partię zdjęć (32, łącznie 44) i poprosił o przejście na: **Aktywność** (rower, bieganie,
+   siłownia i inny ruch — bez wycieczek), **Wycieczki i podróże** (zastępuje dawny "hiking",
+   szerzej: podróże/trasy/momenty w drodze), **Fotografia** (zdjęcia demonstrujące technikę/oko,
+   nie konkretną aktywność), **Motoryzacja** (bez zmian). 12 zdjęć z pierwszej partii przemapowane
+   1:1 na nowe działy (hiking → Wycieczki, rower/moto/foto bez zmian). Nowe 32 przypisane po
+   realnym obejrzeniu każdego zdjęcia (nie tylko nazwy pliku — kilka nazw myliło, np.
+   `scooter_refuel.webp` pokazuje tankowanie samochodu, nie skutera; `leaf_light.webp` to
+   autoportret pod drzewem, nie makro liścia). **12 zdjęć jedzenia/restauracji** (burger_prep,
+   burger_shake, coffee_desk, espresso_pour, fine_dining, fresh_pizza, fruit_salad, open_sandwich,
+   scallop_dish, steak_breakfast, wine_glass) było z założenia niejednoznaczne — rozstrzygnięte
+   sprawdzoną regułą, nie zgadywaniem: zdjęcia z widocznym kontekstem podróży w kadrze (np.
+   `harbor_dessert.webp` — port, żaglówki, turyści w tle) trafiły do **Wycieczki i podróże**;
+   zdjęcia bez takiego kontekstu, czysto skupione na stylizacji/kompozycji dania (jak
+   `fine_dining.webp` czy `wine_glass.webp`, kadrowane identycznie jak już wcześniej zaakceptowane
+   `breakfast.webp`) trafiły do **Fotografia** jako osobny wątek "food photography" — jedna,
+   konsekwentnie stosowana zasada zamiast osobnych domysłów per zdjęcie. Efekt uboczny: żaden z 4
+   działów nie jest już pusty (Aktywność ma choćby `cycling.webp`), więc placeholder "w budowie" z
+   punktu d nie jest obecnie renderowany — kod go zachowuje (generyczna obsługa `photos.length ===
+   0`), na wypadek gdyby przyszły dział rzeczywiście wystartował bez zdjęć. Pełne mapowanie 44
+   zdjęć → 4 działy w `src/features/toc/about/passions.ts`.
 
 g. ⬜ **Sekcja "Umiejętności" — zwykły tekst + lista.** User's własne słowa: "sam nie wiem" —
    najprostszy, niezaangażowany slot na start (zredagowany tekst + lista technologii/praktyk,
