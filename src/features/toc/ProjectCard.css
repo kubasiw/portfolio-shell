@@ -113,8 +113,19 @@
   border-color: var(--eg-accent-primary);
 }
 
+/*
+ * Stała wysokość (dokładnie 3 linie przy tym font-size/line-height) — realny feedback: opis ma
+ * różną długość na różnych kartach, więc wszystko pod nim (zdjęcie, przycisk "Zobacz") lądowało
+ * na innej wysokości na każdej karcie. Dłuższy tekst ("about") obcięty elipsą (line-clamp) —
+ * pełny opis widać dopiero w widoku szczegółowym (SectionDetail), nie ginie bezpowrotnie.
+ */
 .spec-plate__description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
   margin: 10px 0 0;
+  height: 58.5px;
   font-size: 13px;
   line-height: 1.5;
   color: var(--eg-ink-secondary);

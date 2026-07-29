@@ -30,11 +30,28 @@ const ABOUT_SECTION_ID = 'about';
 // (Faza 3.5, punkty d/e/f/g z PORTFOLIO_PLAN.md).
 const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant', 'skills']);
 
+// Renderowane zaraz po .spec-plate__rows (stała wysokość na każdej karcie), nie po opisie —
+// realny feedback: opis ma różną długość na różnych kartach, więc zdjęcie po nim lądowało na
+// innej wysokości na każdej karcie. Tuż po wierszach zawsze wyrówna się co do piksela,
+// niezależnie od długości opisu pod spodem, bez sztywnej wysokości/line-clamp na opisie.
+const COVER_PHOTOS: Partial<Record<string, { src: string; alt: string }>> = {
+  [ABOUT_SECTION_ID]: {
+    src: aboutCoverPhoto,
+    alt: 'Autoportret spod korony drzewa, w okularach przeciwsłonecznych',
+  },
+  [SKILLS_SECTION_ID]: {
+    src: skillsCoverPhoto,
+    alt: 'Kawa i deser na biurku, w tle monitory z kodem',
+  },
+};
+
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
 
 export function ProjectCard({ section, locked, highlighted, onOpenDetail }: ProjectCardProps) {
+  const coverPhoto = COVER_PHOTOS[section.id];
+
   return (
     <div
       id={`section-${section.id}`}
@@ -57,27 +74,16 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
               locked ? 'spec-plate__badge--locked' : 'spec-plate__badge--unlocked'
             }`}
           >
-            {locked ? 'Zablokowane' : 'Odblokowane →'}
+            {locked ? 'Zablokowane' : 'Odblokowane'}
           </span>
         </div>
       </div>
       {!locked && (
         <>
+          {coverPhoto && (
+            <img src={coverPhoto.src} alt={coverPhoto.alt} className="spec-plate__cover-photo" />
+          )}
           <p className="spec-plate__description">{section.description}</p>
-          {section.id === ABOUT_SECTION_ID && (
-            <img
-              src={aboutCoverPhoto}
-              alt="Autoportret spod korony drzewa, w okularach przeciwsłonecznych"
-              className="spec-plate__cover-photo"
-            />
-          )}
-          {section.id === SKILLS_SECTION_ID && (
-            <img
-              src={skillsCoverPhoto}
-              alt="Kawa i deser na biurku, w tle monitory z kodem"
-              className="spec-plate__cover-photo"
-            />
-          )}
           {section.id === TOUR_GUIDE_SECTION_ID && (
             <>
               <TourGuideWidget />

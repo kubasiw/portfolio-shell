@@ -29,6 +29,7 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
         ← Wróć do spisu treści
       </button>
       <h2 className="section-detail__title">{section.title}</h2>
+      <p className="section-detail__description">{section.description}</p>
       {section.id === 'about' ? (
         <AboutGallery />
       ) : (

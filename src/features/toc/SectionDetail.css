@@ -26,7 +26,17 @@
   font-family: var(--eg-font-serif);
   font-weight: 700;
   font-size: 28px;
-  margin: 0 0 16px;
+  margin: 0 0 8px;
+}
+
+/* Pełny opis sekcji — na karcie w spisie treści ten sam tekst bywa obcięty elipsą
+   (.spec-plate__description, line-clamp), więc tu zawsze widać go w całości. */
+.section-detail__description {
+  max-width: 62ch;
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--eg-ink-secondary);
 }
 
 .section-detail__placeholder {
