@@ -1,0 +1,158 @@
+.about-gallery__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.about-gallery__panel--open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .about-gallery__panel {
+    transition: grid-template-rows 320ms ease, opacity 220ms ease;
+  }
+}
+
+.about-gallery__panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Masonry via CSS columns — zdjęcia mają bardzo różne proporcje (kwadrat, portret, krajobraz),
+   sztywna siatka 1:1 obcinałaby kluczowe kadry (patrz PORTFOLIO_PLAN.md, punkt f). */
+.about-gallery__grid {
+  column-count: 3;
+  column-gap: 16px;
+}
+
+@media (max-width: 720px) {
+  .about-gallery__grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-gallery__grid {
+    column-count: 1;
+  }
+}
+
+.about-gallery__tile {
+  display: block;
+  width: 100%;
+  break-inside: avoid;
+  margin: 0 0 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.about-gallery__tile:disabled {
+  cursor: default;
+}
+
+.about-gallery__tile-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--eg-hairline);
+}
+
+.about-gallery__tile:not(:disabled):hover .about-gallery__tile-img {
+  border-color: var(--eg-accent-primary);
+}
+
+.about-gallery__tile-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--eg-muted);
+  background: var(--eg-divider);
+}
+
+.about-gallery__tile-label {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+}
+
+.about-gallery__viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.about-gallery__viewer-back {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+  text-decoration: underline dashed;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.about-gallery__viewer-back:hover {
+  color: var(--eg-accent-primary);
+}
+
+.about-gallery__viewer-photo {
+  max-width: 100%;
+  max-height: 60vh;
+  width: auto;
+  border: 1px solid var(--eg-hairline);
+}
+
+.about-gallery__viewer-caption {
+  max-width: 60ch;
+  margin: 0;
+  font-family: var(--eg-font-serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--eg-ink-secondary);
+  text-align: center;
+}
+
+.about-gallery__filmstrip {
+  display: flex;
+  gap: 8px;
+  max-width: 100%;
+  padding-bottom: 4px;
+  overflow-x: auto;
+}
+
+.about-gallery__filmstrip-item {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 54px;
+  padding: 0;
+  border: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+
+.about-gallery__filmstrip-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-gallery__filmstrip-item--active {
+  border-color: var(--eg-accent-primary);
+}

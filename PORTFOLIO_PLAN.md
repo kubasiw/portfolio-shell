@@ -878,7 +878,7 @@ e. ✅ **`about`/`skills`/`contact` jako pełnoekranowy widok "w ramach" istniej
    przywraca poprzedni stan przycisku gry (`boardCollapsed`) bez zmian, `SectionDetail` poprawnie
    odmontowuje się po zamknięciu, zero poziomego przewijania na 375px.
 
-f. ⬜ **Sekcja "O mnie" — galeria zdjęć pasji. Mechanika zablokowana 2026-07-27: wariant B, "siatka
+f. ✅ **Sekcja "O mnie" — galeria zdjęć pasji (zbudowane 2026-07-29). Wariant B, "siatka
    się rozsuwa".** Właściciel przesłał realny zestaw ~12 zdjęć (styl: filmowy grain/przebarwienia,
    spójny z aktualnym trendem fotograficznym "Lo-Fi Rebellion" 2026 — świadomie nie do
    "wyczyszczenia", to jest pożądany, rozpoznawalny styl, nie usterka). Rozważono 3 warianty (research:
@@ -926,6 +926,19 @@ f. ⬜ **Sekcja "O mnie" — galeria zdjęć pasji. Mechanika zablokowana 2026-0
    makiety), i format siatki (masonry/mieszany, nie sztywne kwadraty — realne zdjęcia mają bardzo
    różne proporcje: kwadrat, portret, jeden krajobrazowy, sztywna siatka 1:1 obcinałaby kluczowe
    kadry, np. ścieżkę do plaży czy uliczkę z Vespą).
+   **Zbudowane (2026-07-29):** nowy `features/toc/about/` (`AboutGallery.tsx` + `passions.ts`),
+   podpięty w `SectionDetail.tsx` dla `section.id === 'about'`. Siatka = CSS `columns` (3/2/1 wg
+   szerokości), każdy kafelek `break-inside: avoid` — prawdziwy masonry bez biblioteki, zdjęcia
+   trzymają swoje realne proporcje. Klik na kafelek → ten sam mechanizm `grid-template-rows`
+   0fr/1fr co przełącznik spis-treści/widok szczegółowy (`Toc.css`), teraz reużyty jeszcze raz na
+   poziom niżej: siatka pasji ↔ widok jednego zdjęcia + filmstrip + podpis, z osobnym "← Wróć do
+   galerii" (nie myli się z zewnętrznym "← Wróć do spisu treści"). Puste pasje (siłownia, bieganie)
+   — kafelek `disabled`, ten sam `<Stamp>` co w punkcie d, wycentrowany w boxie 4:3. Podpisy pod
+   każdym zdjęciem napisane na podstawie realnych opisów z mapowania wyżej, nie wymyślone od zera.
+   Zweryfikowane na żywo: 6 kafli w poprawnej kolejności, 2 zablokowane, klik na Hiking pokazuje
+   `couple_sea.webp` + podpis, klik w filmstripie zmienia zdjęcie i podświetlenie, "Wróć do galerii"
+   i "Wróć do spisu treści" oba działają niezależnie; 3 kolumny na desktopie, 1 na 375px, zero
+   przewijania w poziomie.
 
 g. ⬜ **Sekcja "Umiejętności" — zwykły tekst + lista.** User's własne słowa: "sam nie wiem" —
    najprostszy, niezaangażowany slot na start (zredagowany tekst + lista technologii/praktyk,

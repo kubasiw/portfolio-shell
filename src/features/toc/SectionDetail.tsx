@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { AboutGallery } from './about/AboutGallery';
 import type { Section } from './sections';
 import './SectionDetail.css';
 
@@ -28,7 +29,11 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
         ← Wróć do spisu treści
       </button>
       <h2 className="section-detail__title">{section.title}</h2>
-      <p className="section-detail__placeholder">Treść w przygotowaniu.</p>
+      {section.id === 'about' ? (
+        <AboutGallery />
+      ) : (
+        <p className="section-detail__placeholder">Treść w przygotowaniu.</p>
+      )}
     </div>
   );
 }
