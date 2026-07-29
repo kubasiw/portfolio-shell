@@ -1,0 +1,171 @@
+.skills-detail__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 640px) {
+  .skills-detail__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-plate {
+  border: 1px solid var(--eg-hairline);
+  padding: 18px 20px;
+}
+
+.skill-plate--core {
+  border-width: 2px;
+  border-color: var(--eg-accent-primary);
+  background: var(--eg-unlocked-bg);
+}
+
+.skill-plate__title {
+  font-family: var(--eg-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-ink);
+  margin: 0 0 4px;
+}
+
+/* Jedyny mocny, wyróżniający fakt na tej karcie (architektura/DDD projektowana samodzielnie na
+   lata przed AI) — kursywa + akcent brązowy, żeby nie zginął w zwykłym akapicie. */
+.skill-plate__pull-quote {
+  font-family: var(--eg-font-serif);
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--eg-ink);
+  margin: 0 0 10px;
+  padding-left: 10px;
+  border-left: 2px solid var(--eg-accent-secondary);
+}
+
+.skill-plate__subtitle {
+  font-size: 12.5px;
+  color: var(--eg-ink-secondary);
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.skill-group {
+  margin: 0 0 14px;
+}
+
+.skill-group:last-child {
+  margin-bottom: 0;
+}
+
+.skill-group__label {
+  display: block;
+  font-family: var(--eg-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-ink-secondary);
+  margin-bottom: 6px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-group__note {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--eg-ink-secondary);
+}
+
+/* Fakt, że React nie jest tylko "na potrzeby portfolio" — czyta się pierwszy, przed tagami,
+   nie jako podrzędna dopiska po nich. */
+.skill-group__note--lead {
+  margin: 0 0 8px;
+  color: var(--eg-ink);
+}
+
+.tag {
+  display: inline-block;
+  border: 1px solid currentColor;
+  padding: 2px 8px;
+  font-family: var(--eg-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--eg-ink-secondary);
+}
+
+.skill-plate--core .tag {
+  color: var(--eg-accent-primary);
+}
+
+.tag--planned {
+  border-style: dashed;
+  color: var(--eg-muted);
+}
+
+.ai-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid var(--eg-accent-primary);
+  padding: 20px 22px;
+  margin-bottom: 32px;
+}
+
+.ai-callout__label {
+  font-family: var(--eg-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-accent-primary);
+}
+
+.ai-callout p {
+  max-width: 68ch;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--eg-ink);
+}
+
+.ai-callout .ai-callout__secondary {
+  color: var(--eg-ink-secondary);
+  font-size: 12.5px;
+}
+
+.cv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 1px solid var(--eg-hairline-inner);
+}
+
+.cv-row__text {
+  max-width: 46ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--eg-ink-secondary);
+}
+
+.cv-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--eg-accent-primary);
+  padding: 8px 16px;
+  font-family: var(--eg-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eg-accent-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}

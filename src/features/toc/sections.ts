@@ -48,7 +48,8 @@ export const SECTIONS: Section[] = [
   {
     id: 'skills',
     title: 'Umiejętności',
-    description: 'Stack, dobre praktyki i sposób pracy nad projektami w tym zestawie.',
+    description:
+      'Dziewięć lat w Angularze i architekturze frontendu korporacyjnego. Ten portfolio to pierwszy raz, kiedy świadomie wychodzę poza tę strefę komfortu — z Claude Code jako współpilotem, nie autopilotem.',
     navGroup: null,
     hasDetailView: true,
   },

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AboutGallery } from './about/AboutGallery';
+import { SkillsDetail } from './skills/SkillsDetail';
 import type { Section } from './sections';
 import './SectionDetail.css';
 
@@ -30,9 +31,9 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
       </button>
       <h2 className="section-detail__title">{section.title}</h2>
       <p className="section-detail__description">{section.description}</p>
-      {section.id === 'about' ? (
-        <AboutGallery />
-      ) : (
+      {section.id === 'about' && <AboutGallery />}
+      {section.id === 'skills' && <SkillsDetail />}
+      {section.id !== 'about' && section.id !== 'skills' && (
         <p className="section-detail__placeholder">Treść w przygotowaniu.</p>
       )}
     </div>
