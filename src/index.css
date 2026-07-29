@@ -10,7 +10,9 @@ body,
 
 body {
   margin: 0;
-  background: var(--eg-paper);
+  /* --eg-divider (nie --eg-paper) — "blat", na którym leży strona; .landing dostaje własne,
+     jaśniejsze tło + hairline po bokach, żeby ta różnica była widoczna na szerokich ekranach. */
+  background: var(--eg-divider);
   color: var(--eg-ink);
   font-family: var(--eg-font-sans);
   -webkit-font-smoothing: antialiased;
