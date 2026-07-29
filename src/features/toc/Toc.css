@@ -192,6 +192,22 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
+/*
+ * Karty "w budowie" obok dużo wyższej karty (np. tour-guide z mapą) rozciągają się do wysokości
+ * wiersza zamiast zostawiać pustą "dziurę" pod sobą — tylko przy zwiniętej planszy (rozwinięta:
+ * jedna kolumna, każda karta sama w swoim wierszu, więc bez zmiany). Bez sztywnego capu wysokości
+ * — na razie tylko tour-guide jest realnie wysoka, dodać limit dopiero gdy realnie zaboli.
+ */
+.toc__layout--collapsed .spec-plate--in-progress {
+  align-self: stretch;
+}
+
+.toc__layout--collapsed .spec-plate--in-progress .spec-plate__stamp {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
 .toc__artillery {
   margin-top: 12px;
 }

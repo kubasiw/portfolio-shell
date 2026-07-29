@@ -33,7 +33,7 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       id={`section-${section.id}`}
       className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'} ${
         highlighted ? 'spec-plate--nav-highlighted' : ''
-      }`}
+      } ${!locked && IN_PROGRESS_SECTION_IDS.has(section.id) ? 'spec-plate--in-progress' : ''}`}
     >
       {!locked && IN_PROGRESS_SECTION_IDS.has(section.id) && (
         <Stamp main="W budowie" sub="wkrótce" className="spec-plate__stamp" />
