@@ -29,7 +29,7 @@ const ABOUT_SECTION_ID = 'about';
 // Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
 // "w budowie" w rogu. Usunąć z tego zestawu, gdy dana sekcja dostanie realną zawartość
 // (Faza 3.5, punkty d/e/f/g z PORTFOLIO_PLAN.md).
-const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant', 'skills']);
+const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant']);
 
 // Renderowane zaraz po .spec-plate__rows (stała wysokość na każdej karcie), nie po opisie —
 // realny feedback: opis ma różną długość na różnych kartach, więc zdjęcie po nim lądowało na

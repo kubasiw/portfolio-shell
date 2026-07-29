@@ -44,6 +44,12 @@
   border-left: 2px solid var(--eg-accent-secondary);
 }
 
+/* Karta "Zbudowane dla tego portfolio" — sam akcent (zieleń) inny niż Fundamentu (brąz), żeby
+   dwa pull-quote'y na jednej stronie czytały się jako dwa różne fakty, nie powtórzenie. */
+.skill-plate__pull-quote--primary {
+  border-left-color: var(--eg-accent-primary);
+}
+
 .skill-plate__subtitle {
   font-size: 12.5px;
   color: var(--eg-ink-secondary);
@@ -91,10 +97,11 @@
 
 .tag {
   display: inline-block;
-  border: 1px solid currentColor;
+  border: 2px solid currentColor;
   padding: 2px 8px;
   font-family: var(--eg-font-mono);
   font-size: 10.5px;
+  font-weight: 600;
   letter-spacing: 0.03em;
   color: var(--eg-ink-secondary);
 }

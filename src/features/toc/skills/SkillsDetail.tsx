@@ -61,9 +61,11 @@ export function SkillsDetail() {
 
         <section className="skill-plate">
           <p className="skill-plate__title">Zbudowane dla tego portfolio</p>
-          <p className="skill-plate__subtitle">
-            Poszerzane świadomie, projekt po projekcie — nie encyklopedycznie, tylko tam, gdzie
-            było to faktycznie potrzebne.
+          <p className="skill-plate__pull-quote skill-plate__pull-quote--primary">
+            Świadomy eksperyment, nie przypadkowy zbiór technologii: inny framework w każdym
+            projekcie, wypróbowanie automatycznych wdrożeń od zera, most między frameworkami
+            (mikrofrontend) zamiast jednej wspólnej apki. Poligon, na którym sprawdzam, jak to
+            wszystko realnie się ze sobą składa — nie tylko w teorii.
           </p>
 
           <div className="skill-group">
@@ -75,8 +77,8 @@ export function SkillsDetail() {
             </p>
             <div className="tag-row">
               <span className="tag">React + Vite</span>
-              <span className="tag">Web Components</span>
-              <span className="tag tag--planned">Vue — w planach</span>
+              <span className="tag">Angular (tour-guide)</span>
+              <span className="tag tag--planned">Vue — w planach (Insider)</span>
             </div>
           </div>
           <div className="skill-group">
@@ -88,18 +90,28 @@ export function SkillsDetail() {
             </div>
           </div>
           <div className="skill-group">
-            <span className="skill-group__label">Infrastruktura</span>
+            <span className="skill-group__label">Automatyzacja wdrożeń</span>
+            <p className="skill-group__note skill-group__note--lead">
+              Nie tylko "działa u mnie" — pełny łańcuch build → test → obraz Dockera → deploy na
+              VPS, uruchamiany samym pushem, bez ręcznego wchodzenia na serwer.
+            </p>
             <div className="tag-row">
               <span className="tag">Docker</span>
               <span className="tag">Traefik</span>
               <span className="tag">VPS (Hetzner)</span>
-              <span className="tag">GitHub Actions</span>
+              <span className="tag">GitHub Actions (CI/CD)</span>
             </div>
           </div>
           <div className="skill-group">
-            <span className="skill-group__label">Jedna, konkretna sztuczka</span>
+            <span className="skill-group__label">Mikrofrontend</span>
+            <p className="skill-group__note skill-group__note--lead">
+              Zamiast jednej wspólnej apki — realny widget z tour-guide (Angular) osadzony
+              bezpośrednio na tej stronie (React), jako zwykły znacznik HTML.
+            </p>
             <div className="tag-row">
-              <span className="tag">Custom Element z Angulara osadzony w React</span>
+              <span className="tag">Web Components</span>
+              <span className="tag">Custom Elements</span>
+              <span className="tag">Shadow DOM</span>
             </div>
           </div>
         </section>
