@@ -27,7 +27,12 @@ wizualnie do tour-guide. Każda apka w zestawie może mieć inny charakter grafi
   `CLAUDE.md`) — appka do planowania wycieczek. Status: zaawansowany, patrz jego własny
   `CLAUDE.md`/`PROJECT_BRIEF.md` po pełny szczegół.
 - **Projekt 2 — insider news dla małych inwestorów** (framework: **Vue** — lekki, szybki do
-  uruchomienia, dobrze pasuje do prostych, szybkich kart-stories) — patrz sekcja osobna poniżej.
+  uruchomienia, dobrze pasuje do prostych, szybkich kart-stories; osobne repo `C:\insider`,
+  własny `CLAUDE.md`) — patrz sekcja osobna poniżej. Status: **pierwszy szkielet zbudowany
+  (2026-07-30)** — Vue + Vite, tokeny "Night Desk" jako realny CSS, jedna karta-story z plakietką
+  "SUGESTIA AI · NIE PORADA" od pierwszej wersji (Faza 4, krok 10); brak jeszcze realnego źródła
+  danych i deployu. Ten dokument (nie repo insider) pozostaje jedynym miejscem pełnej specyfikacji
+  — `CLAUDE.md` w `insider` tylko do niego odsyła, nie duplikuje treści.
 - **Projekt 3 — "Serwisant"** (robocza nazwa, framework: do ustalenia) — asystent serwisowy
   samochodu. Patrz sekcja osobna poniżej.
 
@@ -1089,10 +1094,13 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
    kompromis (kolor zmienia się od razu, bez animacji, nic realnie nie tracąc).
 
 **Faza 4 — Projekt 02: Insider (Vue)**
-10. Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha Vantage/
-    Marketaux), plakietka "SUGESTIA AI · NIE PORADA" obecna od pierwszej wersji, nie dobudowana
-    później.
-11. Deploy, subdomena, karta w portfolio odblokowana naprawdę.
+10. 🔶 Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha
+    Vantage/Marketaux), plakietka "SUGESTIA AI · NIE PORADA" obecna od pierwszej wersji, nie
+    dobudowana później. **Częściowo zbudowane (2026-07-30, repo `C:\insider`):** szkielet +
+    tokeny + jedna karta ze sztywnymi danymi + plakietka — gotowe. Pozostaje: podpięcie realnego
+    źródła danych (jedno z trzech kandydatów) i pasek tickera.
+11. Deploy, subdomena (`insider.kubsiw.com`, DNS już dostępny na tej samej strefie Cloudflare co
+    `tourguide.kubsiw.com`), karta w portfolio odblokowana naprawdę.
 
 **Faza 5 — Projekt 03: Serwisant (Angular)**
 12. Profil pojazdu (formularz + OCR dowodu rejestracyjnego), podstawowy timeline na bazie ręcznie
@@ -1358,3 +1366,18 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   bug zgłoszony przez właściciela: na mobilce w tour-guide rysowanie koła (promień) na mapie
   area-pickera nie działa, podczas gdy poligon działa — do zbadania na żywym `tourguide.kubsiw.com`
   na realnym dotyku, nie na zresizowanym viewport na desktopie (patrz `CLAUDE.md` tour-guide).
+- 2026-07-30: **zainicjowano Projekt 2 (Insider)** — nowe, osobne repo `C:\insider` (Vue 3 + Vite),
+  domena `insider.kubsiw.com` już dostępna na tej samej strefie Cloudflare co tour-guide. Zgodnie z
+  zasadą "mały, weryfikowalny szkielet najpierw" zbudowano dokładnie zakres Fazy 4/kroku 10: tokeny
+  "Night Desk" jako realny CSS (`src/styles/tokens.css`), jeden dumb komponent `StoryCard.vue` (bez
+  fetchowania/logiki biznesowej) renderujący jedną kartę ze sztywnymi danymi i plakietką "SUGESTIA
+  AI · NIE PORADA" obecną od pierwszej wersji — zweryfikowane na żywo w przeglądarce (desktop +
+  375px mobile, bez przewijania w poziomie). Brak jeszcze realnego źródła danych, tickera i
+  deployu. **Właściciel będzie prowadził dalszą pracę nad Insiderem w osobnej zakładce Claude Code
+  (rooted w `C:\insider`)**, tę zakładkę (rooted w `C:\portfolio-shell`) zostawiając dla dalszej
+  pracy nad shellem. **Ustalono jawnie: jeden wspólny dokument, nie kopie per repo** — ten plik
+  (`PORTFOLIO_PLAN.md`) pozostaje jedynym miejscem pełnej specyfikacji/historii współdzielonej
+  między projektami; `CLAUDE.md` w `insider` (podobnie jak już wcześniej w tour-guide) tylko do
+  niego odsyła pełną ścieżką, nic z jego treści nie jest kopiowane lokalnie — pierwsza wersja
+  `insider`'s `CLAUDE.md` przypadkiem duplikowała fragment specyfikacji w osobnym
+  `PROJECT_BRIEF.md`, złapane i poprawione (plik usunięty) zanim trafiło to do commita.
