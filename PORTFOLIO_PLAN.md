@@ -1331,3 +1331,30 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   (realne nazwy plików) dopisane do punktu f w Roadmapie — łącznie z rozstrzygnięciem wcześniejszej
   otwartej wątpliwości (plik `cat_eye.webp` ujawnił przez nazwę, że to demonstracja "cat-eye"
   bokeh, jednoznacznie fotograficzna, nie hiking/bieganie).
+- 2026-07-30: **dwa realne incydenty produkcyjne, oba wynikłe z CSP dodanego świeżo po obu
+  stronach, złapane na żywo przez właściciela, nie testami.** (1) Ten shell's `style-src 'self'`
+  (bez `unsafe-inline`) po cichu blokował `<style>` wstrzykiwany w runtime przez shadow DOM
+  widgetu `<tour-guide-mini-map>` (Angular wstrzykuje style komponentów jako prawdziwe tagi
+  `<style>`, nie tylko zewnętrzne pliki — inaczej niż Vite/ten shell, który normalnie nie ma
+  żadnych inline styli). Efekt: `.leaflet-container` traciło `overflow: hidden`, co uruchamiało
+  pętlę ResizeObserver → `invalidateSize()` → więcej kafli → większy kontener → crash karty.
+  Naprawione dodaniem `'unsafe-inline'` do `style-src` tego shellu (uzasadnione — Vite i tak nie
+  generuje inline skryptów, więc `script-src` zostaje wąski). (2) Osobny, poważniejszy incydent w
+  samym tour-guide: `script-src 'self'` (bez wyjątków) zablokował inline `onload` handler, który
+  Angular CLI samo generuje w zbudowanym `index.html`
+  (`<link media="print" onload="this.media='all'">`, standardowy wzorzec nie-blokującego
+  ładowania CSS) — arkusz nigdy nie przełączał się z `media=print` na `media=all`, więc **cała
+  strona traciła style na produkcji** (lokalnie niewidoczne, bo `ng serve` nie wysyła żadnego
+  CSP). Pierwsza łatka (blanket `'unsafe-inline'` w `script-src`) zadziałała, ale właściciel od
+  razu zapytał wprost, czy to nie jest obniżka jakości audytu — słusznie: to był realny downgrade
+  zrobiony pod presją awarii, bez znalezienia faktycznej przyczyny najpierw. Naprawione właściwie:
+  policzony SHA-256 dokładnie tej treści handlera i użyty jako scoped
+  `'unsafe-hashes' 'sha256-...'` zamiast ogólnego `unsafe-inline` — zweryfikowane też negatywnie
+  (wstrzyknięty, niepowiązany inline handler nadal blokowany), więc łatka nie otwiera CSP szerzej
+  niż potrzeba. Pełny opis, dokładny hash i finalny nagłówek — w `CLAUDE.md` tour-guide (sekcja o
+  incydencie CSP). **Lekcja do zapamiętania dla obu repo:** przy awarii CSP nie sięgać od razu po
+  `unsafe-inline` jako pierwszą łatkę — najpierw znaleźć faktyczny inline script/handler; hash jest
+  niemal zawsze dostępny i dużo węższy. Przy okazji zalogowano też (nie naprawiono jeszcze) realny
+  bug zgłoszony przez właściciela: na mobilce w tour-guide rysowanie koła (promień) na mapie
+  area-pickera nie działa, podczas gdy poligon działa — do zbadania na żywym `tourguide.kubsiw.com`
+  na realnym dotyku, nie na zresizowanym viewport na desktopie (patrz `CLAUDE.md` tour-guide).
