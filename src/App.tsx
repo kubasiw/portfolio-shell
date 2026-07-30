@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import heroPhoto from './assets/about/couple_sea.webp';
 import './App.css';
 import { Stamp } from './components/Stamp';
 import { Toc } from './features/toc/Toc';
@@ -127,12 +128,20 @@ function App() {
       </header>
 
       <main className="hero">
-        <h1 className="hero__title">
-          TRASY, KOD
-          <br />
-          <em>i jeden obiektyw.</em>
-        </h1>
-        <p className="hero__tagline">Trzy aplikacje, jedna trasa.</p>
+        <div className="hero__text">
+          <h1 className="hero__title">
+            <span className="hero__highlight">TRASY, KOD</span>
+            <br />
+            <span className="hero__highlight">
+              <em>i jeden obiektyw.</em>
+            </span>
+          </h1>
+        </div>
+        <img
+          className="hero__photo"
+          src={heroPhoto}
+          alt="Leśna ścieżka schodząca do morza o zmierzchu, dwie sylwetki"
+        />
       </main>
 
       <Toc

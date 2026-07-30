@@ -11,7 +11,7 @@ const SHIP_SIZES = [1, 1, 2, 3, 4, 5] as const;
 // "(Art)yleria" — specjalny strzał sprawdzający naraz kwadrat 3×3 (promień 1 wokół celu),
 // ograniczony liczbą użyć na sesję (jedną planszę), żeby zostać ciekawym przyspieszeniem,
 // nie sposobem na trywialne rozwiązanie całej gry.
-export const ARTILLERY_CHARGES = 2;
+export const ARTILLERY_CHARGES = 3;
 export const ARTILLERY_RADIUS = 1;
 
 export type Coordinate = string;
