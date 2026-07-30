@@ -129,16 +129,40 @@
   color: var(--eg-ink-secondary);
 }
 
-.spec-plate__cover-photo {
-  display: block;
+/* Ramka o stałym rozmiarze — overflow:hidden, żeby --zoomed (patrz niżej) nie wylewało się na
+   resztę karty. Wysokość/margines/border/tło przeniesione tu z .spec-plate__cover-photo. */
+.spec-plate__cover-photo-frame {
+  position: relative;
   width: 100%;
   height: 272px;
   margin-top: 12px;
   border: 1px solid var(--eg-hairline);
-  /* contain, nie cover — zdjęcie ma własną, w stylu polaroidu ramkę wbudowaną w kadr;
-     cover ją przycinał. */
-  object-fit: contain;
+  overflow: hidden;
   background: var(--eg-divider);
+}
+
+.spec-plate__cover-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* cover domyślnie — wypełnia całą ramkę, przycinając nadmiar. */
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Wyjątek dla zdjęć z własną, wbudowaną w kadr ramką (np. "O mnie" ma polaroidowy border w
+   samym pliku) — cover by ją przycinał, więc całe zdjęcie zostaje widoczne zamiast wypełniać ramkę. */
+.spec-plate__cover-photo--contain {
+  object-fit: contain;
+}
+
+/* Przy braku luzu w poziomie pod cover (patrz komentarz przy Section.coverPhoto) — zdjęcie
+   renderowane szerzej niż ramka i pozycjonowane przez inline width/left zamiast object-position. */
+.spec-plate__cover-photo--zoomed {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  max-width: none;
 }
 
 /*

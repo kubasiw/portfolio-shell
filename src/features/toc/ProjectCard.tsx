@@ -60,7 +60,30 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       {!locked && (
         <>
           {coverPhoto && (
-            <img src={coverPhoto.src} alt={coverPhoto.alt} className="spec-plate__cover-photo" />
+            <div className="spec-plate__cover-photo-frame">
+              <img
+                src={coverPhoto.src}
+                alt={coverPhoto.alt}
+                className={`spec-plate__cover-photo ${
+                  coverPhoto.fit === 'contain' ? 'spec-plate__cover-photo--contain' : ''
+                } ${coverPhoto.zoom ? 'spec-plate__cover-photo--zoomed' : ''}`}
+                style={
+                  coverPhoto.zoom
+                    ? {
+                        // width:130% na samym <img> NIE tworzy luzu w poziomie — object-fit:cover
+                        // przelicza dopasowanie do nowego (dalej proporcjonalnie węższego niż
+                        // ramka) boxa i znów trafia dokładnie w szerokość. transform na już
+                        // dopasowanym obrazku faktycznie powiększa poza ramkę — przycina to
+                        // overflow:hidden na .spec-plate__cover-photo-frame. Kierunek sprawdzony
+                        // na żywo (poprzednia, "logiczna" wersja ze znakiem odwrotnym poszła w
+                        // złą stronę) — panX dodatnie = translateX dodatnie = w prawo.
+                        objectPosition: coverPhoto.position,
+                        transform: `scale(${coverPhoto.zoom}) translateX(${coverPhoto.panX ?? 0}px) rotate(${coverPhoto.rotate ?? 0}deg)`,
+                      }
+                    : { objectPosition: coverPhoto.position }
+                }
+              />
+            </div>
           )}
           {!section.hideDescription && (
             <p className="spec-plate__description">{section.description}</p>

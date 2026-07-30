@@ -20,7 +20,23 @@ export interface Section {
   // wysokości wierszy zawsze wyrówna się co do piksela między kartami, niezależnie od długości
   // opisu/treści pod spodem (patrz .spec-plate--has-cover w Toc.css/ProjectCard.css). Dane tutaj,
   // nie w osobnej mapie w ProjectCard.tsx — karta nie musi znać żadnych konkretnych id sekcji.
-  coverPhoto?: { src: string; alt: string };
+  // `fit`/`position` domyślnie 'cover'/'center' (wypełnia całą ramkę) — `contain` tylko dla zdjęć
+  // z własną, wbudowaną w kadr ramką (np. "O mnie" ma polaroidowy border wewnątrz samego pliku;
+  // cover by go przycinał).
+  // `zoom`/`panX` — dla przypadków, gdzie samo `position` nie wystarcza: przy proporcjach tej
+  // ramki (przybliżony kwadrat) `cover` czasem skaluje zdjęcie dokładnie do szerokości ramki, więc
+  // w poziomie nie ma żadnego luzu do przesunięcia. `zoom` (np. 1.15 = 115% szerokości) sztucznie
+  // dokłada luz, `panX` (px, dodatnie = w prawo) przesuwa w jego obrębie.
+  coverPhoto?: {
+    src: string;
+    alt: string;
+    fit?: 'cover' | 'contain';
+    position?: string;
+    zoom?: number;
+    panX?: number;
+    // Stopnie, czysto dekoracyjne przekrzywienie kadru (np. jak pieczątka/wrzucone zdjęcie).
+    rotate?: number;
+  };
   // Kontakt: ContactLinks na karcie to już cała treść, zwykły opis nad nimi byłby powtórzeniem.
   hideDescription?: boolean;
   // Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
@@ -63,6 +79,11 @@ export const SECTIONS: Section[] = [
     coverPhoto: {
       src: aboutCoverPhoto,
       alt: 'Autoportret spod korony drzewa, w okularach przeciwsłonecznych',
+      // Zdjęcie ma własną, wbudowaną w kadr ramkę w stylu polaroidu — cover by ją przycinał.
+      fit: 'contain',
+      // Kosmetyczne 2% — contain zostawiało ~1-2px pustej przestrzeni po bokach (kwadratowe
+      // zdjęcie w ramce odrobinę szerszej niż wyższej).
+      zoom: 1.02,
     },
   },
   {
@@ -74,6 +95,9 @@ export const SECTIONS: Section[] = [
     coverPhoto: {
       src: skillsCoverPhoto,
       alt: 'Kawa i deser na biurku, w tle monitory z kodem',
+      // 65% -> 50% poszło w złą stronę (na localhost widoczne niżej, nie wyżej) — teoria o
+      // kierunku object-position okazała się myląca, korekta w przeciwną stronę względem 65%.
+      position: 'center 85%',
     },
   },
   {
@@ -87,6 +111,12 @@ export const SECTIONS: Section[] = [
     coverPhoto: {
       src: contactCoverPhoto,
       alt: 'Kilka starych telefonów komórkowych na tacy, obok kawa',
+      position: 'center 40%',
+      // Przy proporcjach tej ramki cover skaluje to zdjęcie dokładnie do jej szerokości — zero
+      // luzu w poziomie do przesunięcia. zoom dokłada luz, panX przesuwa w prawo w jego obrębie.
+      zoom: 1.3,
+      panX: 0,
+      rotate: 9,
     },
     hideDescription: true,
   },
