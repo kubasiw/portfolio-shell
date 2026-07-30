@@ -18,28 +18,27 @@ const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 const CONTACT_SECTION_ID = 'contact';
 
-// Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
-// "w budowie" w rogu. Usunąć z tego zestawu, gdy dana sekcja dostanie realną zawartość
-// (Faza 3.5, punkty d/e/f/g z PORTFOLIO_PLAN.md).
-const IN_PROGRESS_SECTION_IDS = new Set(['insider', 'serwisant']);
-
 function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
 
 export function ProjectCard({ section, locked, highlighted, onOpenDetail }: ProjectCardProps) {
   const coverPhoto = section.coverPhoto;
+  const showInProgressStamp = !locked && section.inProgress;
+
+  const cardClassName = [
+    'spec-plate',
+    locked ? 'spec-plate--locked' : 'spec-plate--unlocked plate-emphasized',
+    highlighted && 'spec-plate--nav-highlighted',
+    showInProgressStamp && 'spec-plate--in-progress',
+    !locked && coverPhoto && 'spec-plate--has-cover',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <div
-      id={`section-${section.id}`}
-      className={`spec-plate ${locked ? 'spec-plate--locked' : 'spec-plate--unlocked'} ${
-        highlighted ? 'spec-plate--nav-highlighted' : ''
-      } ${!locked && IN_PROGRESS_SECTION_IDS.has(section.id) ? 'spec-plate--in-progress' : ''} ${
-        !locked && coverPhoto ? 'spec-plate--has-cover' : ''
-      }`}
-    >
-      {!locked && IN_PROGRESS_SECTION_IDS.has(section.id) && (
+    <div id={`section-${section.id}`} className={cardClassName}>
+      {showInProgressStamp && (
         <Stamp main="W budowie" sub="wkrótce" className="spec-plate__stamp" />
       )}
       <div className="spec-plate__rows">

@@ -40,8 +40,8 @@ function App() {
     // nasłuch zdarzenia. Odczyt geometrii tuż po przełączeniu klasy bywa też niewiarygodny (ta sama
     // klasa problemu co gdzie indziej w tym zestawie projektów — patrz CLAUDE.md tour-guide,
     // "transition + just-toggled class" — realnie potwierdzone tu na żywo osobnym testem), dlatego
-    // measure() poniżej defensywnie wymusza `transition: none` na panelach tuż przed pomiarem i
-    // przywraca go zaraz po, zamiast ufać pierwszemu odczytowi.
+    // poniżej defensywnie wymuszamy `transition: none` na panelach tuż przed pomiarem i
+    // przywracamy go zaraz po, zamiast ufać pierwszemu odczytowi.
     const PANEL_REVEAL_MS = prefersReducedMotion ? 0 : 400;
 
     const timer = window.setTimeout(() => {
@@ -81,6 +81,23 @@ function App() {
 
     return () => window.clearTimeout(timer);
   }, [activeNavTarget, openSectionId]);
+
+  // Jedyne miejsce, które zamyka widok szczegółowy — używane zarówno przez przycisk "Wróć do
+  // spisu treści" (id=null) jak i przez klik w nagłówku (id=null + od razu nowy target). Realny
+  // bug złapany na żywo: przycisk "Wróć" i klik w nagłówku miały osobną logikę, więc wyjście przez
+  // "Wróć" zostawiało nagłówek bez podświetlenia, a wyjście przez nagłówek podświetlało poprawnie —
+  // dwie różne ścieżki wyjścia dawały dwa różne stany. Teraz zamknięcie zawsze podświetla grupę
+  // sekcji, którą się właśnie opuszcza (chyba że wywołujący od razu poda inny target).
+  const handleSectionChange = (id: string | null): void => {
+    if (id === null) {
+      if (openSection) {
+        setActiveNavTarget(openSection.navGroup);
+      }
+      setOpenSectionId(null);
+      return;
+    }
+    setOpenSectionId(id);
+  };
 
   const handleNavClick = (target: NavTarget): void => {
     // Widok szczegółowy otwarty -> nagłówek wcześniej nic nie robił (realny bug zgłoszony przez
@@ -146,9 +163,8 @@ function App() {
 
       <Toc
         activeNavTarget={activeNavTarget}
-        openSectionId={openSectionId}
         openSection={openSection}
-        onOpenSectionChange={setOpenSectionId}
+        onOpenSectionChange={handleSectionChange}
       />
 
       <footer className="site-footer">

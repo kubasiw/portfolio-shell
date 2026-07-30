@@ -43,3 +43,12 @@ a {
 .link-dashed:hover {
   color: var(--eg-accent-primary);
 }
+
+/* Wspólny "wyróżniony plate" (gruba ramka w kolorze primary + bladozielone tło) — ten sam wygląd
+   co .spec-plate--unlocked, reużyty przez skill-plate--core (Umiejętności), zamiast powielać te
+   same 3 deklaracje w drugim pliku pod inną nazwą. */
+.plate-emphasized {
+  border-width: 2px;
+  border-color: var(--eg-accent-primary);
+  background: var(--eg-unlocked-bg);
+}

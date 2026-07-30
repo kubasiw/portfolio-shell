@@ -15,6 +15,7 @@ interface SectionDetailProps {
 
 export function SectionDetail({ section, onClose }: SectionDetailProps) {
   const backButtonRef = useRef<HTMLButtonElement>(null);
+  const hasCustomDetail = section.id === 'about' || section.id === 'skills';
 
   // Fokus na przycisk powrotu przy otwarciu — ten sam duch co "dostępność jako standard" z
   // dobrych praktyk w PORTFOLIO_PLAN.md; to nowy sposób nawigacji, więc użytkownik klawiatury/
@@ -35,11 +36,12 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
       </button>
       <h2 className="section-detail__title">{section.title}</h2>
       <p className="section-detail__description">{section.description}</p>
-      <Suspense fallback={null}>
-        {section.id === 'about' && <AboutGallery />}
-        {section.id === 'skills' && <SkillsDetail />}
-      </Suspense>
-      {section.id !== 'about' && section.id !== 'skills' && (
+      {hasCustomDetail ? (
+        <Suspense fallback={null}>
+          {section.id === 'about' && <AboutGallery />}
+          {section.id === 'skills' && <SkillsDetail />}
+        </Suspense>
+      ) : (
         <p className="section-detail__placeholder">Treść w przygotowaniu.</p>
       )}
     </div>

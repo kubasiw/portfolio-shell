@@ -16,11 +16,7 @@
   padding: 18px 20px;
 }
 
-.skill-plate--core {
-  border-width: 2px;
-  border-color: var(--eg-accent-primary);
-  background: var(--eg-unlocked-bg);
-}
+/* Ramka + tło — patrz .plate-emphasized w index.css (współdzielone z .spec-plate--unlocked). */
 
 .skill-plate__title {
   font-family: var(--eg-font-mono);

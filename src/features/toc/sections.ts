@@ -23,6 +23,9 @@ export interface Section {
   coverPhoto?: { src: string; alt: string };
   // Kontakt: ContactLinks na karcie to już cała treść, zwykły opis nad nimi byłby powtórzeniem.
   hideDescription?: boolean;
+  // Odblokowane, ale bez realnej treści pod spodem jeszcze (tylko opis) — dostają pieczątkę
+  // "w budowie" w rogu. Usunąć, gdy dana sekcja dostanie realną zawartość.
+  inProgress?: boolean;
 }
 
 export const SECTIONS: Section[] = [
@@ -40,6 +43,7 @@ export const SECTIONS: Section[] = [
     description: 'Insiderskie newsy dla małych inwestorów: Vue, AI-owe podsumowania rynku.',
     navGroup: 'projects',
     hasDetailView: false,
+    inProgress: true,
   },
   {
     id: 'serwisant',
@@ -47,6 +51,7 @@ export const SECTIONS: Section[] = [
     description: 'Asystent serwisowy samochodu: Angular, OCR książki serwisowej i faktur.',
     navGroup: 'projects',
     hasDetailView: false,
+    inProgress: true,
   },
   {
     id: 'about',

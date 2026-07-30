@@ -26,7 +26,7 @@ function SkillGroupBlock({ label, note, tags }: SkillGroup) {
 
 function SkillPlate({ title, core, pullQuote, pullQuotePrimary, subtitle, groups }: SkillPlateData) {
   return (
-    <section className={`skill-plate ${core ? 'skill-plate--core' : ''}`}>
+    <section className={`skill-plate ${core ? 'skill-plate--core plate-emphasized' : ''}`}>
       <p className="skill-plate__title">{title}</p>
       <p
         className={`skill-plate__pull-quote ${pullQuotePrimary ? 'skill-plate__pull-quote--primary' : ''}`}

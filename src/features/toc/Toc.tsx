@@ -9,7 +9,6 @@ import './Toc.css';
 
 interface TocProps {
   activeNavTarget: NavTarget | null;
-  openSectionId: string | null;
   openSection: Section | null;
   onOpenSectionChange: (id: string | null) => void;
 }
@@ -34,7 +33,7 @@ function buildStatusMessage(
   return `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`;
 }
 
-export function Toc({ activeNavTarget, openSectionId, openSection, onOpenSectionChange }: TocProps) {
+export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocProps) {
   const {
     cellStatus,
     unlockedSectionIds,
@@ -73,7 +72,7 @@ export function Toc({ activeNavTarget, openSectionId, openSection, onOpenSection
       ? 'Otwórz grę w statki →'
       : 'Schowaj planszę ↑';
 
-  const detailOpen = openSectionId !== null;
+  const detailOpen = openSection !== null;
 
   return (
     <section className="toc" aria-labelledby="toc-heading">

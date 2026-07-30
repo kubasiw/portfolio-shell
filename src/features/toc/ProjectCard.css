@@ -50,11 +50,7 @@
   border-color: var(--eg-muted);
 }
 
-.spec-plate--unlocked {
-  border-width: 2px;
-  border-color: var(--eg-accent-primary);
-  background: var(--eg-unlocked-bg);
-}
+/* Ramka + tło — patrz .plate-emphasized w index.css (współdzielone z .skill-plate--core). */
 
 .spec-plate__rows {
   display: flex;
