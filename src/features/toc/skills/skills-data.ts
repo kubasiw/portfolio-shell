@@ -46,6 +46,7 @@ export const SKILL_PLATES: SkillPlateData[] = [
         tags: [
           { label: 'Domain-Driven Design' },
           { label: 'Modularna architektura' },
+          { label: 'Skalowalność i wydajność' },
           { label: 'Refaktoryzacja legacy' },
         ],
       },
@@ -82,7 +83,7 @@ export const SKILL_PLATES: SkillPlateData[] = [
         label: 'Frontend poza Angularem',
         note:
           'Nie tylko na potrzeby tego portfolio — pierwszy raz w realnym, małym projekcie w ' +
-          "pracy (od podstaw, React + Cursor). Ten portfolio to już drugi, większy krok w React'cie.",
+          "pracy (od podstaw, React + Cursor). To portfolio to już drugi, większy krok w React'cie.",
         tags: [
           { label: 'React + Vite' },
           { label: 'Angular (tour-guide)' },

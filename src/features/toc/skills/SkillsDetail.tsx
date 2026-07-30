@@ -58,9 +58,9 @@ export function SkillsDetail() {
           rozumować. To nie jest nowa umiejętność odkryta przy tym portfolio.
         </p>
         <p className="ai-callout__secondary">
-          Ten portfolio pokazuje bardziej autonomiczny wariant tej samej pracy: Claude Code
+          To portfolio pokazuje bardziej autonomiczny wariant tej samej pracy: Claude Code
           prowadzi całe zadania — od infrastruktury po design system — a ja nadal kieruję
-          kierunkiem i sprawdzam każdą decyzję, tylko na poziomie zadania, nie pojedynczej
+          pracami i sprawdzam każdą decyzję, tylko na poziomie zadania, nie pojedynczej
           linijki.
         </p>
       </div>

@@ -197,6 +197,15 @@ frameworków (każda apka nadal wysyła własny runtime Angular/React/Vue, chyba
 Federation). Przy skali 3 apek to akceptowalny koszt, nieplanowany do rozwiązywania osobno na
 razie.
 
+**Idea captured, nie zbudowane (2026-07-30): czy kolejna apka mogłaby otwierać się w całości jako
+mikrofrontend w modalu na portfolio, nie tylko jako mały widget-fragment jak dziś tour-guide?**
+Realne napięcie z powyższą decyzją: cała apka (nie fragment) potrzebuje własnego routingu/stanu
+wewnątrz tego modala, a to dokładnie ten scenariusz ("płynny routing między fragmentami różnych
+apek na jednej stronie"), który ta sekcja świadomie odłożyła jako powód do rozważenia single-spa,
+nie Web Components. Do przemyślenia dopiero przy budowie kolejnej apki (Insider) — czy zostać przy
+"fragment jako widget" (bezpieczne, już sprawdzone), czy faktycznie zbudować drugi POC (modal +
+cała apka) i porównać na żywo, zanim padnie decyzja.
+
 ## Gamifikacja — landing portfolio
 
 Pomysł: gra w **statki** jako mechanika odkrywania zawartości portfolio — trafienia odsłaniają
@@ -430,6 +439,14 @@ po prostu ciemniejszy o tyle, żeby faktycznie było widać. Przy okazji poprawi
 tabeli — hairline wewnętrzny był numerycznie ciemniejszy niż hairline zewnętrzny mimo opisu
 "jaśniejszy beż" (literówka/przeoczenie sprzed tej korekty, nie celowa decyzja).
 
+**Audyt jednego źródła prawdy (2026-07-30):** sprawdzone realnie (grep, nie na wiarę) — zero
+zahardkodowanych hexów/`rgb()`/`rgba()`/`hsl()` w jakimkolwiek `.css`/`.tsx`/`.ts` poza samym
+`tokens.css`; wszędzie indziej kolory idą przez `var(--eg-*)`. Jeden świadomy wyjątek:
+`public/favicon.svg` ma `#f2ece0`/`#0b3d2e` zahardkodowane wprost w atrybutach SVG — statyczny
+plik ładowany przez przeglądarkę niezależnie od arkusza stylów, nie da się mu podać CSS custom
+property z zewnątrz. Nieunikniona duplikacja na granicy systemów, nie przeoczenie — do ręcznej
+aktualizacji, jeśli paleta się kiedyś zmieni.
+
 ### Typografia
 
 - **Nagłówki / masthead** — serif (`Georgia, ui-serif, serif` — świadomie bez zależności od
@@ -487,6 +504,17 @@ głównie detale wykonawcze:
   ekranie).
 - Realne fonty serif/mono do samodzielnego hostowania dla portfolio shellu (na razie system
   fallback w makietach).
+- **Zabezpieczenie pobierania CV przed automatycznym scrapowaniem (2026-07-30, zgłoszone).** CV ma
+  prawdziwy numer telefonu — obecnie to zwykły, publiczny plik PDF pod `/cv/...`, każdy bot może go
+  pobrać. Realna trudność: portfolio-shell nie ma własnego backendu, więc każda "prawdziwa"
+  ochrona (reCAPTCHA z weryfikacją server-side, podpisany link z krótkim czasem życia) wymagałaby
+  dobudowania API tylko dla tego jednego pliku. Tańsza opcja (kliknięcie/potwierdzenie po stronie
+  klienta przed pobraniem) zatrzymałaby tylko najbardziej naiwne scrapery statycznego HTML-a, nie
+  bota wykonującego JS — czyli nie jest to realne zabezpieczenie, tylko utrudnienie. Do decyzji:
+  (a) zostawić jak jest (najniższe ryzyko realnie — CV i tak trafia do rekruterów, nie jest
+  tajemnicą), (b) zamienić numer telefonu w PDF-ie na coś mniej wrażliwego (np. tylko e-mail +
+  LinkedIn, telefon na wyraźną prośbę), (c) dodać lekki klient-side gate świadomie wiedząc, że to
+  nie jest prawdziwe zabezpieczenie. Nie wdrożone, czeka na decyzję właściciela.
 
 ## Roadmap — kolejność budowy
 
