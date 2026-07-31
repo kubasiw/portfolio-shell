@@ -164,6 +164,20 @@ telefonie":** tak, ale z realną różnicą między platformami, warto mieć to 
   możliwy, ale wymaga świadomej decyzji o koncie Apple Developer (albo akceptacji 7-dniowego
   odświeżania), do rozważenia bliżej realnego budowania, nie teraz.
 
+**Sprzęt właściciela potwierdzony (2026-07-31): Windows + iPhone 16 Pro Max, zero dostępu do
+Maca.** To realnie zmienia powyższy wniosek — scenariusz "Android APK za darmo" nie jest czymś,
+co właściciel może sam przetestować na swoim sprzęcie (nie ma telefonu z Androidem), a darmowa
+ścieżka na iOS (podpis osobistym Apple ID przez Xcode, 7-dniowy limit) też odpada, bo wymaga
+Maca, którego nie ma. Praktyczne wnioski:
+- **Development/podgląd na żywo w trakcie budowy nie jest problemem mimo braku Maca** — Expo Go
+  działa identycznie na iOS jak na Androidzie (appka z App Store, ten sam skan kodu QR, ten sam
+  Fast Refresh) i nie wymaga Xcode ani Maca w ogóle.
+- **Jedyna realna droga do prawdziwej, samodzielnej ikony na pulpicie (nie tylko podgląd w Expo
+  Go) to EAS Build** (kompiluje w chmurze Expo — działa z Windowsa, nie potrzeba lokalnego Xcode)
+  **plus płatne Apple Developer Program (99 USD/rok)** do podpisania builda pod iPhone'a
+  właściciela. Nie ma tu darmowej alternatywy przy tym zestawie sprzętowym — do zaakceptowania
+  świadomie przy realnym budowaniu, nie teraz.
+
 **Dodatkowe funkcje ustalone 2026-07-24:**
 - **Przegląd techniczny (SKP)** jako osobna pozycja w timeline, obok olej/rozrząd/klimatyzacja.
   Termin ważności badania technicznego jest realnie wydrukowany na dowodzie rejestracyjnym (PL) —
