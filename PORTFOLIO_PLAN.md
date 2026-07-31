@@ -178,6 +178,23 @@ Maca, którego nie ma. Praktyczne wnioski:
   właściciela. Nie ma tu darmowej alternatywy przy tym zestawie sprzętowym — do zaakceptowania
   świadomie przy realnym budowaniu, nie teraz.
 
+**Dystrybucja dla odwiedzających portfolio z zewnątrz (2026-07-31) — nie tylko dla właściciela.**
+Ten sam problem co wyżej, tylko dla obcych: Android — bez problemu, prawdziwy `.apk` do pobrania i
+zainstalowania wprost (odwiedzający sam akceptuje "instalację z nieznanych źródeł", zero konta,
+zero kosztu). iPhone — droga "za darmo" w ogóle się nie skaluje na obcych urządzeń (podpis przez
+Xcode wymaga z góry znać urządzenie), więc realne opcje to **TestFlight** (płatne konto Apple
+Developer po stronie właściciela, ale potem realny "tap i instalujesz" dla dowolnego iPhone'a,
+build wygasa co 90 dni) albo pełny **App Store** (dużo większe zobowiązanie — recenzja Apple,
+polityka prywatności, utrzymanie — przesada dla demo portfolio).
+
+**Darmowa, wspólna dla obu platform alternatywa: live link do Expo Go** — odwiedzający instaluje
+darmową, generyczną appkę Expo Go (App Store/Google Play), potem otwiera projekt Serwisanta przez
+link/kod QR, bez budowania żadnego natywnego pliku, bez konta Apple Developer. Kompromis: appka
+otwiera się *wewnątrz* Expo Go, nie jako własna ikona — ale działa od razu, na każdym telefonie,
+za darmo. **Potwierdzone jako plan na kartę Serwisanta w portfolio** (do zbudowania razem z resztą
+widoku szczegółów, wzorem `InsiderDetail`/`TourGuideDetail`): opis + zrzut ekranu appki + krótka
+instrukcja "zainstaluj Expo Go, zeskanuj kod" + sam kod QR prowadzący do live projektu.
+
 **Dodatkowe funkcje ustalone 2026-07-24:**
 - **Przegląd techniczny (SKP)** jako osobna pozycja w timeline, obok olej/rozrząd/klimatyzacja.
   Termin ważności badania technicznego jest realnie wydrukowany na dowodzie rejestracyjnym (PL) —
@@ -1203,7 +1220,11 @@ Projektu 3)**
     realny plik do zainstalowania na telefonie: backend (OCR/AI) nadal wystawiony pod subdomeną jak
     reszta, ale sam frontend to build EAS (Android APK do sideloadu na start, ikona na pulpicie
     telefonu — patrz dokładne rozważenie platform w sekcji Projektu 3). Karta w portfolio wtedy
-    linkuje do pobrania tego pliku (lub instrukcji), nie do live-demo pod adresem URL.
+    linkuje do pobrania tego pliku (lub instrukcji), nie do live-demo pod adresem URL. **Karta w
+    portfolio (2026-07-31, potwierdzone):** opis + zrzut ekranu appki + krótka instrukcja "zainstaluj
+    Expo Go, zeskanuj kod" + kod QR prowadzący do live projektu w Expo Go — darmowa, wspólna dla
+    iOS/Android ścieżka, bez budowania natywnego pliku (patrz pełne uzasadnienie w sekcji
+    Projektu 3, w tym dlaczego to jedyna opcja bez płatnego Apple Developer Program).
 
 **Faza 6 — Polish**
 15. Publiczna strona statusu (Uptime Kuma), spięta z health-checkami wszystkich apek.
