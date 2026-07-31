@@ -85,7 +85,7 @@ export const PASSIONS: Passion[] = [
       {
         src: gymLegs,
         alt: 'Obciążenie na łańcuchu przy nogach podczas ćwiczenia w domu, na ozdobnym dywanie',
-        caption: 'Dzień nóg na dywanie po babci ;)',
+        caption: 'Jak dipy to tylko na dywanie z 80s ;)',
       },
     ],
   },
@@ -111,12 +111,12 @@ export const PASSIONS: Passion[] = [
       {
         src: meBackLake,
         alt: 'Sylwetka w kapturze stojąca na pomoście nad jeziorem',
-        caption: 'Kaptur jako jedyna ochrona przed nastrojem wieczoru.',
+        caption: 'Lake chill...',
       },
       {
         src: narrowAlley,
         alt: 'Mały zaparkowany samochód w wąskiej śródziemnomorskiej uliczce',
-        caption: 'Zaparkować tu = akt odwagi.',
+        caption: 'Typowe intermarium.',
       },
       {
         src: sunsetBoat,
@@ -136,7 +136,7 @@ export const PASSIONS: Passion[] = [
       {
         src: mountainVillageDusk,
         alt: 'Górska wioska o zmierzchu, szczyty we mgle',
-        caption: 'Zakopane o zmierzchu, we mgle po sam dach.',
+        caption: 'Podhalańska proza.',
       },
       {
         src: snowyPeaks,
@@ -152,7 +152,7 @@ export const PASSIONS: Passion[] = [
       {
         src: nightPortrait,
         alt: 'Czarno-biały nocny portret z rozmytymi światłami w tle',
-        caption: 'Bokeh na pierwszym planie, ja gdzieś w tle.',
+        caption: '10 lat bez wyroku.',
       },
       {
         src: catEye,
@@ -162,12 +162,12 @@ export const PASSIONS: Passion[] = [
       {
         src: flowersInsects,
         alt: 'Bzygowate na dzikiej róży',
-        caption: 'Bzygowaty gość, złapany zanim odleciał ;)',
+        caption: 'Kolejka ;)',
       },
       {
         src: myMate,
         alt: 'Ręka głaszcząca ulicznego kotka',
-        caption: 'Kot zgodził się na sesję, ja tylko trzymałem aparat równo.',
+        caption: 'Nie ma takiego biegania! Poka jak pachnie noga!',
       },
       {
         src: busStop,
@@ -182,12 +182,12 @@ export const PASSIONS: Passion[] = [
       {
         src: nightDrive,
         alt: 'Twarz oświetlona światłem z deski rozdzielczej, czarno-biały kadr nocą',
-        caption: 'Deska rozdzielcza jako jedyny reflektor.',
+        caption: 'Światła miasta w 940.',
       },
       {
         src: mountainSilhouette,
         alt: 'Minimalistyczna sylwetka gór o wschodzie słońca, warstwy mgły',
-        caption: 'Warstwy gór, zero Photoshopa.',
+        caption: 'Gradient, ale prawdziwy.',
       },
     ],
   },
@@ -203,7 +203,7 @@ export const PASSIONS: Passion[] = [
       {
         src: interiorVolvo,
         alt: 'Deska rozdzielcza z breloczkiem w kształcie samochodu',
-        caption: 'Breloczek-samochodzik przy kluczykach, wciąż śmieszy po latach.',
+        caption: '100% 90s i czerwona rekurencja ;)',
       },
       {
         src: vespa,
@@ -213,12 +213,12 @@ export const PASSIONS: Passion[] = [
       {
         src: parkedVan,
         alt: 'Ciemne Volvo kombi zaparkowane na trawie przy domku letniskowym',
-        caption: 'To samo Volvo, tym razem z zewnątrz.',
+        caption: 'XC90 I ładnie się zestarzały, nie spodziewałem się :)',
       },
       {
         src: shiftKnob,
         alt: 'Manualna dźwignia zmiany biegów we wnętrzu starego Volvo',
-        caption: 'Manualna skrzynia, bo automat to za mało roboty dla ręki.',
+        caption: '100% swedish vibe :)',
       },
       {
         src: alloyWheel,
@@ -238,22 +238,22 @@ export const PASSIONS: Passion[] = [
       {
         src: beetleDusk,
         alt: 'Garbus zaparkowany w wysokiej trawie o zmierzchu',
-        caption: 'Garbus w trawie o zmierzchu, prawie niewidoczny.',
+        caption: 'South California :)',
       },
       {
         src: carReflection,
         alt: 'Odbicie klasycznego samochodu w szybie innego auta',
-        caption: 'Jedno auto w drugim — warstwa, której nie dało się zaplanować.',
+        caption: 'Volvo przez Volvo;',
       },
       {
         src: exhaustTip,
         alt: 'Końcówka wydechu na tle czerwonego zderzaka',
-        caption: 'Wydech i terakota garażu — więcej tu nie trzeba.',
+        caption: '3" => 2,5"',
       },
       {
         src: gasStation,
         alt: 'Czarne coupe na stacji benzynowej nocą',
-        caption: 'Tankowanie = sesja dla magazynu motoryzacyjnego.',
+        caption: 'Ot, prosię..',
       },
       {
         src: scooterRefuel,
@@ -289,42 +289,42 @@ export const PASSIONS: Passion[] = [
       {
         src: breakfast,
         alt: 'Śniadanie sfotografowane z góry',
-        caption: 'Śniadanie sfotografowane, zanim ostygło — priorytety.',
+        caption: 'Overhead shot, zanim ostygło.',
       },
       {
         src: harborDessert,
         alt: 'Deser na tle portu z żaglówkami i spacerującymi ludźmi',
-        caption: 'Deser w porcie, aparat zawsze w zasięgu ręki.',
+        caption: 'Marina mode :)',
       },
       {
         src: wineGlass,
         alt: 'Kieliszek czerwonego wina z góry w ostrym świetle',
-        caption: 'Wino, ostre boczne światło, reszta stołu nieistotna.',
+        caption: 'Golden hour, ale w kieliszku.',
       },
       {
         src: espressoPour,
         alt: 'Espresso lejące się do szklanki w niebieskawej tonacji',
-        caption: 'Espresso w chłodnym, niebieskawym świetle — smak drugorzędny.',
+        caption: 'Espresso.exe uruchomione ;)',
       },
       {
         src: fineDining,
         alt: 'Dwa dania z eleganckiej restauracji, zdjęte z góry',
-        caption: 'Widelec czekał, aparat był pierwszy.',
+        caption: 'Instagram tax pobrany.',
       },
       {
         src: scallopDish,
         alt: 'Przegrzebek zapiekany w muszli obok cząstki cytryny',
-        caption: 'Przegrzebek w muszli = talerz zamiast widoku za oknem.',
+        caption: 'Przegrzebek, bez filozofii.',
       },
       {
         src: steakBreakfast,
         alt: 'Stek z jajkiem sadzonym i kostką masła na desce',
-        caption: 'Stek z jajkiem — śniadanie, które samo się zgłosiło.',
+        caption: 'Białko na start dnia, bez przeprosin.',
       },
       {
         src: freshPizza,
         alt: 'Pizza prosto z pieca z przypalonymi brzegami',
-        caption: 'Pizza prosto z pieca, brzegi jeszcze się dopiekają.',
+        caption: 'Neapolitańska szkoła przypalania.',
       },
       {
         src: openSandwich,
@@ -334,22 +334,22 @@ export const PASSIONS: Passion[] = [
       {
         src: burgerPrep,
         alt: 'Surowy kotlet, orzechy włoskie i pomidorki na desce do krojenia',
-        caption: 'Składniki na desce, patelnia jeszcze zimna.',
+        caption: 'Mise en place, po naszemu.',
       },
       {
         src: burgerShake,
         alt: 'Burger z jajkiem sadzonym obok szklanki koktajlu mlecznego',
-        caption: 'Burger i koktajl — nie każde zdjęcie musi być z wakacji.',
+        caption: 'Cheat day, ale z klasą.',
       },
       {
         src: fruitSalad,
         alt: 'Zbliżenie na sałatkę owocową z orzechami włoskimi',
-        caption: 'Sałatka z bliska = już tylko tekstura.',
+        caption: 'Zoom na witaminy.',
       },
       {
         src: coffeeDesk,
         alt: 'Kawa i drożdżówka na biurku obok laptopa z wykresami na ekranie',
-        caption: 'Kawa i wykresy w tle — przerwa, która wygląda jak codzienność, bo nią jest.',
+        caption: 'Deadline i cukier.',
       },
     ],
   },
