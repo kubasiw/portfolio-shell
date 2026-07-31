@@ -21,7 +21,14 @@ function loadWidgetScript(): Promise<void> {
   return customElements.whenDefined(WIDGET_TAG).then(() => undefined);
 }
 
-const TECH_TAGS = ['Vue 3 + TypeScript', 'Node/Express', 'Finnhub', 'Claude AI', 'Docker + Traefik'];
+const TECH_TAGS = [
+  'Vue 3 + TypeScript',
+  'Node/Express',
+  'Finnhub',
+  'Claude AI',
+  'Docker + Traefik',
+  'Web Components',
+];
 
 // Split view, same shape as SkillsDetail's own two-column layout: write-up (tech + business
 // story) on one side, the real, working app on the other — not a screenshot standing in for it.
@@ -86,6 +93,21 @@ export function InsiderDetail() {
                 </span>
               ))}
             </div>
+          </section>
+          <section className="insider-detail__block">
+            <h3 className="insider-detail__heading">To, co widzisz obok, to realny mikrofrontend</h3>
+            <p>
+              Insider jest osobną apką Vue, zbudowaną i wdrożoną niezależnie od tego shellu (React)
+              — na własnej domenie, z własnym backendem. To, co renderuje się po prawej, nie jest
+              zrzutem ekranu ani ramką <code>iframe</code>: cała apka jest skompilowana do jednego
+              realnego Web Componentu (<code>&lt;insider-app&gt;</code>, Vue's{' '}
+              <code>defineCustomElement</code>), ładowanego z <code>insider.kubsiw.com</code> i
+              renderowanego w natywnym Shadow DOM — działa dokładnie tak samo, jak pod własnym
+              adresem, ze wszystkimi żywymi danymi. Ten sam wzorzec (Web Components, nie
+              iframe/single-spa) stoi już za mapą tour-guide osadzoną w karcie tego projektu wyżej
+              — tam jako mały fragment, tutaj jako cała apka, bo Insider — w przeciwieństwie do
+              tour-guide — nie ma routera ani logowania do orkiestrowania.
+            </p>
           </section>
           <a
             className="insider-detail__external-link"

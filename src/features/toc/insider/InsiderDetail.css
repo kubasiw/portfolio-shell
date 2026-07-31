@@ -59,6 +59,16 @@
   height: min(85vh, 800px);
   overflow-y: auto;
   border: 1px solid var(--eg-hairline-inner);
+  /*
+   * <insider-app> itself sets its own dark background (see insider/src/main-element.ts's :host
+   * rule), but this container's own box is still visible — and transparent, showing this page's
+   * own beige through — anywhere the widget doesn't fully cover it: the scrollbar gutter along
+   * the right edge, and briefly while the widget script is still loading ("Ładowanie…"). Real bug
+   * caught live (a persistent beige strip down the right side): this one hardcoded hex is a
+   * deliberate, scoped exception to "never hardcode a color" — it exists only to backstop this
+   * one container, not as a shared token, and matches insider's own --insider-bg value exactly.
+   */
+  background: #0a0e14;
   /* Same isolation fix as .tour-guide-widget/.modal — contains the widget's own internal
      z-index (sticky header/footer inside its shadow root) to this box instead of competing with
      the rest of the document. */
@@ -69,7 +79,9 @@
   margin: 0;
   padding: 3rem 1.5rem;
   text-align: center;
-  color: var(--eg-ink-secondary);
+  /* Sits directly on .insider-detail__app's dark backstop background (see above), not this
+     page's own paper background — needs a light color to stay readable, not --eg-ink-secondary. */
+  color: #7c8794;
   font-family: var(--eg-font-sans);
 }
 
