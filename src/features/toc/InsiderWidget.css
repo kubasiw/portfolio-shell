@@ -1,0 +1,16 @@
+.insider-widget__status {
+  margin: 0;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--eg-ink-secondary);
+  font-family: var(--eg-font-sans);
+}
+
+.insider-widget__status a {
+  color: var(--eg-accent-primary);
+}
+
+insider-app {
+  display: block;
+  height: 100%;
+}

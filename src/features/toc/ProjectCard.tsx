@@ -2,6 +2,7 @@ import type { Section } from './sections';
 import { ContactLinks } from './ContactLinks';
 import { Stamp } from '../../components/Stamp';
 import { TourGuideWidget } from './TourGuideWidget';
+import { InsiderWidget } from './InsiderWidget';
 import './ProjectCard.css';
 
 interface ProjectCardProps {
@@ -12,10 +13,15 @@ interface ProjectCardProps {
 }
 
 // Jedyna sekcja z realnym, wdrożonym projektem pod spodem na razie (Faza 3, krok 9 z
-// PORTFOLIO_PLAN.md) — Insider/Serwisant dostaną tę samą obsługę, gdy same zostaną wdrożone
-// (Fazy 4-5), nie wcześniej.
+// PORTFOLIO_PLAN.md) — Serwisant dostanie tę samą obsługę, gdy sam zostanie wdrożony (Faza 5),
+// nie wcześniej.
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
+// Insider (2026-07-30) — inaczej niż tour-guide (mały fragment/mapa osadzona wprost w karcie),
+// tu pokazujemy CAŁĄ apkę z działającym flow, w modalu (InsiderWidget) — możliwe, bo Insider (w
+// przeciwieństwie do tour-guide) nie ma routera/auth, patrz PORTFOLIO_PLAN.md. Skrypt widgetu
+// ładuje się dopiero po otwarciu modala, nie przy każdym renderze karty.
+const INSIDER_SECTION_ID = 'insider';
 const CONTACT_SECTION_ID = 'contact';
 
 function maskText(text: string): string {
@@ -101,6 +107,7 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
               </a>
             </>
           )}
+          {section.id === INSIDER_SECTION_ID && <InsiderWidget />}
           {section.id === CONTACT_SECTION_ID && <ContactLinks />}
           {section.hasDetailView && (
             <button
