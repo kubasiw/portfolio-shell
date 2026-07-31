@@ -61,6 +61,13 @@ kontrast do ciepłych/jasnych tour-guide i portfolio shellu.
 - Odrzucony wariant: "Clear Desk" (jasny, fioletowy akcent, sparkline) — bezpieczniejszy, ale
   czytał się bardziej jako "kolejny neobank" niż "insiderski news", mniej odróżnialny w zestawie.
 
+**Backend (dodany 2026-07-30):** Node + Express + TypeScript (`C:\insider\backend`), minimalny —
+wyłącznie proxy `POST /api/suggestions` do Claude API dla realnych sugestii long/short (patrz
+niżej), nie NestJS jak w tour-guide (celowo lżej, bo to jeden endpoint, nie rosnący zestaw
+modułów domenowych). `ANTHROPIC_API_KEY` współdzielony z `tour-guide/backend` (świadomy wybór
+właściciela, wspólny billing/limit) zamiast osobnego klucza per projekt. Pełny opis w
+`insider/CLAUDE.md`.
+
 Cel: mega szybkie podsumowanie kluczowych wydarzeń ze świata istotnych dla małych inwestorów,
 w formie krótkich, "insiderskich" newsów (np. plany inwestycyjne zarządów spółek, nowe technologie
 od dużych graczy typu Nvidia, zapowiedzi deweloperów gier, zagrożenia w dostawach surowców), a w
@@ -1094,13 +1101,56 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
    kompromis (kolor zmienia się od razu, bez animacji, nic realnie nie tracąc).
 
 **Faza 4 — Projekt 02: Insider (Vue)**
-10. 🔶 Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha
+10. ✅ Szkielet Vue, design "Night Desk", jedna karta-story z realnymi danymi (Finnhub/Alpha
     Vantage/Marketaux), plakietka "SUGESTIA AI · NIE PORADA" obecna od pierwszej wersji, nie
-    dobudowana później. **Częściowo zbudowane (2026-07-30, repo `C:\insider`):** szkielet +
-    tokeny + jedna karta ze sztywnymi danymi + plakietka — gotowe. Pozostaje: podpięcie realnego
-    źródła danych (jedno z trzech kandydatów) i pasek tickera.
-11. Deploy, subdomena (`insider.kubsiw.com`, DNS już dostępny na tej samej strefie Cloudflare co
-    `tourguide.kubsiw.com`), karta w portfolio odblokowana naprawdę.
+    dobudowana później. **Zbudowane (2026-07-30, repo `C:\insider`):** szkielet + tokeny + karta
+    z plakietką (pierwsza część) — gotowe; **realne dane + ticker (druga część, 2026-07-30):**
+    wybrany **Finnhub** — potwierdzone live przez `curl`, że tylko Finnhub i Marketaux wysyłają
+    `Access-Control-Allow-Origin: *` (Alpha Vantage bez nagłówków CORS, wymagałby od razu
+    backendu-proxy), Finnhub ma też szerszy darmowy tier. `useFinnhubNews`/`useTicker`
+    (composables) + nowy `TickerBar.vue` (scrollujący pasek kursów, kolor tylko przy realnych
+    liczbach), `App.vue` jako przełączalny stos kart (realne newsy + karta AI-sugestii na końcu,
+    jeszcze sztywna — realna generacja AI to osobny, późniejszy krok) z nawigacją `‹›` i
+    swipe'em dotykowym. Klucz w `.env` (gitignored). Zweryfikowane end-to-end z realnym kluczem:
+    żywe kursy/newsy, nawigacja do obu końców stosu, brak przewijania w poziomie na 375px.
+    **Pre-deploy "hype" pass (2026-07-30, właściciel):** `WorldClocks.vue` (4 zegary na żywo:
+    Warszawa/Londyn/Nowy Jork/Tokio, z realną kropką otwarty/zamknięty per godziny sesji);
+    bramka "Zbierz informacje" (apka nie fetchuje już automatycznie — start w stanie `idle`,
+    jeden CTA odpala oba fetche + kosmetyczny "boot sequence" tekst); zakładki `NEWSY`/`SUGESTIE`;
+    **realne sugestie AI long/short** (nowy backend, patrz wyżej w sekcji Insidera) — karta
+    AI-sugestii ze szkieletu usunięta ze stosu newsów (zastąpiona prawdziwą zakładką). Wszystko
+    zweryfikowane end-to-end z realnym kluczem Anthropic.
+11. ✅ Deploy, subdomena (`insider.kubsiw.com`, DNS już dostępny na tej samej strefie Cloudflare co
+    `tourguide.kubsiw.com`), karta w portfolio odblokowana naprawdę. **Zbudowane i wdrożone
+    (2026-07-30):** repo `kubasiw/insider` na GitHubie (publiczne, jak reszta), pełny pipeline
+    deployu 1:1 wg wzorca tour-guide (Dockerfile ×2, `deploy-docker-compose.yml` z Traefikiem na
+    tej samej domenie `/api`-PathPrefix, `.github/workflows/deploy.yml`). Właściciel dodał 4
+    sekrety repo (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`/`FINNHUB_API_KEY`); po jego wyraźnej zgodzie
+    połączono się z tym samym VPS co tour-guide (`135.181.109.68`, DNS już tam wskazywał, zero
+    zmian potrzebnych) i przygotowano `~/insider/` (`backend.env` z `ANTHROPIC_API_KEY`
+    skopiowanym bezpośrednio na serwerze z `~/tour-guide/backend.env` — wartość nigdy nie
+    opuściła serwera ani nie pojawiła się w żadnym logu; `deploy-docker-compose.yml` przesłany i
+    zweryfikowany bajt-po-bajcie). Pipeline przeszedł w pełni na zielono.
+    **Realny bug złapany na pierwszym żywym deployu, nie przez czytanie kodu:** `/api/suggestions`
+    zwracał `404` na produkcji — domyślny `VITE_API_BASE_URL` w Dockerfile miał na sztywno `/api`
+    na końcu, a `useSuggestions.ts` i tak sam dokleja `/api/suggestions`, dając w efekcie realny,
+    podwójny `/api/api/suggestions`. Naprawione, zweryfikowane najpierw lokalnie (grep po
+    zbudowanym JS-ie, że w buncie jest tylko jeden, poprawny URL), potem end-to-end na żywej
+    domenie w prawdziwej przeglądarce: realne newsy/kursy z Finnhuba, realne sugestie AI z
+    konkretnymi tickerami (IMAX, Microsoft, Starbucks, Apple, Invesco QQQ Trust), zero błędów w
+    konsoli, brak przewijania w poziomie na 375px. Pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — audyt bezpieczeństwa/dobrych praktyk**, ten sam duch co wcześniejszy
+  audyt tour-guide (abuse-prevention + nagłówki bezpieczeństwa). Znaleziono dokładnie tę samą
+  klasę luki: płatny endpoint AI (`/api/suggestions`) bez żadnego rate limitingu i bez bramki
+  logowania — potwierdzone live (20 requestów do `/api/health` bez throttlingu). Naprawione:
+  `helmet`, `express-rate-limit` (globalnie + osobno na `/api/suggestions`), `trust proxy`
+  (wymagane za Traefikiem), oraz **dzienny limit wywołań AI** — ten sam mechanizm co
+  DB-backed `AiUsageDay` w tour-guide, ale plikowy (JSON w zamontowanym wolumenie Dockera), bo ten
+  backend celowo nie ma bazy danych. Dodatkowo: właściwa walidacja wejścia na `/api/suggestions`
+  (wcześniej goły cast typu, klient mógł wysłać dowolne sfabrykowane "newsy" wprost do promptu
+  LLM) i przestano zwracać surowe komunikaty błędów do klienta. Wszystko zweryfikowane na realnym
+  zbudowanym obrazie Dockera (nie tylko napisane) i ponownie na żywej domenie po redeployu — zero
+  regresji w realnym przepływie użytkownika. Pełny opis w `insider/CLAUDE.md`'s "Status".
 
 **Faza 5 — Projekt 03: Serwisant (Angular)**
 12. Profil pojazdu (formularz + OCR dowodu rejestracyjnego), podstawowy timeline na bazie ręcznie
@@ -1381,3 +1431,77 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   niego odsyła pełną ścieżką, nic z jego treści nie jest kopiowane lokalnie — pierwsza wersja
   `insider`'s `CLAUDE.md` przypadkiem duplikowała fragment specyfikacji w osobnym
   `PROJECT_BRIEF.md`, złapane i poprawione (plik usunięty) zanim trafiło to do commita.
+- 2026-07-30: **Insider — dokończono krok 10** (real dane + ticker), w tej samej sesji co jego
+  inicjalizacja wyżej. Wybór źródła danych rozstrzygnięty realnym testem, nie z dokumentacji:
+  `curl` na żywo pokazał, że Finnhub i Marketaux wysyłają `Access-Control-Allow-Origin: *`, a
+  Alpha Vantage żadnych nagłówków CORS — Finnhub wygrał (szerszy darmowy tier, ten sam wynik
+  CORS co Marketaux). Klucz API użytkownik zakładał sam (rejestracja kont nie jest robiona
+  automatycznie), potwierdzony jako działający też przez realny `curl` przed zapisaniem do
+  `.env`. Pełny opis zmiany w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — pre-deploy "hype" pass**, ta sama sesja. Właściciel poprosił o
+  wzbogacenie apki przed wdrożeniem: zegary światowe (Warszawa + 3 inne strefy), bramkę "zbierz
+  informacje" zamiast auto-fetchu, i osobną zakładkę sugestii AI long/short. Ostatni punkt
+  (prawdziwe AI, nie heurystyka) był świadomą decyzją architektoniczną potwierdzoną przez
+  `AskUserQuestion` — wymagał pierwszego backendu dla Insidera (Node/Express, minimalny, tylko
+  proxy do Claude API). `ANTHROPIC_API_KEY` współdzielony z tour-guide (potwierdzone pytaniem do
+  właściciela) zamiast zakładania osobnego klucza. Zweryfikowane end-to-end z realnym kluczem w
+  przeglądarce (nie zamockowane) — pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — poprawki po realnym zgłoszeniu właściciela**, ta sama sesja co hype
+  pass wyżej: karta-story przesunięta w lewo na szerokich ekranach (root cause: niedopasowany
+  szerokością wrapper na `@touchstart`/`@touchend`, naprawione przez Vue attribute fallthrough
+  wprost na `StoryCard`), pasek paginacji "skaczący" przy zmiennej długości treści (naprawione tym
+  samym wzorcem co `PoiTile` w tour-guide — stała wysokość karty + scrollowalne wnętrze), oraz
+  nowa blokada zakładki Sugestie do czasu zaznaczenia checkboxem wszystkich newsów jako
+  przeczytane. Pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — korekta koncepcji sugestii AI**, ta sama sesja. Właściciel doprecyzował
+  dwie rzeczy pomylone w pierwszej wersji: (1) "long"/"short" to żargon kierunku zakładu (wzrost/
+  spadek), nie horyzontu czasowego — właściciel miał na myśli "trzymać dłużej" vs "szybki strzał",
+  zmienione na `quickTrade` (1-3 dni)/`holdLonger` (do końca tygodnia), wciąż w ramach
+  pierwotnego limitu "maks. tydzień"; (2) pierwsza wersja tylko przeformułowywała nagłówek newsa
+  zamiast wskazywać konkretną spółkę/ETF — naprawione, `SuggestionItem` wskazuje teraz realny
+  instrument (np. "NVIDIA (NVDA)", "Invesco QQQ Trust (QQQ)") z twardym zastrzeżeniem w prompt
+  systemowym przeciw wymyślaniu nazw/tickerów. Zweryfikowane end-to-end z realnym kluczem
+  Anthropic. Pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — cache sugestii na 24h + obejście blokady czytania**, ta sama sesja.
+  Sugestie AI trzymane w `localStorage` przez 24h lub do pojawienia się nowszych newsów (co
+  pierwsze — świeżość newsa liczona z realnego pola `datetime` Finnhuba, nie z `id`, bo
+  potwierdzone live że `id` nie jest monotoniczne z czasem). Wejście w zakładkę Sugestie samo w
+  sobie nic nie kosztuje (cichy odczyt cache przy montowaniu), realne wywołanie AI wciąż wymaga
+  klika w przycisk. Dodatkowo: blokadę czytania newsów można świadomie ominąć przez przycisk +
+  potwierdzenie, z trwałym ostrzeżeniem nad sugestiami że pominięto pełny kontekst. Zweryfikowane
+  end-to-end (reload strony w oknie 24h realnie pokazał te same sugestie, zero nowych wywołań
+  API). Pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — runda polish UI** (kafelki sugestii, zegary świata, taby, sticky
+  header/footer), ta sama sesja. Najważniejsze dla tego dokumentu: **doszła pieczątka portfolio**
+  w Insiderze, ten sam mechanizm co w tour-guide/portfolio-shell (rotowana plakietka zwisająca z
+  rogu sticky headera, link do kubsiw.com), ale we własnym kolorze apki — fioletowy `#863bff` z
+  jej własnego `favicon.svg` (potwierdzone odczytem pliku, nie zgadywane), świadomy jednorazowy
+  wyjątek od zablokowanej palety "Night Desk", nie nowy token współdzielony. Reszta zmian czysto
+  lokalna dla Insidera — pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-30: **Insider — utworzone repo GitHub + zbudowany pipeline deployu**, ta sama sesja.
+  `kubasiw/insider` (publiczne). Pipeline 1:1 wg wzorca tour-guide (Dockerfile ×2, Traefik na
+  jednej domenie z `/api`-PathPrefix, GitHub Actions → GHCR → SSH deploy) — oba obrazy zbudowane i
+  zweryfikowane realnie lokalnie w Dockerze (nie tylko napisane), włącznie z realnym testem CSP w
+  przeglądarce (request do `finnhub.io` przeszedł, nie zablokowany). Realny deploy na VPS czeka na
+  akcję właściciela — dodanie sekretów repo i pliku `backend.env` na serwerze; nie proszono o
+  wklejenie klucza SSH do czatu. Pełny opis w `insider/CLAUDE.md`'s "Status".
+- 2026-07-31: **Idea captured, not built: ten sam widok "opis + apka po prawej" dla tour-guide.**
+  Insider dostał własny, dedykowany widok szczegółów (split: krótki opis — problem/tech/business
+  story — po lewej, realna, żywa apka po prawej, wzorem karty "Umiejętności"), reachable przez
+  standardowy `hasDetailView`/"Zobacz →" — patrz `InsiderDetail.tsx`. Właściciel poprosił o dokładnie
+  tę samą konwencję dla tour-guide: nowy widok szczegółów (nie tylko istniejący mały fragment mapy
+  na kafelku), z opisem w podobnym stylu i realną apką po prawej. **Otwarte pytanie do rozstrzygnięcia
+  przy budowie:** tour-guide — w przeciwieństwie do Insidera — ma router/auth/wiele ekranów, więc
+  "apka po prawej" nie może być tym samym mechanizmem (cały `<insider-app>` jako jeden Web Component)
+  co dla Insidera bez dodatkowej pracy — kandydaci: (a) `<iframe src="https://tourguide.kubsiw.com">`
+  (najprostszy, zawsze działa niezależnie od routera/auth, ale traci "to nie iframe" czystość
+  podejścia Web Components już użytego gdzie indziej), (b) ponowne użycie już istniejącego
+  `<tour-guide-mini-map>` (bezpieczne, zero nowej pracy po stronie tour-guide, ale to nadal tylko
+  fragment/mapa, nie "cała apka" w sensie, w jakim Insider nią jest), (c) eksport całego tour-guide
+  jako Web Component na wzór Insidera — realna praca po stronie tour-guide (nowy build target +
+  rozwiązanie problemu routera/auth wewnątrz Shadow DOM), nie mały krok. Do zdecydowania przy
+  faktycznym budowaniu, nie zgadywane teraz. **Właściciel poprosił też o dodatkową pieczątkę "W
+  budowie" wewnątrz tego nowego widoku** (ten sam komponent `Stamp` już użyty gdzie indziej w tym
+  repo) — dotyczy samego nowego WIDOKU jako świeżo dodanej, nie w pełni dopracowanej rzeczy, nie
+  statusu tour-guide jako projektu (tour-guide jest najbardziej dojrzałym, w pełni wdrożonym
+  projektem w tym zestawie — to rozróżnienie ważne, żeby nie zasugerować odwrotnie).
