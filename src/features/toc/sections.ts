@@ -86,8 +86,7 @@ export const SECTIONS: Section[] = [
   {
     id: 'about',
     title: 'O mnie',
-    description:
-      'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko. Podpisy pod zdjęciami napisało AI — podobno bardzo kreatywnie (ono tak twierdzi).',
+    description: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko.',
     navGroup: 'about',
     hasDetailView: true,
     coverPhoto: {
