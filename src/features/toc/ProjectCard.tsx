@@ -15,7 +15,6 @@ interface ProjectCardProps {
 // PORTFOLIO_PLAN.md) — Serwisant dostanie tę samą obsługę, gdy sam zostanie wdrożony (Faza 5),
 // nie wcześniej.
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
-const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
 // Insider (2026-07-31) — real user feedback: the card had drifted from tour-guide's own order
 // (description, then a visual, then a "Zobacz cały projekt" CTA at the end). Fixed by giving it
 // its own branch, same shape as TOUR_GUIDE_SECTION_ID, instead of the generic top-of-card
@@ -106,16 +105,13 @@ export function ProjectCard({
           {!section.hideDescription && (
             <p className="spec-plate__description">{section.description}</p>
           )}
-          {section.id === TOUR_GUIDE_SECTION_ID && coverPhoto && (
+          {/* Owner's call (2026-07-31): keep the live widget on the tile, not a screenshot — the
+              only change from before this view existed is that the CTA now opens the new detail
+              view instead of navigating straight to tourguide.kubsiw.com; that external link
+              lives inside TourGuideDetail itself now. */}
+          {section.id === TOUR_GUIDE_SECTION_ID && (
             <>
-              <div className="spec-plate__cover-photo-frame spec-plate__cover-photo-frame--widget-height">
-                <img
-                  src={coverPhoto.src}
-                  alt={coverPhoto.alt}
-                  className="spec-plate__cover-photo"
-                  style={{ objectPosition: coverPhoto.position }}
-                />
-              </div>
+              <TourGuideWidget />
               <button
                 type="button"
                 className="spec-plate__cta"
@@ -123,22 +119,6 @@ export function ProjectCard({
               >
                 Zobacz cały projekt →
               </button>
-            </>
-          )}
-          {/* Fallback while tour-guide has no screenshot yet (see coverPhoto above) — same live
-              widget + direct external link the tile used before its own detail view existed.
-              Drop this branch once sections.ts gets a real coverPhoto for tour-guide. */}
-          {section.id === TOUR_GUIDE_SECTION_ID && !coverPhoto && (
-            <>
-              <TourGuideWidget />
-              <a
-                className="spec-plate__cta"
-                href={TOUR_GUIDE_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Zobacz cały projekt →
-              </a>
             </>
           )}
           {section.id === INSIDER_SECTION_ID && coverPhoto && (

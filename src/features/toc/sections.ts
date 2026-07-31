@@ -53,9 +53,11 @@ export const SECTIONS: Section[] = [
       'Planowanie tras podróży: Angular 22 + NestJS 11, mapy, pogoda, AI-owe opisy miejsc.',
     navGroup: 'projects',
     hasDetailView: true,
-    // Brak coverPhoto na razie — czeka na realny zrzut ekranu od właściciela (patrz
-    // insider_preview.jpg jako precedens). Do czasu jego dodania kafelek (ProjectCard.tsx)
-    // spada na dotychczasowe zachowanie (żywy <tour-guide-mini-map> + link bezpośredni).
+    // Świadomie bez coverPhoto (2026-07-31, decyzja właściciela) — w przeciwieństwie do Insidera
+    // kafelek zatrzymuje żywy <tour-guide-mini-map>, nie zamienia się na statyczny zrzut ekranu.
+    // Zmieniło się tylko to, że "Zobacz cały projekt" otwiera teraz nowy widok szczegółów
+    // (TourGuideDetail) zamiast nawigować bezpośrednio na tourguide.kubsiw.com — ten link żyje
+    // teraz wewnątrz samego widoku.
   },
   {
     id: 'insider',
