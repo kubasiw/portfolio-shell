@@ -2,17 +2,20 @@
   position: relative;
 }
 
+/* Owner's feedback: at the left it crowded the page heading right above it. Moved to the
+   top-right, same corner the site-wide "W budowie / 2026" masthead stamp uses, instead of
+   competing with the title's own text. */
 .tour-guide-detail__stamp {
   position: absolute;
   top: -14px;
-  left: -16px;
-  transform: rotate(-8deg);
+  right: -16px;
+  transform: rotate(8deg);
 }
 
 @media (max-width: 480px) {
   .tour-guide-detail__stamp {
-    left: -6px;
-    transform: rotate(-8deg) scale(0.85);
+    right: -6px;
+    transform: rotate(8deg) scale(0.85);
   }
 }
 
@@ -69,10 +72,31 @@
   color: var(--eg-accent-primary);
 }
 
-/* .tour-guide-widget (ProjectCard.css) already sets border/isolation/overflow — this only
-   extends its min-height for the more generous space a detail page can give it, vs. the tile's
-   compact 320px. */
+/*
+ * .tour-guide-widget (ProjectCard.css) already sets border/isolation/overflow — this gives it a
+ * genuinely taller box for the more generous space a detail page can give it, vs. the tile's
+ * compact 320px. Real bug caught live, three layers deep:
+ * (1) `min-height` alone left the box's own child unable to resolve a percentage height against
+ *     it — a percentage `height` can only resolve against a parent with a *definite* height, not
+ *     a min-height-only one — fixed with a real `height` here instead.
+ * (2) <tour-guide-mini-map>'s own *internal* map container (tour-guide's `.poi-map__container`,
+ *     deep inside its shadow root) had its own hardcoded 400px height, invisible from outside the
+ *     shadow root. Fixed on tour-guide's side by making that height read a `--poi-map-height`
+ *     custom property instead (custom properties, unlike selectors, inherit through shadow
+ *     boundaries) — meant to be set here, from the outside.
+ * (3) `--poi-map-height: 100%` still measured 400px — a *percentage* custom property value hits
+ *     the exact same "no definite parent" problem as (1), one level further in: the custom
+ *     element host itself has no explicit height of its own (it just shrink-wraps its shadow
+ *     content), so 100% has nothing definite to resolve against. A literal length sidesteps this
+ *     entirely: feeding `.poi-map__container` a real value directly makes it that tall, and the
+ *     host then naturally shrink-wraps to match — no percentage chain needed at all.
+ */
 .tour-guide-detail__app .tour-guide-widget {
-  min-height: min(85vh, 800px);
+  height: min(85vh, 800px);
   margin-top: 0;
+}
+
+.tour-guide-detail__app tour-guide-mini-map {
+  display: block;
+  --poi-map-height: min(85vh, 800px);
 }

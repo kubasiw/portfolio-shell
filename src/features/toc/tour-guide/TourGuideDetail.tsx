@@ -43,15 +43,16 @@ export function TourGuideDetail() {
           <section className="tour-guide-detail__block">
             <h3 className="tour-guide-detail__heading">Pod maską</h3>
             <p>
-              Pierwszy projekt tego portfolio — Angular 22 (signals/
-              <code>resource()</code> jako podstawowy prymityw stanu) + NestJS
-              11. Dane miejsc z Overpass/OpenStreetMap, pogoda z Open-Meteo,
-              geokodowanie z Nominatim, realna geometria szlaków turystycznych z
-              Waymarked Trails — wszystkie darmowe, bez klucza. AI (Claude)
-              pisze krótkie opisy obszaru i miejsc oraz narrację planu na bazie
-              wyłącznie realnie pobranych danych (nigdy nie zmyśla faktów), a
-              osobny asystent czatu edytuje plan przez wywołania narzędzi
-              (dodaj/usuń/przestaw punkt).
+              Pierwszy projekt tego portfolio — Angular 22, ze stanem opartym o
+              sygnały (<code>signals</code>/<code>resource()</code>), i NestJS
+              11 po stronie backendu. Dane miejsc z Overpass/OpenStreetMap,
+              pogoda z Open-Meteo, geokodowanie z Nominatim, realna geometria
+              szlaków turystycznych z Waymarked Trails — wszystkie darmowe, bez
+              klucza. AI (Claude) pisze krótkie opisy obszaru i miejsc oraz
+              narrację planu, opierając się wyłącznie na realnie pobranych
+              danych, nigdy niczego nie zmyślając, a osobny asystent czatu
+              potrafi samodzielnie dodawać, usuwać i przestawiać punkty w
+              planie.
             </p>
             <div className="tour-guide-detail__tags">
               {TECH_TAGS.map((tag) => (
@@ -66,12 +67,13 @@ export function TourGuideDetail() {
               Odpowiedzialny produkt
             </h3>
             <p>
-              Logowanie nie jest twardą bramką — niezalogowani mogą zaplanować i
-              zapisać trasę, logowanie odblokowuje droższe funkcje
-              (opisy/narrację/czat AI), ten sam wzorzec co Figma czy Notion.
-              Kosztowne wywołania AI są bramkowane logowaniem, limitem żądań i
-              dziennym budżetem — ten sam mechanizm, który później powtórzono w
-              Insiderze.
+              Z aplikacji da się korzystać bez zakładania konta — trasę
+              zaplanujesz i zapiszesz jako gość. Logowanie nic więc nie blokuje,
+              tylko dokłada bogatsze, kosztowniejsze możliwości (AI-owe opisy,
+              narrację, czat) — ten sam wzorzec co w Figmie czy Notion. Te
+              droższe funkcje mają też swoje zabezpieczenie: limit żądań i
+              dzienny budżet na wywołania AI, ten sam mechanizm, który później
+              powtórzono w Insiderze.
             </p>
           </section>
           <section className="tour-guide-detail__block">
