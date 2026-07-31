@@ -141,6 +141,13 @@
   background: var(--eg-divider);
 }
 
+/* Insider's own "visualization" slot (see ProjectCard.tsx) sits where tour-guide's live widget
+   does — sized to match that same visual weight across cards, not a differently-proportioned one.
+   400px per explicit request (tour-guide's own .tour-guide-widget min-height is 320px). */
+.spec-plate__cover-photo-frame--widget-height {
+  height: 400px;
+}
+
 .spec-plate__cover-photo {
   display: block;
   width: 100%;
@@ -192,7 +199,12 @@
   display: inline-block;
   margin-top: 10px;
   /* background/cursor jawnie ustawione — ta klasa żyje też na <button> (nie tylko <a>), więc bez
-     tego przeglądarkowy domyślny wygląd przycisku by przebijał. */
+     tego przeglądarkowy domyślny wygląd przycisku by przebijał. Ten sam powód dla text-align:
+     .spec-plate to flex column (align-items: stretch domyślnie), więc <button> (domyślny UA
+     text-align: center, czego <a> nie ma) rozciąga się na pełną szerokość karty i wygląda
+     wyśrodkowany — mimo identycznej klasy, inaczej niż na kartach z <a> (np. tour-guide). Realny
+     bug złapany na żywo: w kodzie identyczne, wizualnie różne. */
+  text-align: left;
   background: none;
   cursor: pointer;
   border: 1px solid var(--eg-accent-primary);

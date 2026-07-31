@@ -1505,3 +1505,11 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   repo) — dotyczy samego nowego WIDOKU jako świeżo dodanej, nie w pełni dopracowanej rzeczy, nie
   statusu tour-guide jako projektu (tour-guide jest najbardziej dojrzałym, w pełni wdrożonym
   projektem w tym zestawie — to rozróżnienie ważne, żeby nie zasugerować odwrotnie).
+  **Doprecyzowane tego samego dnia:** skoro cała, żywa apka przenosi się na nowy widok szczegółów,
+  **kafelek tour-guide powinien wtedy też przejść z żywego `<tour-guide-mini-map>` na statyczny
+  zrzut ekranu jako zajawkę** — dokładnie ta sama zmiana, którą Insider właśnie dostał na swoim
+  kafelku (ekran → kafelek, żywa apka → nowy widok szczegółów), dla spójności między obiema
+  kartami. Nie robić tego jednak, zanim widok szczegółów tour-guide faktycznie nie istnieje —
+  podmiana żywego widgetu na statyczny obrazek na kafelku bez gotowego miejsca docelowego byłaby
+  realnym krokiem wstecz (użytkownik straciłby jedyny podgląd apki), nie do zrobienia jako
+  osobny, wcześniejszy krok.

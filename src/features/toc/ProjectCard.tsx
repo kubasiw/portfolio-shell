@@ -108,7 +108,7 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
           )}
           {section.id === INSIDER_SECTION_ID && coverPhoto && (
             <>
-              <div className="spec-plate__cover-photo-frame">
+              <div className="spec-plate__cover-photo-frame spec-plate__cover-photo-frame--widget-height">
                 <img
                   src={coverPhoto.src}
                   alt={coverPhoto.alt}
