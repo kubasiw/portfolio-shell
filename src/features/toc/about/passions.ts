@@ -10,6 +10,7 @@ import catEye from '../../../assets/about/cat_eye.webp';
 import coffeeDesk from '../../../assets/about/coffee_desk.webp';
 import coupleSea from '../../../assets/about/couple_sea.webp';
 import cycling from '../../../assets/about/cycling.webp';
+import dockLights from '../../../assets/about/dock_lights.webp';
 import espressoPour from '../../../assets/about/espresso_pour.webp';
 import exhaustTip from '../../../assets/about/exhaust_tip.webp';
 import fineDining from '../../../assets/about/fine_dining.webp';
@@ -19,6 +20,7 @@ import fruitMarket from '../../../assets/about/fruit_market.webp';
 import fruitSalad from '../../../assets/about/fruit_salad.webp';
 import garage from '../../../assets/about/garage.webp';
 import gasStation from '../../../assets/about/gas_station.webp';
+import gymLegs from '../../../assets/about/gym_legs.webp';
 import harborDessert from '../../../assets/about/harbor_dessert.webp';
 import interiorVolvo from '../../../assets/about/interior_volvo.webp';
 import leafLight from '../../../assets/about/leaf_light.webp';
@@ -26,17 +28,21 @@ import manifoldGlow from '../../../assets/about/manifold_glow.webp';
 import meBackLake from '../../../assets/about/me_back_lake.webp';
 import meBackWalk from '../../../assets/about/me_back_walk.webp';
 import mountainCow from '../../../assets/about/mountain_cow.webp';
+import mountainSilhouette from '../../../assets/about/mountain_silhouette.webp';
+import mountainVillageDusk from '../../../assets/about/mountain_village_dusk.webp';
 import myMate from '../../../assets/about/my_mate.webp';
 import narrowAlley from '../../../assets/about/narrow_alley.webp';
 import newCoilovers from '../../../assets/about/new_coilovers.webp';
 import nightDrive from '../../../assets/about/night_drive.webp';
 import nightPortrait from '../../../assets/about/night_portrait.webp';
+import oilChange from '../../../assets/about/oil_change.webp';
 import openSandwich from '../../../assets/about/open_sandwich.webp';
 import parkedVan from '../../../assets/about/parked_van.webp';
 import redWheel from '../../../assets/about/red_wheel.webp';
 import scallopDish from '../../../assets/about/scallop_dish.webp';
 import scooterRefuel from '../../../assets/about/scooter_refuel.webp';
 import shiftKnob from '../../../assets/about/shift_knob.webp';
+import snowyPeaks from '../../../assets/about/snowy_peaks.webp';
 import steakBreakfast from '../../../assets/about/steak_breakfast.webp';
 import sunsetBoat from '../../../assets/about/sunset_boat.webp';
 import turboWork from '../../../assets/about/turbo_work.webp';
@@ -60,9 +66,12 @@ export interface Passion {
 // Taksonomia zmieniona 2026-07-29 z 6 wąskich pasji na 4 szersze działy, potem wydzielony 5. dział
 // "Jedzonko" ze wszystkich zdjęć jedzenia/restauracji (patrz PORTFOLIO_PLAN.md, punkt f —
 // uzasadnienie i pełne mapowanie zdjęć na działy). Kolejność zgodna z opisem sekcji "O mnie" w
-// sections.ts. Podpisy przepisane 2026-07-31 (pierwsza wersja, choć technicznie poprawna, czytała
-// się jak generator cytatów motywacyjnych — ten sam dwuzdaniowy szablon "opis + refleksja" i te
-// same słowa-wypełniacze w kółko; patrz PORTFOLIO_PLAN.md).
+// sections.ts. Podpisy przepisane dwa razy 2026-07-31: pierwsza wersja czytała się jak generator
+// cytatów motywacyjnych (dwuzdaniowy szablon opis+refleksja); druga, obecna wersja idzie za
+// realnym przykładem właściciela — krótko, z markowym żargonem, czasem z "=", bez sztywnego
+// szablonu (patrz PORTFOLIO_PLAN.md). 6 nowych zdjęć dołączonych tego samego dnia z
+// shell-photos/ (GPS w EXIF jednego z nich, oil_change/IMG_4462.heic, usunięty przy konwersji do
+// WebP — sharp domyślnie nie kopiuje metadanych).
 export const PASSIONS: Passion[] = [
   {
     id: 'aktywnosc',
@@ -71,7 +80,12 @@ export const PASSIONS: Passion[] = [
       {
         src: cycling,
         alt: 'Kierownica roweru z GPS-em podczas nocnej jazdy, rozmyte światła w tle',
-        caption: 'GPS na kierownicy, reszta miasta w rozmyciu.',
+        caption: 'Wahoo na sterach, korba w głowie ;)',
+      },
+      {
+        src: gymLegs,
+        alt: 'Obciążenie na łańcuchu przy nogach podczas ćwiczenia w domu, na ozdobnym dywanie',
+        caption: 'Dzień nóg na dywanie po babci ;)',
       },
     ],
   },
@@ -82,37 +96,52 @@ export const PASSIONS: Passion[] = [
       {
         src: coupleSea,
         alt: 'Leśna ścieżka schodząca do morza o zmierzchu, dwie sylwetki',
-        caption: 'Ścieżka kończy się dokładnie tam, gdzie zaczyna morze.',
+        caption: 'Las się kończy, morze zaczyna.',
       },
       {
         src: mountainCow,
         alt: 'Mglista górska droga z krową stojącą przy płocie',
-        caption: 'Krowa przy płocie patrzyła na mnie chyba bardziej zdziwiona niż ja na nią.',
+        caption: 'Krowa przy płocie = najbardziej zdziwiona istota w całych Tatrach.',
       },
       {
         src: meBackWalk,
         alt: 'Sylwetka od tyłu na ścieżce przez śródziemnomorskie zarośla',
-        caption: 'Więcej słońca niż cienia, więcej ciszy niż planu na ten dzień.',
+        caption: 'Więcej słońca niż planu na ten dzień.',
       },
       {
         src: meBackLake,
         alt: 'Sylwetka w kapturze stojąca na pomoście nad jeziorem',
-        caption: 'Pomost, zimny wieczór, kaptur jako jedyna obrona przed nastrojem.',
+        caption: 'Kaptur jako jedyna ochrona przed nastrojem wieczoru.',
       },
       {
         src: narrowAlley,
         alt: 'Mały zaparkowany samochód w wąskiej śródziemnomorskiej uliczce',
-        caption: 'Uliczka tak wąska, że zaparkowanie tu graniczy z odwagą.',
+        caption: 'Zaparkować tu = akt odwagi.',
       },
       {
         src: sunsetBoat,
         alt: 'Łódź na tle zachodzącego słońca, sylwetka osoby na pierwszym planie',
-        caption: 'Niebo odwaliło całą robotę scenografa, łódź tylko dopełniła kadr.',
+        caption: 'Niebo zrobiło całą robotę, łódź się tylko podpisała.',
       },
       {
         src: fruitMarket,
         alt: 'Stragan targowy z warkoczami czosnku i bananami',
-        caption: 'Warkocze czosnku mówią o mieście więcej niż niejeden przewodnik.',
+        caption: 'Czosnek w warkoczach — lepszy przewodnik niż niejeden Lonely Planet.',
+      },
+      {
+        src: dockLights,
+        alt: 'Girlanda lampek nad pomostem i jeziorem nocą',
+        caption: 'Lampki nad pomostem, reszta wieczoru może poczekać.',
+      },
+      {
+        src: mountainVillageDusk,
+        alt: 'Górska wioska o zmierzchu, szczyty we mgle',
+        caption: 'Zakopane o zmierzchu, we mgle po sam dach.',
+      },
+      {
+        src: snowyPeaks,
+        alt: 'Ośnieżone szczyty tatrzańskie nad lasem w pełnym słońcu',
+        caption: 'Tatry w pełnym słońcu — pocztówka, która się nie starzeje.',
       },
     ],
   },
@@ -123,22 +152,22 @@ export const PASSIONS: Passion[] = [
       {
         src: nightPortrait,
         alt: 'Czarno-biały nocny portret z rozmytymi światłami w tle',
-        caption: 'Bokeh zaplanowany starannie, reszta twarzy — trochę mniej.',
+        caption: 'Bokeh na pierwszym planie, ja gdzieś w tle.',
       },
       {
         src: catEye,
         alt: 'Demonstracja efektu cat-eye bokeh z rozmytym pierwszym planem',
-        caption: 'Testowanie "cat-eye" bokeh — technika ważniejsza niż to, kto akurat pozował.',
+        caption: 'Cat-eye bokeh — bo zwykłe rozmycie to za mało.',
       },
       {
         src: flowersInsects,
         alt: 'Bzygowate na dzikiej róży',
-        caption: 'Bzygowaty gość złapany w locie, zanim zmienił zdanie.',
+        caption: 'Bzygowaty gość, złapany zanim odleciał ;)',
       },
       {
         src: myMate,
         alt: 'Ręka głaszcząca ulicznego kotka',
-        caption: 'Kot zgodził się na sesję — ja tylko trzymałem aparat równo.',
+        caption: 'Kot zgodził się na sesję, ja tylko trzymałem aparat równo.',
       },
       {
         src: busStop,
@@ -148,12 +177,17 @@ export const PASSIONS: Passion[] = [
       {
         src: leafLight,
         alt: 'Autoportret spod korony drzewa w okularach przeciwsłonecznych, z ziarnem filmowym',
-        caption: 'Ziarno i przebarwienia dodane celowo — nie telefon zawinił, tylko ja.',
+        caption: 'Ziarno i przebarwienia = efekt, nie usterka.',
       },
       {
         src: nightDrive,
         alt: 'Twarz oświetlona światłem z deski rozdzielczej, czarno-biały kadr nocą',
-        caption: 'Deska rozdzielcza jako jedyny reflektor w tym kadrze.',
+        caption: 'Deska rozdzielcza jako jedyny reflektor.',
+      },
+      {
+        src: mountainSilhouette,
+        alt: 'Minimalistyczna sylwetka gór o wschodzie słońca, warstwy mgły',
+        caption: 'Warstwy gór, zero Photoshopa.',
       },
     ],
   },
@@ -164,82 +198,87 @@ export const PASSIONS: Passion[] = [
       {
         src: garage,
         alt: 'Silnik pod otwartą maską, obok butelka oleju',
-        caption: 'Butelka oleju pod ręką, sobota spisana na straty.',
+        caption: 'Butelka oleju pod ręką = sobota spisana na straty.',
       },
       {
         src: interiorVolvo,
         alt: 'Deska rozdzielcza z breloczkiem w kształcie samochodu',
-        caption: 'Mały breloczek-samochodzik przy kluczykach, wciąż mnie rozśmiesza po latach.',
+        caption: 'Breloczek-samochodzik przy kluczykach, wciąż śmieszy po latach.',
       },
       {
         src: vespa,
         alt: 'Pomarańczowa Vespa zaparkowana w wąskiej uliczce',
-        caption: 'Pomarańczowa Vespa — wolniejsza niż wszystko inne w garażu, i szczerze olewa to.',
+        caption: 'Pomarańczowa Vespa = piękna patyna na którą nie zasługiwaliśmy.',
       },
       {
         src: parkedVan,
         alt: 'Ciemne Volvo kombi zaparkowane na trawie przy domku letniskowym',
-        caption: 'To samo Volvo, tym razem bez zaglądania pod maskę.',
+        caption: 'To samo Volvo, tym razem z zewnątrz.',
       },
       {
         src: shiftKnob,
         alt: 'Manualna dźwignia zmiany biegów we wnętrzu starego Volvo',
-        caption: 'Manualna skrzynia, bo automat odbiera zbyt wiele frajdy.',
+        caption: 'Manualna skrzynia, bo automat to za mało roboty dla ręki.',
       },
       {
         src: alloyWheel,
         alt: 'Felga Volvo z bliska, w ostrym bocznym świetle',
-        caption: 'Boczne światło pada tylko na połowę opony — druga połowa niech zostanie w cieniu.',
+        caption: 'Połowa opony w świetle, druga w cieniu — i dobrze.',
       },
       {
         src: redWheel,
         alt: 'Koło czerwonego Volvo nocą w świetle latarni',
-        caption: 'Ten sam motyw co za dnia, zupełnie inny charakter po zmroku.',
+        caption: 'To samo koło, zupełnie inny nastrój po zmroku.',
       },
       {
         src: beetleDetail,
         alt: 'Tylne światło i błotnik miętowego Garbusa widziane przez szczelinę muru',
-        caption: 'Cały samochód niepotrzebny, kiedy charakter mieści się w jednym tylnym świetle.',
+        caption: 'Cały charakter Garbusa mieści się w jednym tylnym świetle.',
       },
       {
         src: beetleDusk,
         alt: 'Garbus zaparkowany w wysokiej trawie o zmierzchu',
-        caption: 'Garbus chowa się w trawie o zmierzchu, prawie skutecznie.',
+        caption: 'Garbus w trawie o zmierzchu, prawie niewidoczny.',
       },
       {
         src: carReflection,
         alt: 'Odbicie klasycznego samochodu w szybie innego auta',
-        caption: 'Jedno auto odbite w drugim — warstwa, której nie dało się zaplanować.',
+        caption: 'Jedno auto w drugim — warstwa, której nie dało się zaplanować.',
       },
       {
         src: exhaustTip,
         alt: 'Końcówka wydechu na tle czerwonego zderzaka',
-        caption: 'Wydech i terakota garażu w tle — więcej tu nie trzeba.',
+        caption: 'Wydech i terakota garażu — więcej tu nie trzeba.',
       },
       {
         src: gasStation,
         alt: 'Czarne coupe na stacji benzynowej nocą',
-        caption: 'Zwykłe tankowanie potraktowane jak sesja dla magazynu motoryzacyjnego.',
+        caption: 'Tankowanie = sesja dla magazynu motoryzacyjnego.',
       },
       {
         src: scooterRefuel,
         alt: 'Tankowanie samochodu, wlew paliwa z bliska',
-        caption: 'Wlew paliwa z bliska — nikt przy zdrowych zmysłach tego nie fotografuje.',
+        caption: 'Nikt przy zdrowych zmysłach tego nie fotografuje.',
       },
       {
         src: manifoldGlow,
         alt: 'Rozgrzana komora silnika czerwonego auta',
-        caption: 'Rozgrzana komora silnika, praca, którą zwykle widzi tylko mechanik.',
+        caption: 'Komora silnika rozgrzana do czerwoności, dosłownie.',
       },
       {
         src: turboWork,
         alt: 'Ręka w rękawiczce trzymająca wirnik turbosprężarki wyjęty z silnika',
-        caption: 'Wirnik turbiny wyjęty własnoręcznie — warsztat mógł tym razem poczekać.',
+        caption: 'Wirnik turbiny wyjęty własnoręcznie — warsztat poczeka.',
       },
       {
         src: newCoilovers,
         alt: 'Nowy zestaw zawieszenia sportowego obok pudełka producenta',
-        caption: 'Skrzynka z zawieszeniem na dywanie w salonie — lepszy prezent niż niejeden prawdziwy.',
+        caption: 'Das Fahrwerk <3',
+      },
+      {
+        src: oilChange,
+        alt: 'Butelka oleju silnikowego trzymana nad otwartym silnikiem Volvo',
+        caption: 'ExtraSpec Classic prosto w Volvo — klasyka do klasyka.',
       },
     ],
   },
@@ -250,47 +289,47 @@ export const PASSIONS: Passion[] = [
       {
         src: breakfast,
         alt: 'Śniadanie sfotografowane z góry',
-        caption: 'Śniadanie sfotografowane, zanim zdążyło ostygnąć — priorytety jasne.',
+        caption: 'Śniadanie sfotografowane, zanim ostygło — priorytety.',
       },
       {
         src: harborDessert,
         alt: 'Deser na tle portu z żaglówkami i spacerującymi ludźmi',
-        caption: 'Deser w porcie, aparat w drugiej ręce, zawsze w zasięgu.',
+        caption: 'Deser w porcie, aparat zawsze w zasięgu ręki.',
       },
       {
         src: wineGlass,
         alt: 'Kieliszek czerwonego wina z góry w ostrym świetle',
-        caption: 'Kieliszek wina, ostre boczne światło, reszta stołu nieważna.',
+        caption: 'Wino, ostre boczne światło, reszta stołu nieistotna.',
       },
       {
         src: espressoPour,
         alt: 'Espresso lejące się do szklanki w niebieskawej tonacji',
-        caption: 'Espresso w chłodnym, niebieskawym świetle — smak drugorzędny wobec kadru.',
+        caption: 'Espresso w chłodnym, niebieskawym świetle — smak drugorzędny.',
       },
       {
         src: fineDining,
         alt: 'Dwa dania z eleganckiej restauracji, zdjęte z góry',
-        caption: 'Dwa dania z eleganckiej restauracji — widelec czekał, aparat był pierwszy.',
+        caption: 'Widelec czekał, aparat był pierwszy.',
       },
       {
         src: scallopDish,
         alt: 'Przegrzebek zapiekany w muszli obok cząstki cytryny',
-        caption: 'Przegrzebek w muszli, cytryna obok — talerz zamiast widoku za oknem.',
+        caption: 'Przegrzebek w muszli = talerz zamiast widoku za oknem.',
       },
       {
         src: steakBreakfast,
         alt: 'Stek z jajkiem sadzonym i kostką masła na desce',
-        caption: 'Stek z jajkiem — śniadanie, które samo zgłosiło się do zdjęcia.',
+        caption: 'Stek z jajkiem — śniadanie, które samo się zgłosiło.',
       },
       {
         src: freshPizza,
         alt: 'Pizza prosto z pieca z przypalonymi brzegami',
-        caption: 'Pizza prosto z pieca, brzegi jeszcze się dopiekają na zdjęciu.',
+        caption: 'Pizza prosto z pieca, brzegi jeszcze się dopiekają.',
       },
       {
         src: openSandwich,
         alt: 'Kanapka z burgerem rozłożona na pół, widoczne warstwy',
-        caption: 'Kanapka rozłożona na pół — przekrój ciekawszy niż całość.',
+        caption: 'Bo oczywiście liczy się wnętrze ;)',
       },
       {
         src: burgerPrep,
@@ -300,17 +339,17 @@ export const PASSIONS: Passion[] = [
       {
         src: burgerShake,
         alt: 'Burger z jajkiem sadzonym obok szklanki koktajlu mlecznego',
-        caption: 'Burger i koktajl mleczny — nie każde zdjęcie musi być z wakacji.',
+        caption: 'Burger i koktajl — nie każde zdjęcie musi być z wakacji.',
       },
       {
         src: fruitSalad,
         alt: 'Zbliżenie na sałatkę owocową z orzechami włoskimi',
-        caption: 'Sałatka owocowa z bliska — tak blisko, że liczy się już tylko tekstura.',
+        caption: 'Sałatka z bliska = już tylko tekstura.',
       },
       {
         src: coffeeDesk,
         alt: 'Kawa i drożdżówka na biurku obok laptopa z wykresami na ekranie',
-        caption: 'Kawa i drożdżówka obok wykresów na ekranie — przerwa, która wygląda jak codzienność, bo nią jest.',
+        caption: 'Kawa i wykresy w tle — przerwa, która wygląda jak codzienność, bo nią jest.',
       },
     ],
   },
