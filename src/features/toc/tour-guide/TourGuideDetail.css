@@ -3,29 +3,31 @@
 }
 
 /*
- * Owner's feedback, two rounds: (1) at the left it crowded the page heading's own text; (2) top
- * -right at -14px sat low enough to land behind the map's box (isolation:isolate on
- * .tour-guide-widget wins the paint order there). Fixed by pulling it up near the heading's own
- * row instead — verified live via a Range over the title/description text nodes (not just their
- * full-width block boxes, which would false-positive "overlap" on a short line of left-aligned
- * text) that this position clears both text blocks, and via a `.tour-guide-detail__app` rect
- * check that ~17px of clearance remains above the map's own top edge.
+ * Owner's feedback, three rounds: (1) at the left it crowded the page heading's own text; (2)
+ * top-right at -14px sat low enough to land behind the map's box (isolation:isolate on
+ * .tour-guide-widget wins the paint order there); (3) wanted right next to the actual
+ * "Projekt 01 — Tour Guide" text, not just somewhere nearby in the top-right corner. This is a
+ * one-off position tuned to that exact (short, static) heading — measured live via a Range over
+ * the title's real text node (not its full-width block box) to land just past where the glyphs
+ * end, vertically centered on that same line. Would need re-measuring if this heading's wording
+ * ever changes length.
  */
 .tour-guide-detail__stamp {
   position: absolute;
-  top: -70px;
-  right: -16px;
+  top: -123px;
+  left: 363px;
   transform: rotate(8deg);
 }
 
-/* Text reflows onto more, wider lines at this width (title/description both stretch closer to
-   the full viewport) — the desktop offset above would land right on top of the description's
-   own last line here. Pulled in and down instead; verified live via the same Range-based text
-   overlap check. */
+/* Title wraps to 2 lines at this width ("Projekt 01 — Tour" / "Guide") — same "next to the
+   heading" intent as above, but positioned past the wider first line's own right edge (not just
+   the second line's, which the first line still extends past), at that first line's row. Also
+   tuned to this exact heading; re-measure if the wording changes. */
 @media (max-width: 480px) {
   .tour-guide-detail__stamp {
-    top: -10px;
-    right: 4px;
+    top: -149px;
+    left: 260px;
+    right: auto;
     transform: rotate(8deg) scale(0.85);
   }
 }
