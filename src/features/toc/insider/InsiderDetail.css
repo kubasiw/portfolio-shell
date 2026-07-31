@@ -1,0 +1,78 @@
+.insider-detail__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .insider-detail__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.insider-detail__story {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.insider-detail__block p {
+  margin: 0.5rem 0 0;
+  color: var(--eg-ink-secondary);
+  line-height: 1.6;
+}
+
+.insider-detail__heading {
+  margin: 0;
+  font-family: var(--eg-font-serif);
+  font-size: 1rem;
+  color: var(--eg-ink);
+}
+
+.insider-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.insider-detail__tag {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--eg-hairline-inner);
+  font-family: var(--eg-font-mono);
+  font-size: 0.75rem;
+  color: var(--eg-ink);
+}
+
+.insider-detail__external-link {
+  align-self: flex-start;
+  color: var(--eg-accent-primary);
+}
+
+/*
+ * <insider-app> assumes it owns a full viewport (`min-height: 100vh` inside its own shadow root)
+ * — same reasoning as the modal approach this replaced: give it a generously tall, capped,
+ * scrollable box rather than fight that assumption by trying to shrink it to fit.
+ */
+.insider-detail__app {
+  height: min(85vh, 800px);
+  overflow-y: auto;
+  border: 1px solid var(--eg-hairline-inner);
+  /* Same isolation fix as .tour-guide-widget/.modal — contains the widget's own internal
+     z-index (sticky header/footer inside its shadow root) to this box instead of competing with
+     the rest of the document. */
+  isolation: isolate;
+}
+
+.insider-detail__status {
+  margin: 0;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--eg-ink-secondary);
+  font-family: var(--eg-font-sans);
+}
+
+insider-app {
+  display: block;
+}

@@ -7,6 +7,7 @@ import './SectionDetail.css';
 // faktycznie kliknie "Zobacz →" na tej konkretnej karcie.
 const AboutGallery = lazy(() => import('./about/AboutGallery').then((m) => ({ default: m.AboutGallery })));
 const SkillsDetail = lazy(() => import('./skills/SkillsDetail').then((m) => ({ default: m.SkillsDetail })));
+const InsiderDetail = lazy(() => import('./insider/InsiderDetail').then((m) => ({ default: m.InsiderDetail })));
 
 interface SectionDetailProps {
   section: Section;
@@ -15,7 +16,7 @@ interface SectionDetailProps {
 
 export function SectionDetail({ section, onClose }: SectionDetailProps) {
   const backButtonRef = useRef<HTMLButtonElement>(null);
-  const hasCustomDetail = section.id === 'about' || section.id === 'skills';
+  const hasCustomDetail = section.id === 'about' || section.id === 'skills' || section.id === 'insider';
 
   // Fokus na przycisk powrotu przy otwarciu — ten sam duch co "dostępność jako standard" z
   // dobrych praktyk w PORTFOLIO_PLAN.md; to nowy sposób nawigacji, więc użytkownik klawiatury/
@@ -40,6 +41,7 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
         <Suspense fallback={null}>
           {section.id === 'about' && <AboutGallery />}
           {section.id === 'skills' && <SkillsDetail />}
+          {section.id === 'insider' && <InsiderDetail />}
         </Suspense>
       ) : (
         <p className="section-detail__placeholder">Treść w przygotowaniu.</p>

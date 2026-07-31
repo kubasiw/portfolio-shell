@@ -58,7 +58,7 @@ export const SECTIONS: Section[] = [
     title: 'Projekt 02 — Insider',
     description: 'Insiderskie newsy dla małych inwestorów: Vue, AI-owe podsumowania rynku.',
     navGroup: 'projects',
-    hasDetailView: false,
+    hasDetailView: true,
     inProgress: true,
   },
   {
