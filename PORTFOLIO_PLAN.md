@@ -34,7 +34,9 @@ wizualnie do tour-guide. Każda apka w zestawie może mieć inny charakter grafi
   danych i deployu. Ten dokument (nie repo insider) pozostaje jedynym miejscem pełnej specyfikacji
   — `CLAUDE.md` w `insider` tylko do niego odsyła, nie duplikuje treści.
 - **Projekt 3 — "Serwisant"** (robocza nazwa, framework: **React Native**, patrz korekta
-  2026-07-31 niżej) — asystent serwisowy samochodu. Patrz sekcja osobna poniżej.
+  2026-07-31 niżej; osobne repo `C:\serwisant`, na razie pusty szkielet z `CLAUDE.md` odsyłającym
+  do tego dokumentu, kod jeszcze niezaczęty) — asystent serwisowy samochodu. Patrz sekcja osobna
+  poniżej.
 
 ## Projekt 2 — apka finansowa (robocza nazwa: "Insider" roboczo, framework: Vue)
 
