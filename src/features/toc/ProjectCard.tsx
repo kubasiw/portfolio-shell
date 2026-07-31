@@ -27,7 +27,12 @@ function maskText(text: string): string {
   return text.replace(/[^\s—-]/g, '•');
 }
 
-export function ProjectCard({ section, locked, highlighted, onOpenDetail }: ProjectCardProps) {
+export function ProjectCard({
+  section,
+  locked,
+  highlighted,
+  onOpenDetail,
+}: ProjectCardProps) {
   const coverPhoto = section.coverPhoto;
   const showInProgressStamp = !locked && section.inProgress;
 
@@ -49,13 +54,17 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       <div className="spec-plate__rows">
         <div className="spec-plate__row">
           <span className="spec-plate__label">Sekcja</span>
-          <span className="spec-plate__value">{locked ? maskText(section.title) : section.title}</span>
+          <span className="spec-plate__value">
+            {locked ? maskText(section.title) : section.title}
+          </span>
         </div>
         <div className="spec-plate__row">
           <span className="spec-plate__label">Status</span>
           <span
             className={`spec-plate__badge ${
-              locked ? 'spec-plate__badge--locked' : 'spec-plate__badge--unlocked'
+              locked
+                ? 'spec-plate__badge--locked'
+                : 'spec-plate__badge--unlocked'
             }`}
           >
             {locked ? 'Zablokowane' : 'Odblokowane'}
@@ -64,36 +73,62 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       </div>
       {!locked && (
         <>
-          {coverPhoto && section.id !== INSIDER_SECTION_ID && (
-            <div className="spec-plate__cover-photo-frame">
-              <img
-                src={coverPhoto.src}
-                alt={coverPhoto.alt}
-                className={`spec-plate__cover-photo ${
-                  coverPhoto.fit === 'contain' ? 'spec-plate__cover-photo--contain' : ''
-                } ${coverPhoto.zoom ? 'spec-plate__cover-photo--zoomed' : ''}`}
-                style={
-                  coverPhoto.zoom
-                    ? {
-                        // width:130% na samym <img> NIE tworzy luzu w poziomie — object-fit:cover
-                        // przelicza dopasowanie do nowego (dalej proporcjonalnie węższego niż
-                        // ramka) boxa i znów trafia dokładnie w szerokość. transform na już
-                        // dopasowanym obrazku faktycznie powiększa poza ramkę — przycina to
-                        // overflow:hidden na .spec-plate__cover-photo-frame. Kierunek sprawdzony
-                        // na żywo (poprzednia, "logiczna" wersja ze znakiem odwrotnym poszła w
-                        // złą stronę) — panX dodatnie = translateX dodatnie = w prawo.
-                        objectPosition: coverPhoto.position,
-                        transform: `scale(${coverPhoto.zoom}) translateX(${coverPhoto.panX ?? 0}px) rotate(${coverPhoto.rotate ?? 0}deg)`,
-                      }
-                    : { objectPosition: coverPhoto.position }
-                }
-              />
-            </div>
-          )}
+          {coverPhoto &&
+            section.id !== INSIDER_SECTION_ID &&
+            section.id !== TOUR_GUIDE_SECTION_ID && (
+              <div className="spec-plate__cover-photo-frame">
+                <img
+                  src={coverPhoto.src}
+                  alt={coverPhoto.alt}
+                  className={`spec-plate__cover-photo ${
+                    coverPhoto.fit === 'contain'
+                      ? 'spec-plate__cover-photo--contain'
+                      : ''
+                  } ${coverPhoto.zoom ? 'spec-plate__cover-photo--zoomed' : ''}`}
+                  style={
+                    coverPhoto.zoom
+                      ? {
+                          // width:130% na samym <img> NIE tworzy luzu w poziomie — object-fit:cover
+                          // przelicza dopasowanie do nowego (dalej proporcjonalnie węższego niż
+                          // ramka) boxa i znów trafia dokładnie w szerokość. transform na już
+                          // dopasowanym obrazku faktycznie powiększa poza ramkę — przycina to
+                          // overflow:hidden na .spec-plate__cover-photo-frame. Kierunek sprawdzony
+                          // na żywo (poprzednia, "logiczna" wersja ze znakiem odwrotnym poszła w
+                          // złą stronę) — panX dodatnie = translateX dodatnie = w prawo.
+                          objectPosition: coverPhoto.position,
+                          transform: `scale(${coverPhoto.zoom}) translateX(${coverPhoto.panX ?? 0}px) rotate(${coverPhoto.rotate ?? 0}deg)`,
+                        }
+                      : { objectPosition: coverPhoto.position }
+                  }
+                />
+              </div>
+            )}
           {!section.hideDescription && (
             <p className="spec-plate__description">{section.description}</p>
           )}
-          {section.id === TOUR_GUIDE_SECTION_ID && (
+          {section.id === TOUR_GUIDE_SECTION_ID && coverPhoto && (
+            <>
+              <div className="spec-plate__cover-photo-frame spec-plate__cover-photo-frame--widget-height">
+                <img
+                  src={coverPhoto.src}
+                  alt={coverPhoto.alt}
+                  className="spec-plate__cover-photo"
+                  style={{ objectPosition: coverPhoto.position }}
+                />
+              </div>
+              <button
+                type="button"
+                className="spec-plate__cta"
+                onClick={() => onOpenDetail(section.id)}
+              >
+                Zobacz cały projekt →
+              </button>
+            </>
+          )}
+          {/* Fallback while tour-guide has no screenshot yet (see coverPhoto above) — same live
+              widget + direct external link the tile used before its own detail view existed.
+              Drop this branch once sections.ts gets a real coverPhoto for tour-guide. */}
+          {section.id === TOUR_GUIDE_SECTION_ID && !coverPhoto && (
             <>
               <TourGuideWidget />
               <a
@@ -126,15 +161,17 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
             </>
           )}
           {section.id === CONTACT_SECTION_ID && <ContactLinks />}
-          {section.hasDetailView && section.id !== INSIDER_SECTION_ID && (
-            <button
-              type="button"
-              className="spec-plate__cta"
-              onClick={() => onOpenDetail(section.id)}
-            >
-              Zobacz →
-            </button>
-          )}
+          {section.hasDetailView &&
+            section.id !== INSIDER_SECTION_ID &&
+            section.id !== TOUR_GUIDE_SECTION_ID && (
+              <button
+                type="button"
+                className="spec-plate__cta"
+                onClick={() => onOpenDetail(section.id)}
+              >
+                Zobacz →
+              </button>
+            )}
         </>
       )}
     </div>

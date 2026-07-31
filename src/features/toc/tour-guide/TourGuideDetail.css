@@ -1,0 +1,78 @@
+.tour-guide-detail {
+  position: relative;
+}
+
+.tour-guide-detail__stamp {
+  position: absolute;
+  top: -14px;
+  left: -16px;
+  transform: rotate(-8deg);
+}
+
+@media (max-width: 480px) {
+  .tour-guide-detail__stamp {
+    left: -6px;
+    transform: rotate(-8deg) scale(0.85);
+  }
+}
+
+.tour-guide-detail__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .tour-guide-detail__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tour-guide-detail__story {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tour-guide-detail__block p {
+  margin: 0.5rem 0 0;
+  color: var(--eg-ink-secondary);
+  line-height: 1.6;
+}
+
+.tour-guide-detail__heading {
+  margin: 0;
+  font-family: var(--eg-font-serif);
+  font-size: 1rem;
+  color: var(--eg-ink);
+}
+
+.tour-guide-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.tour-guide-detail__tag {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--eg-hairline-inner);
+  font-family: var(--eg-font-mono);
+  font-size: 0.75rem;
+  color: var(--eg-ink);
+}
+
+.tour-guide-detail__external-link {
+  align-self: flex-start;
+  color: var(--eg-accent-primary);
+}
+
+/* .tour-guide-widget (ProjectCard.css) already sets border/isolation/overflow — this only
+   extends its min-height for the more generous space a detail page can give it, vs. the tile's
+   compact 320px. */
+.tour-guide-detail__app .tour-guide-widget {
+  min-height: min(85vh, 800px);
+  margin-top: 0;
+}

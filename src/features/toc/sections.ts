@@ -52,7 +52,10 @@ export const SECTIONS: Section[] = [
     description:
       'Planowanie tras podróży: Angular 22 + NestJS 11, mapy, pogoda, AI-owe opisy miejsc.',
     navGroup: 'projects',
-    hasDetailView: false,
+    hasDetailView: true,
+    // Brak coverPhoto na razie — czeka na realny zrzut ekranu od właściciela (patrz
+    // insider_preview.jpg jako precedens). Do czasu jego dodania kafelek (ProjectCard.tsx)
+    // spada na dotychczasowe zachowanie (żywy <tour-guide-mini-map> + link bezpośredni).
   },
   {
     id: 'insider',
