@@ -1,6 +1,7 @@
 import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
 import contactCoverPhoto from '../../assets/about/old_phones.webp';
 import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
+import insiderCoverPhoto from '../../assets/insider/insider_preview.webp';
 
 // Grupy linków nagłówka (.masthead__nav) — "Projekty" podświetla naraz wszystkie sekcje z tą
 // grupą, "O mnie"/"Kontakt" tylko swoją jedną. `null` = sekcja nigdy nie jest celem nawigacji
@@ -60,6 +61,14 @@ export const SECTIONS: Section[] = [
     navGroup: 'projects',
     hasDetailView: true,
     inProgress: true,
+    // Realny zrzut ekranu (308×632, portretowy — pionowa karta-story), nie kadr specjalnie pod tę
+    // ramkę. `position: 'center 15%'` faworyzuje górę kadru (wordmark "INSIDER" + pasek tickera —
+    // najbardziej rozpoznawalny fragment), nie środek.
+    coverPhoto: {
+      src: insiderCoverPhoto,
+      alt: 'Zrzut ekranu aplikacji Insider — pasek tickera i karta sugestii AI',
+      position: 'center 15%',
+    },
   },
   {
     id: 'serwisant',

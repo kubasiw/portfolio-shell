@@ -7,18 +7,37 @@ const WIDGET_TAG = 'insider-app';
 
 type ScriptState = 'loading' | 'ready' | 'error';
 
-let widgetScriptRequested = false;
+// Bug caught live: neither a failed script load (e.g. a 404 while the widget build isn't deployed
+// yet) nor a script that loads but never calls customElements.define() for some other reason was
+// ever surfaced — customElements.whenDefined() only resolves on success, it never rejects, so
+// either failure mode left the UI stuck on "Ładowanie…" forever with no way out. Fixed with the
+// script's own `error` event plus a timeout backstop, raced against whenDefined(); the promise
+// itself is cached (not just a "was it requested" flag) so a second mount reuses the same
+// outcome instead of re-appending the script or re-racing the timeout.
+const SCRIPT_LOAD_TIMEOUT_MS = 15_000;
+let widgetScriptPromise: Promise<void> | null = null;
 
 function loadWidgetScript(): Promise<void> {
   if (customElements.get(WIDGET_TAG)) return Promise.resolve();
-  if (!widgetScriptRequested) {
-    widgetScriptRequested = true;
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = WIDGET_SCRIPT_SRC;
-    document.body.appendChild(script);
+  if (!widgetScriptPromise) {
+    widgetScriptPromise = new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = WIDGET_SCRIPT_SRC;
+      script.addEventListener('error', () => reject(new Error('Nie udało się załadować skryptu widgetu.')));
+      document.body.appendChild(script);
+
+      const timeoutId = setTimeout(
+        () => reject(new Error('Przekroczono czas oczekiwania na widget.')),
+        SCRIPT_LOAD_TIMEOUT_MS,
+      );
+      customElements.whenDefined(WIDGET_TAG).then(() => {
+        clearTimeout(timeoutId);
+        resolve();
+      });
+    });
   }
-  return customElements.whenDefined(WIDGET_TAG).then(() => undefined);
+  return widgetScriptPromise;
 }
 
 const TECH_TAGS = [
