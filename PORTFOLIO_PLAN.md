@@ -33,8 +33,8 @@ wizualnie do tour-guide. Każda apka w zestawie może mieć inny charakter grafi
   "SUGESTIA AI · NIE PORADA" od pierwszej wersji (Faza 4, krok 10); brak jeszcze realnego źródła
   danych i deployu. Ten dokument (nie repo insider) pozostaje jedynym miejscem pełnej specyfikacji
   — `CLAUDE.md` w `insider` tylko do niego odsyła, nie duplikuje treści.
-- **Projekt 3 — "Serwisant"** (robocza nazwa, framework: do ustalenia) — asystent serwisowy
-  samochodu. Patrz sekcja osobna poniżej.
+- **Projekt 3 — "Serwisant"** (robocza nazwa, framework: **React Native**, patrz korekta
+  2026-07-31 niżej) — asystent serwisowy samochodu. Patrz sekcja osobna poniżej.
 
 ## Projekt 2 — apka finansowa (robocza nazwa: "Insider" roboczo, framework: Vue)
 
@@ -96,7 +96,7 @@ Jako projekt portfolio ryzyko jest niskie, ale warto to zaprojektować porządni
 - to też dobry fragment do opisania w portfolio jako dowód świadomego, odpowiedzialnego myślenia
   produktowego, nie tylko technicznego
 
-## Projekt 3 — "Serwisant" (robocza nazwa, framework: do ustalenia)
+## Projekt 3 — "Serwisant" (robocza nazwa, framework: React Native)
 
 Cel: asystent obsługi serwisowej samochodu. Użytkownik zakłada profil pojazdu (marka, model,
 generacja, rocznik, silnik — wypełnione ręcznie albo ze zdjęcia dowodu rejestracyjnego, które AI
@@ -130,11 +130,39 @@ są jawnie oznaczone jako orientacyjne ("orientacyjne wg wiedzy ogólnej, nie of
 producenta — zawsze zweryfikuj z ASO/instrukcją obsługi"), szczególnie przy pozycjach
 bezpieczeństwa krytycznych. Ten sam duch odpowiedzialnego projektowania co przy Insiderze.
 
-**Framework: Angular** (potwierdzone 2026-07-24) — powtórka stacku z tour-guide, świadomie: ten
+~~**Framework: Angular** (potwierdzone 2026-07-24) — powtórka stacku z tour-guide, świadomie: ten
 sam wzorzec engineering discipline (signals/resource, strict typing, wywołania AI w kształcie już
 sprawdzonym w `AiModule`/`PlanChatModule`) zastosowany w drugiej, nowej domenie. Pokazuje głębię
 kompetencji, nie tylko szerokość frameworków — tę akurat pokrywają już React (shell) i Vue
-(Insider).
+(Insider).~~
+
+**Zmienione na React Native (2026-07-31), właściciel.** Powód: Serwisant to z założenia apka
+używana praktycznie w terenie — robienie zdjęć dowodu rejestracyjnego/książki serwisowej/faktur
+stojąc przy warsztacie czy na parkingu — więc realnie mobile-first charakter tej konkretnej apki
+przeważa nad argumentem "pokaż głębię, nie tylko szerokość" z pierwotnej decyzji. React Native
+robi to zresztą i tak jeszcze lepiej niż powtórka Angulara: portfolio pokazuje wtedy **cztery**
+odrębne podejścia frontendowe (React web, Vue, Angular, React Native), nie trzy — sam React
+Native, mimo współdzielonego języka z shellem, to realnie inny model renderowania/nawigacji/
+dostępu do sprzętu (kamera, storage) niż web-React, więc to wciąż nowa, nie powtórzona
+kompetencja, tylko innego rodzaju niż Vue/Angular.
+
+**Odpowiedź na pytanie właściciela — czy taką apkę da się "wrzucić jako odpalaną z pulpitu w
+telefonie":** tak, ale z realną różnicą między platformami, warto mieć to jasne od razu:
+- **Android:** tak, prosto — prawdziwy standalone build (Expo **EAS Build**, nie tylko podgląd w
+  appce Expo Go) daje realny plik `.apk`, instalowalny wprost na telefon (sideload, bez sklepu),
+  z własną ikoną w szufladzie aplikacji, uruchamiany jak każda inna zainstalowana apka.
+- **iOS:** więcej tarcia — Apple nie ma odpowiednika "zainstaluj apk" za darmo. Sideload wymaga
+  albo płatnego Apple Developer Program (99 USD/rok, przez Xcode/TestFlight), albo darmowego
+  podpisania osobistym Apple ID przez Xcode — ale to działa tylko 7 dni, potem trzeba
+  przepodpisać. Realna, bezterminowa dystrybucja na iOS bez płatnego konta nie istnieje.
+- **Ważne rozróżnienie:** samo **Expo Go** (najszybszy sposób podglądu w trakcie budowy) nie daje
+  własnej ikony na pulpicie — apka otwiera się jako projekt *wewnątrz* appki Expo Go, nie jako
+  osobna ikona. Żeby dostać prawdziwą, samodzielną ikonę na pulpicie telefonu (czego właściciel
+  pytał), potrzebny jest właśnie **EAS Build** (albo "bare" build), nie sam Expo Go.
+- Wniosek praktyczny: dla celów portfolio/demo realistyczny, bezproblemowy scenariusz to **Android
+  APK, sideload, ikona na pulpicie** — bez żadnych kosztów ani kont deweloperskich. iOS jest
+  możliwy, ale wymaga świadomej decyzji o koncie Apple Developer (albo akceptacji 7-dniowego
+  odświeżania), do rozważenia bliżej realnego budowania, nie teraz.
 
 **Dodatkowe funkcje ustalone 2026-07-24:**
 - **Przegląd techniczny (SKP)** jako osobna pozycja w timeline, obok olej/rozrząd/klimatyzacja.
@@ -1152,11 +1180,16 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   zbudowanym obrazie Dockera (nie tylko napisane) i ponownie na żywej domenie po redeployu — zero
   regresji w realnym przepływie użytkownika. Pełny opis w `insider/CLAUDE.md`'s "Status".
 
-**Faza 5 — Projekt 03: Serwisant (Angular)**
+**Faza 5 — Projekt 03: Serwisant (React Native, zmienione 2026-07-31 — patrz korekta w sekcji
+Projektu 3)**
 12. Profil pojazdu (formularz + OCR dowodu rejestracyjnego), podstawowy timeline na bazie ręcznie
     wpisanej historii — najpierw prostszy przypadek, bez OCR książki serwisowej.
 13. OCR książki serwisowej/faktur + pętla odhaczenie → zdjęcie dowodu wykonania → aktualizacja.
-14. Deploy, subdomena, karta w portfolio odblokowana naprawdę.
+14. **Dystrybucja różni się od pozostałych dwóch projektów** — nie "subdomena w przeglądarce", tylko
+    realny plik do zainstalowania na telefonie: backend (OCR/AI) nadal wystawiony pod subdomeną jak
+    reszta, ale sam frontend to build EAS (Android APK do sideloadu na start, ikona na pulpicie
+    telefonu — patrz dokładne rozważenie platform w sekcji Projektu 3). Karta w portfolio wtedy
+    linkuje do pobrania tego pliku (lub instrukcji), nie do live-demo pod adresem URL.
 
 **Faza 6 — Polish**
 15. Publiczna strona statusu (Uptime Kuma), spięta z health-checkami wszystkich apek.
@@ -1513,3 +1546,12 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   podmiana żywego widgetu na statyczny obrazek na kafelku bez gotowego miejsca docelowego byłaby
   realnym krokiem wstecz (użytkownik straciłby jedyny podgląd apki), nie do zrobienia jako
   osobny, wcześniejszy krok.
+- 2026-07-31: **zmieniono framework Serwisanta z Angulara na React Native.** Powód: to apka z
+  założenia używana w terenie (zdjęcia dokumentów przy warsztacie/na parkingu), więc realnie
+  mobile-first charakter przeważa nad pierwotnym argumentem "powtórz Angulara, pokaż głębię, nie
+  tylko szerokość" — a React Native i tak pokrywa breadth lepiej, bo to czwarte, nie trzecie,
+  odrębne podejście frontendowe w całym zestawie (React web / Vue / Angular / React Native), mimo
+  współdzielonego języka z shellem. Pełne uzasadnienie i odpowiedź na pytanie o instalowalność
+  (Android APK/sideload = prosto i za darmo; iOS wymaga płatnego Apple Developer Program albo
+  7-dniowego darmowego podpisu — Expo Go samo w sobie nie daje własnej ikony na pulpicie, do tego
+  trzeba EAS Build) — w sekcji "Projekt 3 — Serwisant" wyżej.
