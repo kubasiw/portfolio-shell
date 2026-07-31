@@ -16,6 +16,11 @@ interface ProjectCardProps {
 // nie wcześniej.
 const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
+// Insider (2026-07-31) — real user feedback: the card had drifted from tour-guide's own order
+// (description, then a visual, then a "Zobacz cały projekt" CTA at the end). Fixed by giving it
+// its own branch, same shape as TOUR_GUIDE_SECTION_ID, instead of the generic top-of-card
+// coverPhoto frame (about/skills/contact) — see the render below.
+const INSIDER_SECTION_ID = 'insider';
 const CONTACT_SECTION_ID = 'contact';
 
 function maskText(text: string): string {
@@ -59,7 +64,7 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
       </div>
       {!locked && (
         <>
-          {coverPhoto && (
+          {coverPhoto && section.id !== INSIDER_SECTION_ID && (
             <div className="spec-plate__cover-photo-frame">
               <img
                 src={coverPhoto.src}
@@ -101,8 +106,27 @@ export function ProjectCard({ section, locked, highlighted, onOpenDetail }: Proj
               </a>
             </>
           )}
+          {section.id === INSIDER_SECTION_ID && coverPhoto && (
+            <>
+              <div className="spec-plate__cover-photo-frame">
+                <img
+                  src={coverPhoto.src}
+                  alt={coverPhoto.alt}
+                  className="spec-plate__cover-photo"
+                  style={{ objectPosition: coverPhoto.position }}
+                />
+              </div>
+              <button
+                type="button"
+                className="spec-plate__cta"
+                onClick={() => onOpenDetail(section.id)}
+              >
+                Zobacz cały projekt →
+              </button>
+            </>
+          )}
           {section.id === CONTACT_SECTION_ID && <ContactLinks />}
-          {section.hasDetailView && (
+          {section.hasDetailView && section.id !== INSIDER_SECTION_ID && (
             <button
               type="button"
               className="spec-plate__cta"
