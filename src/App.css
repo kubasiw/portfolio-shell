@@ -2,12 +2,15 @@
   /* 900px → 1040px: lekkie poszerzenie, głównie z myślą o siatce kart ToC (hero ma własny,
      węższy max-width, więc nie robi się mniej czytelny). */
   max-width: 1040px;
-  /* 100vh is a snapshot taken at layout time — on iOS Safari it doesn't grow when the bottom
-     toolbar auto-hides during a scroll, so the footer stops short of the newly-revealed space
-     (real bug reported on a real iPhone). 100dvh tracks the actual visible viewport live; kept
-     100vh first as a fallback for browsers that don't support dvh yet. */
+  /* 100vh is a snapshot taken at layout time — on iOS Safari/Chrome it doesn't grow when the
+     bottom toolbar auto-hides during a scroll, so .site-footer's `position: sticky; bottom: 0`
+     stays stuck to the stale, smaller height (confirmed live: dvh alone did NOT fix this —
+     WebKit's sticky recalculation doesn't reliably re-trigger off it). --app-vh is kept in sync
+     with the real window.innerHeight by a resize listener in App.tsx, which does force a real
+     recalculation; vh/dvh stay as fallbacks for when JS hasn't run yet (or is disabled). */
   min-height: 100vh;
   min-height: 100dvh;
+  min-height: calc(var(--app-vh, 1vh) * 100);
   margin: 0 auto;
   padding: 0 44px;
   /* Własne tło + hairline po bokach — bez tego strona i --eg-divider pod spodem (patrz

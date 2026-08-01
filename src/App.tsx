@@ -14,6 +14,28 @@ function App() {
   // szczegółowy i wrócić do spisu treści — patrz handleNavClick niżej.
   const [openSectionId, setOpenSectionId] = useState<string | null>(null);
 
+  // Real bug reported on a real iPhone (both Safari and Chrome for iOS — same WebKit engine
+  // underneath): `.site-footer`'s `position: sticky; bottom: 0` doesn't recompute against the
+  // *dynamic* viewport when Safari's/Chrome's bottom toolbar auto-hides during a scroll — it
+  // stays stuck to the smaller, stale viewport height from initial layout, leaving a gap below
+  // the footer once the toolbar disappears. CSS `dvh` alone didn't fix it (confirmed live) —
+  // WebKit's sticky-position recalculation doesn't reliably re-trigger off a `dvh` value change
+  // on its own. This is the older, more battle-tested workaround: track the real
+  // `window.innerHeight` in a CSS custom property, updated on resize, so `.landing`'s min-height
+  // actually changes (forcing a real layout recalculation, not just a value WebKit may ignore).
+  useEffect(() => {
+    function syncViewportHeight(): void {
+      document.documentElement.style.setProperty('--app-vh', `${window.innerHeight * 0.01}px`);
+    }
+    syncViewportHeight();
+    window.addEventListener('resize', syncViewportHeight);
+    window.visualViewport?.addEventListener('resize', syncViewportHeight);
+    return () => {
+      window.removeEventListener('resize', syncViewportHeight);
+      window.visualViewport?.removeEventListener('resize', syncViewportHeight);
+    };
+  }, []);
+
   // Widok szczegółowy nadpisuje, co pokazuje się jako aktywne w nagłówku — jesteśmy "w" tej
   // grupie, niezależnie od tego, co było ostatnio klikane (np. wejście na kartę "O mnie" przez
   // "Zobacz →", bez przechodzenia przez nagłówek, i tak podświetla "O mnie"). Liczone raz tutaj
