@@ -144,8 +144,14 @@
 /* Insider's own "visualization" slot (see ProjectCard.tsx) sits where tour-guide's live widget
    does — sized to match that same visual weight across cards, not a differently-proportioned one.
    400px per explicit request (tour-guide's own .tour-guide-widget min-height is 320px). */
+/* Real bug caught live on a real phone: `.spec-plate--has-cover .spec-plate__cta`'s
+   `margin-top: auto` (meant to pin the CTA to the card's bottom edge when there's spare flex
+   space) collapses to 0 when there's no spare space left — exactly the case here, since this
+   400px frame plus the description already fill the card with nothing left over. Guaranteed here
+   instead, independent of how much (if any) flex space remains. */
 .spec-plate__cover-photo-frame--widget-height {
   height: 400px;
+  margin-bottom: 10px;
 }
 
 .spec-plate__cover-photo {
