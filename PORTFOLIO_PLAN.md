@@ -174,6 +174,24 @@ Maca, którego nie ma. Praktyczne wnioski:
 - **Development/podgląd na żywo w trakcie budowy nie jest problemem mimo braku Maca** — Expo Go
   działa identycznie na iOS jak na Androidzie (appka z App Store, ten sam skan kodu QR, ten sam
   Fast Refresh) i nie wymaga Xcode ani Maca w ogóle.
+  **Korekta, realny problem napotkany 2026-07-31:** to założenie ma jedną istotną, nieoczywistą
+  dziurę — App Store'owa wersja Expo Go wspiera tylko **jedną, konkretną wersję Expo SDK na raz**,
+  i nie zawsze jest to najnowsza opublikowana na npm (nowa wersja Expo Go czeka wtedy na recenzję
+  Apple, realnie widziane opóźnienie: `create-expo-app` zainstalował świeże SDK 57, podczas gdy
+  App Store w tym momencie wciąż serwował Expo Go dla SDK 54 — 3 wersje różnicy). Skutek: świeżo
+  pobrana z App Store appka Expo Go odrzuca projekt komunikatem że "potrzebuje najnowszej wersji"
+  (bez podania konkretnego numeru SDK w treści błędu — mylące, bo appka faktycznie *jest*
+  najnowsza dostępna w App Store, tylko projekt jest nowszy niż ona). **Dla właściciela bez Maca i
+  bez telefonu z Androidem (patrz sprzęt wyżej) to jedyny realnie darmowy sposób podglądu na
+  fizycznym urządzeniu** — `eas go` (alternatywa dla SDK zbyt nowych dla App Store) wymaga płatnego
+  Apple Developer Program, więc nie jest tu opcją. **Praktyczny fix: przypiąć projekt do wersji SDK,
+  jaką faktycznie wspiera aktualnie opublikowana w App Store Expo Go** (sprawdzone na App Store
+  Connect, nie zgadywane — `npm install expo@^54.0.0 && npx expo install --fix`, potwierdzone
+  `npx expo-doctor` 18/18), zamiast trzymać się najnowszego SDK za wszelką cenę. **Do pamiętania na
+  przyszłość, także dla planu karty portfolio niżej (`instrukcja "zainstaluj Expo Go, zeskanuj
+  kod"`):** przed każdym przyszłym bumpem Expo SDK w tym repo, sprawdzić na żywo jaką wersję SDK
+  wspiera aktualna App Store'owa Expo Go — inaczej ten sam błąd uderzy też w odwiedzających
+  portfolio, nie tylko we właściciela w trakcie developmentu.
 - **Jedyna realna droga do prawdziwej, samodzielnej ikony na pulpicie (nie tylko podgląd w Expo
   Go) to EAS Build** (kompiluje w chmurze Expo — działa z Windowsa, nie potrzeba lokalnego Xcode)
   **plus płatne Apple Developer Program (99 USD/rok)** do podpisania builda pod iPhone'a
@@ -211,25 +229,105 @@ instrukcja "zainstaluj Expo Go, zeskanuj kod" + sam kod QR prowadzący do live p
   odhaczenie robi timeline odrobinę dokładniejszym — historia użytkownika, nie AI, pozostaje
   twardym gruntem prawdy (zgodnie z zasadą ustaloną wyżej).
 
-**Design system — "Workshop Docket" (zablokowany 2026-07-24):** estetyka kwitu warsztatowego —
+~~**Design system — "Workshop Docket" (zablokowany 2026-07-24):** estetyka kwitu warsztatowego —
 uczciwa wobec tego, czym apka faktycznie operuje (realne dokumenty), i wyraźnie odrębna od Night
-Desku (Insider), mimo że oba są "techniczne".
-- Tło (papier kwitu): `#f1efe9`; tekst główny: `#2b2620`; tekst drugorzędny: `#6b6357`.
-- Hairline pełny: `#d6d2c4`; hairline przerywany (nagłówek dokumentu): `#b8b3a1`; separator wiersza:
-  `#e2dfd4`.
-- Kolory statusu (pieczątki, tylko funkcyjnie): czerwony `#b3261e` (przeterminowane), bursztyn
-  `#a9772f` (wkrótce), zielony `#3f6b3f` (ok).
-- Typografia: wyłącznie monospace (`ui-monospace`) — maszynopisowy charakter kwitu, brak serifów/
+Desku (Insider), mimo że oba są "techniczne".~~
+~~- Tło (papier kwitu): `#f1efe9`; tekst główny: `#2b2620`; tekst drugorzędny: `#6b6357`.~~
+~~- Hairline pełny: `#d6d2c4`; hairline przerywany (nagłówek dokumentu): `#b8b3a1`; separator wiersza:
+  `#e2dfd4`.~~
+~~- Kolory statusu (pieczątki, tylko funkcyjnie): czerwony `#b3261e` (przeterminowane), bursztyn
+  `#a9772f` (wkrótce), zielony `#3f6b3f` (ok).~~
+~~- Typografia: wyłącznie monospace (`ui-monospace`) — maszynopisowy charakter kwitu, brak serifów/
   groteskowych nagłówków (odróżnia to świadomie od Editorial Garage, gdzie serif jest głównym
-  motywem).
-- Komponent: pieczątka statusu — bordered badge, lekko obrócony (`transform: rotate(-4deg)` do
-  `rotate(4deg)`, losowo/na wiersz, imituje realną pieczątkę), uppercase, bold.
-- **Fakt vs. szacunek (nowa, generalna zasada — patrz też sekcja dobrych praktyk):** pieczątka
-  pełna/wypełniona = potwierdzony fakt (SKP z OCR dowodu, ukończona usługa z dowodem); pieczątka
-  tylko-obrys/przerywana + prefiks "SZAC." = szacowany interwał AI. Nigdy nie prezentować jednym
-  wizualnym językiem.
-- Odrzucony wariant: "Instrument Cluster" (ciemna deska rozdzielcza, paski postępu jak wskaźniki) —
-  bardziej "żywy panel" niż "archiwum dokumentów", mniej spójny z tym, czym apka faktycznie jest.
+  motywem).~~
+~~- Komponent: pieczątka statusu — bordered badge, lekko obrócony (`transform: rotate(-4deg)` do
+  `rotate(4deg)`, losowo/na wiersz, imituje realną pieczątkę), uppercase, bold.~~
+- **Fakt vs. szacunek (generalna zasada, przetrwała zmianę design systemu poniżej — patrz też
+  sekcja dobrych praktyk):** pieczątka pełna/wypełniona = potwierdzony fakt (SKP z OCR dowodu,
+  ukończona usługa z dowodem); pieczątka tylko-obrys/przerywana + prefiks "SZAC." = szacowany
+  interwał AI. Nigdy nie prezentować jednym wizualnym językiem.
+~~- Odrzucony wariant: "Instrument Cluster" (ciemna deska rozdzielcza, paski postępu jak wskaźniki) —
+  bardziej "żywy panel" niż "archiwum dokumentów", mniej spójny z tym, czym apka faktycznie jest.~~
+
+**Design system — "Service Bay" (zablokowany 2026-07-31, zastępuje Workshop Docket powyżej).**
+Powód zmiany: pierwszy realny build (Expo skeleton + kaskadowy formularz pojazdu, patrz
+`C:\serwisant`) wyglądał — realny feedback właściciela — "mało efektowny i podobny do portfolio".
+Workshop Docket (beżowy papier kwitu, wyłącznie monospace, stonowane barwy) czytał się jako zbyt
+cichy/nieodróżniający się, nie jako świadomie skromny. Research bieżących (2026) trendów mobile
+UI/UX zrobiony przed propozycją (nie zgadywany z pamięci) — dark-mode-first jako domyślny (nie
+dodatek), bento grid dla gęstych danych, "bold minimalism" (płaski, wysoki kontrast zamiast
+stonowanych barw), neumorfizm konkretnie dla narzędzi diagnostycznych/tactile. Cztery konkretne
+kierunki zbudowane jako żywa, interaktywna makieta porównawcza (ten sam pojazd/te same 5 pozycji
+serwisowych w każdym, nie tylko próbki kolorów) i pokazane właścicielowi do wyboru: "Pit Wall"
+(ciemny bento-grid, cyjanowy akcent), "Soft Diagnostic" (neumorfizm, jasne chłodne tło, akcent
+jadeitowy), "Field Ledger" (ewolucja Workshop Docket — też pieczątki/monospace, ale ciemne tło i
+nasycony bursztyn zamiast stonowanego), i "Service Bay" — fuzja Pit Wall + Field Ledger, dodana po
+realnym feedbacku że siatka 2×2 Pit Walla ściskała treść ("kafelki jedno pod drugim, bo treść się
+nie mieści"). **Wybrany: Service Bay.**
+- Tło ekranu: `#14171c` (ciemny blue-charcoal, nie czysta czerń, nie ciepły brąz Field Ledgera);
+  tło karty: `#1c2027`; obrys karty: `#262b33`; wariant "przeterminowane": tło `#241512`, obrys
+  `#4a2a1c`.
+- Tekst główny: `#e9edf2`; tekst drugorzędny/dane: `#6d7684` (etykiety, meta) i `#8993a3` (podtytuł).
+- Jeden akcent — telemetryczny cyjan `#2ab7e0` (tekst na nim: `#04202c`) — zarezerwowany wyłącznie
+  dla hero-liczby (przebieg) i głównego CTA ("Sprawdź konieczne czynności"); nigdy nie używany do
+  statusów, żeby nie konkurował z ich znaczeniem.
+- Kolory statusu (pieczątki, przeniesione z Field Ledgera, teraz nasycone nie stonowane): czerwony
+  `#ff5a4d` (przeterminowane), bursztyn `#f2b705` (wkrótce), zielony `#6fbf7a` (ok), szary
+  przerywany `#8a7d63` (szacunek/SZAC.).
+- Typografia: mieszana, nie wyłącznie monospace jak w Workshop Docket/Field Ledgerze —
+  `ui-monospace` zarezerwowany dla liczb (hero-przebieg, dane liczbowe w wierszach,
+  `font-variant-numeric: tabular-nums`), zwykły sans (systemowy) dla nazw pozycji i etykiet —
+  czytelniej przy dłuższych nazwach czynności serwisowych niż mono wszędzie.
+- Układ: pełnej szerokości, ułożone jeden pod drugim wiersze (nie siatka 2×2, nie wymaga
+  poziomego przewijania ani ściskania treści) — każdy wiersz: nazwa + linia szczegółu po lewej,
+  pieczątka statusu po prawej.
+- Komponent pieczątki statusu — bez zmian względem Workshop Docket/Field Ledgera: bordered badge,
+  lekko obrócony (`rotate(-3deg)` fakt, `rotate(2deg)` przerywany szacunek), uppercase, bold —
+  ten element okazał się na tyle udany, że przetrwał każdą iterację design systemu.
+- Pełny kod referencyjny czterech porównywanych kierunków (HTML/CSS, nie tylko opis) w
+  artefakcie zbudowanym podczas tej sesji — patrz historia rozmowy w `C:\serwisant` dla źródła,
+  jeśli potrzebny ponowny wgląd; nieprzechowywany jako plik w żadnym repo.
+
+**Przepływ appki — ustalony szczegółowo 2026-07-31, zastępuje wcześniejsze uproszczone ujęcie w
+Faza 5 niżej:**
+
+1. **Brak logowania/rejestracji na start.** Użytkownik wchodzi wprost do apki, zero ekranu
+   logowania. Profil pojazdu i historia serwisowa zapisywane **wyłącznie lokalnie na urządzeniu**
+   (kandydat: `expo-sqlite`) — brak persystencji po stronie backendu na tym etapie; backend (gdy/jeśli
+   powstanie) będzie wywoływany wyłącznie bezstanowo, do zadań AI/OCR, nigdy do przechowywania
+   danych użytkownika. Konta i synchronizacja między urządzeniami to świadomie odłożona, czysta
+   rozbudowa na później — nie coś wymagające przebudowy istniejącego modelu danych, skoro dane i tak
+   będą miały jasny kształt lokalny od początku.
+2. **Wybór pojazdu — kaskadowy formularz**: marka → model (wraz z generacją) → rocznik → wersja
+   silnikowa/wyposażenia, a na końcu przebieg. **Podpowiedzi na każdym kroku generuje/normalizuje AI**,
+   nie realna baza danych motoryzacyjnych — użytkownik wpisuje swobodnie, Claude rozpoznaje i pokazuje
+   do potwierdzenia (np. "Rozpoznaliśmy: Volkswagen Golf VII (2013–2020), 2.0 TDI — zgadza się?"),
+   użytkownik potwierdza albo poprawia zanim to trafi do profilu. **Świadomie zaakceptowany brak
+   walidacji względem faktycznej bazy pojazdów** — ten sam rodzaj "szacunku AI, potwierdzonego przez
+   człowieka" co interwały serwisowe niżej, tylko zastosowany też do samej identyfikacji pojazdu; opcja
+   odrzucona: research/integracja realnego API danych motoryzacyjnych — żadna wolna opcja o pewnym
+   pokryciu europejskich generacji/silników nie jest znana z góry (to samo ryzyko "brak darmowego
+   źródła prawdy" co przy interwałach), a jej sprawdzanie nie jest wartę tego kosztu na obecnym etapie.
+   **OCR dowodu rejestracyjnego (z pierwotnego planu) zostaje na roadmapie, ale odłożony** — kaskadowy
+   picker to teraz pierwsza/podstawowa ścieżka; OCR dowodu dochodzi później jako szybszy skrót, nie
+   zamiennik.
+3. **Wstępna historia serwisowa — dwa niewykluczające się wejścia**, oba prowadzące do tego samego
+   modelu danych (lista rozpoznanych czynności serwisowych z datą/przebiegiem/zakresem):
+   - opis tekstowy: co i kiedy było serwisowane (wg wiedzy użytkownika), co go niepokoi;
+   - zdjęcia faktur/książki serwisowej (z widoczną datą, przebiegiem, zakresem usługi).
+   AI analizuje oba źródła razem, rozpoznaje pojedyncze czynności serwisowe i układa je na czytelnej,
+   chronologicznej osi czasu.
+4. **Akcja "Sprawdź konieczne czynności serwisowe"** — jawnie klikana przez użytkownika, nie
+   auto-odpalana (ten sam wzorzec kosztowej-akcji-AI-za-jawnym-triggerem co narracja/chat w
+   tour-guide). AI: sprawdza typowe interwały serwisowe dla konkretnego modelu/silnika (rozrząd, oleje
+   silnikowy/skrzyni/napędu, inne płyny, pozostałe czynności serwisowe) → porównuje z historią z osi
+   czasu → klasyfikuje każdą pozycję (zrobione i aktualne / przeterminowane / zbliża się termin / brak
+   danych) → układa wynik od najpilniejszych do najodleglejszych. Ten sam rozdział "fakt vs. szacunek"
+   co w design systemie wyżej: historia użytkownika = twardy fakt, interwały/sugestie AI = jawnie
+   oznaczone jako orientacyjne.
+5. **Czytelna, priorytetyzowana prezentacja wyniku + eksport do PDF.** Kandydat technologiczny:
+   `expo-print` (generowanie PDF z HTML, natywnie wspierane w Expo managed workflow, bez potrzeby
+   ejectowania) — do potwierdzenia przy realnym budowaniu tego kroku, nie teraz.
 
 ## Mikrofrontendy
 
@@ -1214,11 +1312,47 @@ j. ✅ **Zaimplementowane (2026-07-27) — linki `.masthead__nav` ("Projekty"/"O
   regresji w realnym przepływie użytkownika. Pełny opis w `insider/CLAUDE.md`'s "Status".
 
 **Faza 5 — Projekt 03: Serwisant (React Native, zmienione 2026-07-31 — patrz korekta w sekcji
-Projektu 3)**
-12. Profil pojazdu (formularz + OCR dowodu rejestracyjnego), podstawowy timeline na bazie ręcznie
-    wpisanej historii — najpierw prostszy przypadek, bez OCR książki serwisowej.
-13. OCR książki serwisowej/faktur + pętla odhaczenie → zdjęcie dowodu wykonania → aktualizacja.
-14. **Dystrybucja różni się od pozostałych dwóch projektów** — nie "subdomena w przeglądarce", tylko
+Projektu 3; kroki 12-15 rozpisane szczegółowo 2026-07-31, patrz "Przepływ appki" w sekcji Projektu 3
+dla pełnego uzasadnienia każdej decyzji — zastępuje wcześniejsze uproszczone ujęcie tych kroków)**
+12. ✅ Wybór pojazdu — kaskadowy formularz (marka → model/generacja → rocznik → silnik, podpowiedzi
+    generowane/normalizowane przez AI z potwierdzeniem użytkownika, nie realna baza motoryzacyjna) +
+    przebieg. Bez logowania — zapis wyłącznie lokalny na urządzeniu (`expo-sqlite`, potwierdzone,
+    nie tylko kandydat). **AI rozpoznawanie/potwierdzanie dopięte (2026-08-02)**, po tym jak krok 13
+    dał temu backend: `POST /api/vehicle-profile/recognize` normalizuje pisownię i dopisuje
+    generację/rocznik tylko gdy to pewna, ogólnie znana wiedza (np. "Golf VII (2013-2020)"), nigdy
+    nie zgadując; ekran potwierdzenia ("Rozpoznaliśmy: ... — zgadza się?") zapisuje znormalizowane
+    dane, nie surowy wpisany tekst — zweryfikowane na żywo na celowo bałaganiarskim wejściu
+    ("bmw"/"seria 3"/"320d" → "BMW Seria 3 (E90/E91/E92/E93), silnik 2.0 D"). Pełne szczegóły w
+    `C:\serwisant\CLAUDE.md`.
+13. ✅ Wstępna historia serwisowa — opis tekstowy (co/kiedy było serwisowane, co niepokoi) i/lub
+    zdjęcia faktur/książki serwisowej, oba wejścia niewykluczające się; AI analizuje i buduje
+    chronologiczną oś czasu rozpoznanych czynności. Pierwszy krok wymagający realnego backendu —
+    repo przebudowane na `frontend/`+`backend/` (wzorem tour-guide) tuż przed tym krokiem. Nowy
+    `backend/` (NestJS, mirror kształtu tour-guide: `HealthModule`, `AiModule` wrapujący
+    `@anthropic-ai/sdk` — celowo bez Prismy/dziennego limitu wywołań, bo brak tu jakiejkolwiek bazy
+    i brak jeszcze publicznego wdrożenia; to samo hardening AI-nadużyć co w tour-guide czeka jako
+    osobny krok przed realnym deployem, nie teraz) — `POST /api/service-history/analyze` (multipart:
+    opis + do 5 zdjęć), wyodrębnianie przez tool-calling (`record_service_history`, wymuszony przez
+    `tool_choice`, ten sam wzorzec co `PlanChatModule` w tour-guide), zwraca `{opis, data, przebieg}[]`
+    z jawnym zakazem zgadywania niejasnych dat/przebiegu w promptcie — zweryfikowane na żywo: niejasna
+    wzmianka "w zeszłym roku, nie pamiętam dokładnie" poprawnie wróciła z `date: null`, a prawdziwe
+    ale niezwiązane zdjęcie (ikona appki) poprawnie zwróciło pustą listę zamiast zmyślonych wpisów.
+    Frontend: ekran przechwytywania (tekst + `expo-image-picker` aparat/galeria, limit 5 zdjęć) →
+    ekran przeglądu rozpoznanych pozycji (każda usuwalna) **zanim cokolwiek trafi do zapisu** — ten
+    sam duch "AI wyciąga, człowiek potwierdza" co reszta apki, mimo że to jeszcze nie jest właściwe
+    rozróżnienie fakt/szacunek (to dopiero krok 14). Nowa tabela `service_events` w SQLite. Pełne
+    szczegóły techniczne (w tym dwa realne gotchas — kolizja portu z Insiderem, `TaskStop` nie
+    zabijający procesu-drzewa `npx expo start` na Windowsie) w `C:\serwisant\CLAUDE.md`.
+14. ✅ Akcja "Sprawdź konieczne czynności serwisowe" (jawny trigger — przycisk na osi czasu, nie
+    auto-fire) — AI zestawia oś czasu z typowymi interwałami serwisowymi dla modelu/silnika,
+    priorytetyzuje (przeterminowane/wkrótce/potem/brak danych), czytelna prezentacja (pieczątki
+    statusu z Workshop Docket/Field Ledger/Service Bay, przeniesione bez zmian) + eksport do PDF
+    (`expo-print`, potwierdzone, nie tylko kandydat). Fakt vs. szacunek rozdzielone strukturalnie w
+    samej odpowiedzi AI (dwa osobne pola), nie tylko wizualnie. Pełne szczegóły w
+    `C:\serwisant\CLAUDE.md`.
+15. Domykanie pętli — ręczne odhaczenie pozycji z dowodem wykonania (zdjęcie faktury/dokumentu,
+    przez ten sam OCR co krok 13), dopisanie do historii, przeliczenie kolejnego terminu.
+16. **Dystrybucja różni się od pozostałych dwóch projektów** — nie "subdomena w przeglądarce", tylko
     realny plik do zainstalowania na telefonie: backend (OCR/AI) nadal wystawiony pod subdomeną jak
     reszta, ale sam frontend to build EAS (Android APK do sideloadu na start, ikona na pulpicie
     telefonu — patrz dokładne rozważenie platform w sekcji Projektu 3). Karta w portfolio wtedy
@@ -1229,11 +1363,11 @@ Projektu 3)**
     Projektu 3, w tym dlaczego to jedyna opcja bez płatnego Apple Developer Program).
 
 **Faza 6 — Polish**
-15. Publiczna strona statusu (Uptime Kuma), spięta z health-checkami wszystkich apek.
-16. Realne fonty self-hosted (serif/mono dla portfolio shellu).
-17. Backupy (Hetzner albo cron `pg_dump`).
-18. Wersje mobilne pozostałych makiet (Insider, Serwisant).
-19. Krótkie case-study/README per projekt tłumaczące decyzje architektoniczne — ten dokument jako
+17. Publiczna strona statusu (Uptime Kuma), spięta z health-checkami wszystkich apek.
+18. Realne fonty self-hosted (serif/mono dla portfolio shellu).
+19. Backupy (Hetzner albo cron `pg_dump`).
+20. Wersje mobilne pozostałych makiet (Insider, Serwisant).
+21. Krótkie case-study/README per projekt tłumaczące decyzje architektoniczne — ten dokument jako
     surowiec źródłowy.
 
 ## Historia decyzji (chronologicznie)
@@ -1592,3 +1726,129 @@ Projektu 3)**
   (Android APK/sideload = prosto i za darmo; iOS wymaga płatnego Apple Developer Program albo
   7-dniowego darmowego podpisu — Expo Go samo w sobie nie daje własnej ikony na pulpicie, do tego
   trzeba EAS Build) — w sekcji "Projekt 3 — Serwisant" wyżej.
+- 2026-07-31: **rozpisano szczegółowy przepływ appki Serwisant** (właściciel, w sesji roboczej nad
+  repo `C:\serwisant` — Expo/TypeScript skeleton scaffoldowany w tej samej sesji, patrz jego własny
+  `CLAUDE.md`). Trzy decyzje potwierdzone przez `AskUserQuestion` przed spisaniem: (1) **brak
+  logowania/rejestracji na start** — profil pojazdu i historia serwisowa zapisywane wyłącznie
+  lokalnie na urządzeniu (`expo-sqlite`), backend (jeśli powstanie) wywoływany tylko bezstanowo do
+  AI/OCR, konta/sync odłożone jako czysta rozbudowa na później; (2) **kaskadowy formularz wyboru
+  pojazdu (marka→model/generacja→rocznik→silnik) zasilany AI-owymi podpowiedziami z potwierdzeniem
+  użytkownika, nie realną bazą motoryzacyjną** — odrzucono opcję szukania/integrowania realnego API
+  danych pojazdów (ten sam rodzaj niepewności "brak darmowego źródła prawdy" co przy interwałach
+  serwisowych, niewarty sprawdzania na tym etapie); (3) **OCR dowodu rejestracyjnego z pierwotnego
+  planu zostaje na roadmapie, ale odłożony** — kaskadowy picker jest teraz pierwszą/podstawową
+  ścieżką, OCR dowodu dochodzi później jako szybszy skrót, nie zamiennik. Pełny nowy przepływ (5
+  kroków: wybór pojazdu → wstępna historia serwisowa z dwóch niewykluczających się wejść (opis
+  tekstowy + zdjęcia faktur/książki serwisowej) → jawna akcja "Sprawdź konieczne czynności
+  serwisowe" → priorytetyzowana prezentacja + eksport PDF, kandydat `expo-print`) spisany w sekcji
+  "Projekt 3 — Serwisant" wyżej; kroki 12-15 Fazy 5 w Roadmapie rozpisane szczegółowo w miejsce
+  wcześniejszego uproszczonego ujęcia (krok 15, domykanie pętli odhaczenie→dowód wykonania, było
+  wcześniej częścią kroku 13 — rozdzielone, bo krok 13 jest teraz o pierwszym budowaniu osi czasu,
+  nie o późniejszym jej domykaniu).
+- 2026-07-31: **zmieniono design system Serwisanta z "Workshop Docket" na "Service Bay".** Powód:
+  realny feedback właściciela po zobaczeniu pierwszego builda (kaskadowy formularz pojazdu na
+  localhost) — Workshop Docket (beżowy papier, wyłącznie monospace) wyglądał "mało efektownie i
+  podobnie do portfolio". Zrobiono realny research bieżących (2026) trendów mobile UI/UX przed
+  propozycją (dark-mode-first, bento grid, bold minimalism, neumorfizm dla narzędzi
+  diagnostycznych), zbudowano 3 konkretne, w pełni działające kierunki jako interaktywna makieta
+  porównawcza (Pit Wall — ciemny bento z cyjanem; Soft Diagnostic — neumorfizm na jasnym chłodnym
+  tle; Field Ledger — ewolucja Workshop Docket na ciemnym tle z nasyconym bursztynem), każdy
+  renderujący te same dane (VW Golf VII, 145 000 km, 5 pozycji serwisowych), nie próbki kolorów.
+  Właściciel zgłosił realny problem z Pit Wallem (siatka 2×2 ściskała treść, "kafelki jedno pod
+  drugim, bo treść się nie mieści") — dobudowano 4. kierunek, "Service Bay", fuzję Pit Walla
+  (ciemne tło, cyjanowy akcent hero/CTA) z Field Ledgerem (pieczątki statusu, ale jako pełnej
+  szerokości wiersze zamiast siatki). **Wybrany: Service Bay** — pełne tokeny kolorów/typografii/
+  układu spisane w sekcji "Projekt 3 — Serwisant" → "Design system" wyżej, zastępując Workshop
+  Docket tam. Zasada "fakt vs. szacunek" i komponent pieczątki (bordered badge, lekko obrócony)
+  przetrwały zmianę bez modyfikacji — to one, nie paleta/typografia, okazały się częścią, która
+  faktycznie działała. Kod referencyjny (4 kierunki, HTML/CSS) zbudowany i zweryfikowany w sesji
+  roboczej nad `C:\serwisant`, nie zapisany jako plik w żadnym repo — do odtworzenia z historii tej
+  rozmowy, jeśli potrzebny ponowny wgląd. **Zaktualizowane (2026-08-01):** rzeczywista implementacja
+  w kodzie RN (`theme.ts`, `App.tsx`, formularz pojazdu — `VehicleSummary.tsx` istniał w tym
+  momencie, później usunięty przy okazji kroku 13, patrz wpis niżej) zbudowana i zweryfikowana na
+  żywo tego samego dnia — tokeny potwierdzone przez `getComputedStyle` (tło ekranu, tło/obrys karty,
+  akcent cyjanowy na przycisku, hero w mono).
+- 2026-08-01: **Serwisant — przebudowa na `frontend/`+`backend/` i zbudowany krok 13** (wstępna
+  historia serwisowa: opis + zdjęcia → AI → oś czasu). Pierwszy raz repo potrzebowało realnego
+  backendu (wywołanie AI z kluczem API nie może żyć w telefonie) — przebudowano strukturę repo na
+  wzór tour-guide (potwierdzone przez `AskUserQuestion`, nie zgadywane), przenosząc już zbudowany
+  szkielet Expo do `frontend/` bez zmian. Nowy `backend/` (NestJS, mirror tour-guide: `HealthModule`,
+  `AiModule`) celowo prostszy niż tour-guide'owy odpowiednik — bez Prismy, bez trwałego dziennego
+  limitu wywołań AI, bo tu nie ma żadnej bazy i apka nie jest jeszcze publicznie wdrożona; to samo
+  hardening co w tour-guide (2026-07-27) zostaje jako świadomie odłożony krok przed realnym
+  deployem. Wyciąganie historii serwisowej z opisu/zdjęć zrobione przez tool-calling
+  (`record_service_history`, wymuszony `tool_choice`) zamiast parsowania wolnego tekstu — ten sam,
+  już sprawdzony wzorzec co `PlanChatModule` w tour-guide. Zweryfikowane na żywo (nie zgadywane):
+  niejednoznaczna data ("w zeszłym roku, nie pamiętam dokładnie") poprawnie wróciła jako `null`
+  zamiast zgadywanej daty; realne ale niezwiązane ze serwisem zdjęcie (ikona appki) poprawnie
+  zwróciło pustą listę zdarzeń zamiast zmyślonych wpisów — model faktycznie trzyma się materiału
+  źródłowego, nie tylko w teorii promptu. Frontend dodaje krok przeglądu wyników (każdy usuwalny)
+  między analizą a zapisem — człowiek potwierdza, zanim cokolwiek trafi do lokalnej bazy, ten sam
+  duch co reszta apki. **`VehicleSummary.tsx` usunięty** — jego rola (fakty pojazdu + reset) okazała
+  się w pełni zastąpiona przez nowy ekran osi czasu, więc złożono je w jeden ekran zamiast trzymać
+  dwa nakładające się "ekrany startowe". Po drodze złapane i naprawione dwa realne problemy
+  infrastrukturalne: wybrany port backendu (3100) kolidował z już działającym backendem Insidera na
+  tej samej maszynie (znalezione przez realną inspekcję procesów, nie zgadywane) — przeniesiony na
+  3200; i `TaskStop` na tle działający `npx expo start` na Windowsie nie zabija realnego
+  procesu-drzewa (tylko wrapper powłoki), zostawiając uchwyty plików blokujące przenoszenie
+  `node_modules`/`src` — naprawione przez `taskkill /T /F` na PID-zie drzewa, warte pamiętania przy
+  każdym przyszłym tle-działającym procesie Expo w tym repo. Pełne szczegóły techniczne w
+  `C:\serwisant\CLAUDE.md`.
+- 2026-08-02: **Serwisant — dopięte AI rozpoznawanie/potwierdzanie pojazdu**, świadomie odłożone
+  przy budowaniu kroku 12 (brak backendu w tym momencie), teraz odblokowane backendem z kroku 13.
+  Nowy `POST /api/vehicle-profile/recognize` (ten sam wzorzec wymuszonego tool-calla co przy
+  historii serwisowej) normalizuje pisownię marki/modelu/silnika i dopisuje generację/zakres lat
+  **tylko gdy to pewna, ogólnie znana wiedza** — nigdy nie zgaduje przy nietypowych/zmyślonych
+  danych (zweryfikowane na żywo fikcyjną marką "Zzyzx Motors" — wróciła bez zmian, żadnej wymyślonej
+  normalizacji). Ostatni krok kreatora pojazdu teraz pokazuje ekran potwierdzenia ("Czy się zgadza?"
+  + jedno zdanie podsumowania) zamiast zapisywać od razu — "Tak, zapisz" zapisuje znormalizowane
+  dane (nie surowy wpisany tekst, potwierdzone przez realny zapis w bazie, nie tylko przez sam ekran
+  potwierdzenia), "Popraw" wraca do edycji. Awaria AI/sieci nie blokuje twardo utworzenia profilu —
+  dostępny fallback "Zapisz bez rozpoznania". **Przy okazji złapany i naprawiony realny bug**: krok
+  dalej w kreatorze zawsze czyścił pole na pusty tekst, nawet gdy to pole miało już wcześniej
+  wpisaną wartość (np. po "Popraw" wracającym do kroku 1) — poprawka pre-wypełnia pole poprzednio
+  wpisaną wartością zamiast czyścić, zweryfikowana na żywo (powrót przez "Popraw" i ponowne
+  zatwierdzanie kroków 2-5 pokazuje ich poprzednie wartości, nie puste pola). Pełne szczegóły w
+  `C:\serwisant\CLAUDE.md`.
+- 2026-08-02: **Serwisant — naprawiony realny brak nawigacji.** Właściciel utknął na telefonie na
+  ekranie przechwytywania historii serwisowej — `App.tsx` wymuszał ten ekran zawsze, gdy pojazd
+  istniał a historia była pusta, bez żadnego wyjścia (brak "wstecz"/"pomiń"). Naprawione właściwie,
+  nie załatane: wybór ekranu to teraz jawny stan `'intake' | 'timeline'`, wciąż domyślnie
+  pokazujący przechwytywanie zaraz po utworzeniu pojazdu (zgodnie z zamierzoną kolejnością z planu),
+  ale oba kierunki zawsze dostępne — nowy link "Pomiń na razie" na ekranie przechwytywania, a oś
+  czasu radzi sobie teraz z zerową historią (komunikat + przycisk "Dodaj historię serwisową"
+  zamiast zakładać, że zawsze jest co najmniej jedna pozycja do wyrenderowania). Zweryfikowane na
+  żywo w obie strony. Pełne szczegóły w `C:\serwisant\CLAUDE.md`.
+- 2026-08-03: **Serwisant — zbudowany krok 14** (akcja "Sprawdź konieczne czynności serwisowe" +
+  eksport PDF), ostatni funkcjonalny krok Fazy 5 przed dystrybucją (krok 16) i domykaniem pętli
+  (krok 15, wciąż odłożone). Nowy endpoint AI ocenia 6-10 typowych pozycji serwisowych dla danego
+  typu pojazdu względem realnej historii i aktualnego przebiegu — **fakt i szacunek rozdzielone
+  strukturalnie w samej odpowiedzi AI** (`lastServiceFact` z realnej historii vs. `estimateNote` z
+  orientacyjnej wiedzy ogólnej), nie tylko wizualnie na ekranie, co jest mocniejszą gwarancją niż
+  poprzednie podejście samego UI. Komponent pieczątki statusu (bordered badge, lekko obrócony) —
+  ten sam co w Workshop Docket/Field Ledger/Service Bay — użyty tu bez zmian, potwierdzając że to
+  faktycznie trwały, wielokrotnie sprawdzony element języka wizualnego tej apki. Kolor akcentu
+  (cyjan) użyty pierwszy raz gdzie indziej niż hero-liczba — na przycisku uruchamiającym tę
+  akcję, świadomie, bo to realnie najważniejsza czynność w całej apce. Eksport PDF przez
+  `expo-print` — celowo jasny/drukowalny layout raportu, nie ciemna skóra Service Bay apki (papier
+  to papier, ciemny motyw marnowałby tusz i wyglądałby źle wydrukowany), z tą samą notatką
+  "orientacyjne, nie oficjalna dokumentacja producenta" co w oryginalnym planie. Zweryfikowane na
+  żywo dla pojazdu bez żadnej zapisanej historii (wszystkie pozycje poprawnie `unknown` z
+  konkretnym uzasadnieniem, nie ogólnikowym wykrętem); sam eksport PDF zweryfikowany tylko przez
+  odczytanie wygenerowanego HTML, nie przez realne wydrukowanie — automatyczna przeglądarka w tym
+  środowisku nie ma niezawodnego sposobu zamknięcia natywnego okna drukowania, do przetestowania
+  naprawdę na telefonie. Pełne szczegóły w `C:\serwisant\CLAUDE.md`.
+- 2026-08-03: **Serwisant — audyt jakościowo-bezpieczeństwowy**, zainicjowany wprost przez
+  właściciela pytającego, czy repo dostało ten sam przegląd co tour-guide przed publicznym
+  udostępnieniem. Uczciwa odpowiedź w tym momencie: nie, ta sesja to była czysta praca nad
+  funkcjami. Realne braki znalezione i naprawione: brak rate limitingu, brak dziennego budżetu
+  wywołań AI, brak limitów długości pól tekstowych — ta sama kategoria luk co w tour-guide przed
+  jego hardeningiem 2026-07-27, tu naprawiona zanim repo faktycznie trafiło do publicznego
+  wdrożenia (nie tylko publicznego repo na GitHubie). Kluczowa różnica względem tour-guide: brak
+  tu jakiejkolwiek bazy danych, więc dzienny budżet wywołań to licznik w pamięci procesu (reset przy
+  restarcie), nie trwały licznik jak `AiUsageDay` w tour-guide — świadomy, udokumentowany
+  kompromis. Zweryfikowane na żywo (nie tylko przeczytane): 6 szybkich requestów na limit 5/min →
+  5×201 potem 429; zbyt długi `freeText` → 400 z konkretnym komunikatem walidacji. Świadomie
+  nienaprawione: 11 podatności npm we frontendzie, wszystkie w łańcuchu narzędziowym Expo
+  (build-time, nie runtime) — naprawa wymagałaby cofnięcia decyzji o SDK 54. Pełne szczegóły w
+  `C:\serwisant\CLAUDE.md`.
