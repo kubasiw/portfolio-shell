@@ -113,3 +113,26 @@
   display: block;
   --poi-map-height: min(85vh, 800px);
 }
+
+/*
+ * Same visual language as .tour-guide-detail__tag (mono, hairline border, small pill) — but
+ * placed right under the live widget instead of buried in the text column, so each claim reads
+ * as "verify it against the thing right above you" rather than another generic stack fact.
+ * accent-secondary (brass), not the plain hairline tag color, to read as a distinct "proof" row
+ * rather than a continuation of the tech-tag list above.
+ */
+.tour-guide-detail__callouts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.tour-guide-detail__callout {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--eg-accent-secondary);
+  font-family: var(--eg-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  color: var(--eg-accent-secondary);
+}

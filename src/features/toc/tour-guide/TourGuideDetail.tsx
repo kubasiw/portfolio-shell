@@ -13,6 +13,17 @@ const TECH_TAGS = [
   'Web Components',
 ];
 
+// Sits right under the widget, not in the "Pod maską" text — the point is a claim you can verify
+// on the spot against the live thing sitting right above it, not another generic stack fact.
+// Each one maps to something actually true of *this exact* embed (see CLAUDE.md's tour-guide
+// step 15): real Overpass fetch for the demo area, ViewEncapsulation.ShadowDom with Leaflet CSS
+// injected into the shadow root, and an Angular Elements custom element (not an iframe).
+const WIDGET_CALLOUTS = [
+  'ŻYWE DANE OSM · NIE MOCK',
+  'SHADOW DOM · IZOLACJA STYLÓW',
+  'WEB COMPONENT · NIE IFRAME',
+];
+
 // Split view, same shape as InsiderDetail: write-up on one side, the real embedded app on the
 // other. The "app" here is the same <tour-guide-mini-map> fragment already used on the tile
 // before this view existed — tour-guide has its own router/auth/many screens, so exporting the
@@ -100,6 +111,13 @@ export function TourGuideDetail() {
 
         <div className="tour-guide-detail__app">
           <TourGuideWidget />
+          <div className="tour-guide-detail__callouts">
+            {WIDGET_CALLOUTS.map((callout) => (
+              <span key={callout} className="tour-guide-detail__callout">
+                {callout}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
