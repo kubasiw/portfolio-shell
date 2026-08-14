@@ -138,62 +138,69 @@ function App() {
   return (
     <div className="landing">
       <header className="masthead">
-        <span className="masthead__name">Kuba S.</span>
-        <nav className="masthead__nav">
-          <button
-            type="button"
-            className={displayNavTarget === 'projects' ? 'masthead__nav-item--active' : ''}
-            onClick={() => handleNavClick('projects')}
-          >
-            Projekty
-          </button>
-          <button
-            type="button"
-            className={displayNavTarget === 'about' ? 'masthead__nav-item--active' : ''}
-            onClick={() => handleNavClick('about')}
-          >
-            O mnie
-          </button>
-          <button
-            type="button"
-            className={displayNavTarget === 'contact' ? 'masthead__nav-item--active' : ''}
-            onClick={() => handleNavClick('contact')}
-          >
-            Kontakt
-          </button>
-        </nav>
-        <span className="masthead__vol">VOL. 01 — 2026</span>
-        <Stamp main="W budowie" sub="2026" className="masthead__stamp" />
+        <div className="masthead__inner">
+          <span className="masthead__name">Kuba S.</span>
+          <nav className="masthead__nav">
+            <button
+              type="button"
+              className={displayNavTarget === 'projects' ? 'masthead__nav-item--active' : ''}
+              onClick={() => handleNavClick('projects')}
+            >
+              Projekty
+            </button>
+            <button
+              type="button"
+              className={displayNavTarget === 'about' ? 'masthead__nav-item--active' : ''}
+              onClick={() => handleNavClick('about')}
+            >
+              O mnie
+            </button>
+            <button
+              type="button"
+              className={displayNavTarget === 'contact' ? 'masthead__nav-item--active' : ''}
+              onClick={() => handleNavClick('contact')}
+            >
+              Kontakt
+            </button>
+          </nav>
+          <span className="masthead__vol">VOL. 01 — 2026</span>
+          <Stamp main="W budowie" sub="2026" className="masthead__stamp" />
+        </div>
       </header>
 
-      <main className="hero">
-        <div className="hero__text">
-          <h1 className="hero__title">
-            <span className="hero__highlight">TRASY, KOD</span>
-            <br />
-            <span className="hero__highlight">
-              <em>i jeden obiektyw.</em>
-            </span>
-          </h1>
-        </div>
-        <img
-          className="hero__photo"
-          src={heroPhoto}
-          alt="Leśna ścieżka schodząca do morza o zmierzchu, dwie sylwetki"
-        />
-      </main>
+      <div className="landing__content">
+        <main className="hero">
+          <div className="hero__text">
+            <span className="hero__tag">Jakub Siwiński</span>
+            <h1 className="hero__title">
+              <span className="hero__highlight">TRASY, KOD</span>
+              <br />
+              <span className="hero__highlight">
+                <em>i jeden obiektyw.</em>
+              </span>
+            </h1>
+          </div>
+          <img
+            className="hero__photo"
+            src={heroPhoto}
+            alt="Leśna ścieżka schodząca do morza o zmierzchu, dwie sylwetki"
+          />
+        </main>
 
-      <Toc
-        activeNavTarget={activeNavTarget}
-        openSection={openSection}
-        onOpenSectionChange={handleSectionChange}
-      />
+        <Toc
+          activeNavTarget={activeNavTarget}
+          openSection={openSection}
+          onOpenSectionChange={handleSectionChange}
+        />
+      </div>
 
       <footer className="site-footer">
-        <a className="site-footer__link" href="#section-contact">
-          Kontakt ↑
-        </a>
-        <span className="site-footer__year">© 2026 Kuba S.</span>
+        <div className="site-footer__inner">
+          <a className="site-footer__link" href="#section-contact">
+            Kontakt ↑
+          </a>
+          <span className="site-footer__year">© 2026 Kuba S.</span>
+        </div>
       </footer>
     </div>
   );

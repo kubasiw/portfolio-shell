@@ -1,7 +1,14 @@
+/*
+ * Pełna szerokość (2026-08-14, realny feedback: "wszystkie nowoczesne designy... prawie na całą
+ * szerokość strony, header i footer nie są na całą szerokość") — .landing przestało być samym
+ * wąskim, wyśrodkowanym kontenerem tła+treści, jest teraz PEŁNOEKRANOWĄ powłoką (tło+tekstura
+ * sięgają brzegów viewportu), a max-width przeniesiony do trzech osobnych wewnętrznych wrapperów
+ * (.masthead__inner, .landing__content, .site-footer__inner) — każdy z tym samym max-width, więc
+ * treść nadal wyrównuje się do wspólnej krawędzi, ale tło nagłówka/stopki/planszy sięga brzegów
+ * ekranu. Boczne hairline'y usunięte — miały sens tylko jako granica wąskiej kolumny na tle
+ * pustej reszty ekranu, przy pełnej szerokości nie ma już czego odgraniczać.
+ */
 .landing {
-  /* 900px → 1040px: lekkie poszerzenie, głównie z myślą o siatce kart ToC (hero ma własny,
-     węższy max-width, więc nie robi się mniej czytelny). */
-  max-width: 1040px;
   /* 100vh is a snapshot taken at layout time — on iOS Safari/Chrome it doesn't grow when the
      bottom toolbar auto-hides during a scroll, so .site-footer's `position: sticky; bottom: 0`
      stays stuck to the stale, smaller height (confirmed live: dvh alone did NOT fix this —
@@ -11,8 +18,6 @@
   min-height: 100vh;
   min-height: 100dvh;
   min-height: calc(var(--app-vh, 1vh) * 100);
-  margin: 0 auto;
-  padding: 0 44px;
   /*
    * Kropkowana tekstura korka/płyty perforowanej — jedyny w tym designie background-image (poza
    * pinezkami/taśmą na poszczególnych elementach). radial-gradient, nie plik graficzny — skaluje
@@ -27,20 +32,32 @@
   background-color: var(--wb-paper);
   background-image: radial-gradient(circle at 1px 1px, rgba(99, 87, 69, 0.28) 1px, transparent 0);
   background-size: 24px 24px;
-  border-left: 1px solid var(--wb-hairline);
-  border-right: 1px solid var(--wb-hairline);
+}
+
+/*
+ * Wspólny wrapper treści dla nagłówka/głównej treści/stopki — ta sama max-width/padding
+ * wszędzie, żeby treść wyrównywała się do jednej krawędzi mimo że tła (nagłówek/stopka) sięgają
+ * brzegów ekranu. 1440px — wyraźnie szerzej niż poprzednie 1040px, bliżej tego, co pokazywały
+ * realne referencje (mode.com i inne), ale wciąż z rozsądnym górnym ograniczeniem, nie dosłownie
+ * 100% na bardzo szerokich monitorach.
+ */
+.masthead__inner,
+.landing__content,
+.site-footer__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 44px;
 }
 
 @media (max-width: 480px) {
-  .landing {
+  .masthead__inner,
+  .landing__content,
+  .site-footer__inner {
     padding: 0 16px;
   }
 }
 
 .masthead {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
   border-bottom: 1px solid var(--wb-hairline-inner);
   padding: 16px 0;
   /*
@@ -53,6 +70,16 @@
   top: 0;
   z-index: 10;
   background: var(--wb-paper);
+}
+
+.masthead__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  /* .masthead__stamp (position:absolute) pozycjonuje się względem tego wrappera, nie względem
+     pełnoekranowego .masthead — inaczej "right: 20px" trzymałby się brzegu viewportu, nie
+     krawędzi realnej treści. */
+  position: relative;
 }
 
 /*
@@ -150,6 +177,28 @@
   max-width: 560px;
 }
 
+/*
+ * Żółta plakietka z makiety "Workbench" (porównanie kierunków, 2026-08-14) — właściciel wskazał
+ * ją wprost jako element do przeniesienia do realnej strony, z innym napisem (imię i nazwisko
+ * zamiast ogólnego "Portfolio" — ten sam duch co usunięcie słowa "portfolio" gdzie indziej).
+ * --wb-pin jest WYŁĄCZNIE dekoracyjny wszędzie indziej w tej palecie (patrz tokens.css) — tu
+ * jedyne miejsce, gdzie niesie tekst, więc kolor tekstu to --wb-ink (ciemny), nigdy sam pin jako
+ * kolor liter.
+ */
+.hero__tag {
+  display: inline-block;
+  font-family: var(--wb-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wb-ink);
+  background: var(--wb-pin);
+  padding: 5px 11px;
+  margin-bottom: 18px;
+  transform: rotate(-2deg);
+}
+
 .hero__highlight {
   background: var(--wb-paper);
   padding: 1px 8px;
@@ -222,14 +271,17 @@
   position: sticky;
   bottom: 0;
   z-index: 10; /* same as masthead — chrome always wins over ordinary content, no per-element isolation needed */
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
   margin-top: 40px;
   padding: 14px 0;
   border-top: 1px solid var(--wb-hairline-inner);
   background: var(--wb-paper);
+}
+
+.site-footer__inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .site-footer__link {
