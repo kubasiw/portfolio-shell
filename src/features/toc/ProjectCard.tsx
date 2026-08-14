@@ -63,10 +63,12 @@ export function ProjectCard({
             className={`spec-plate__badge ${
               locked
                 ? 'spec-plate__badge--locked'
-                : 'spec-plate__badge--unlocked'
+                : showInProgressStamp
+                  ? 'spec-plate__badge--in-progress'
+                  : 'spec-plate__badge--unlocked'
             }`}
           >
-            {locked ? 'Zablokowane' : 'Odblokowane'}
+            {locked ? 'Zablokowane' : showInProgressStamp ? 'W budowie' : 'Odblokowane'}
           </span>
         </div>
       </div>

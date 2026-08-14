@@ -177,6 +177,19 @@
 }
 
 /*
+ * Odkryta, ale wciąż w budowie (Serwisant) — realny feedback: sam róg z pieczątką "W budowie"
+ * (Stamp) to za słaby sygnał, wiersz "Status" mówił "Odblokowane" tym samym zielonym akcentem co
+ * gotowy do obejrzenia tour-guide, mimo że Serwisant nie ma jeszcze widoku szczegółów. Ten sam
+ * karmazyn co pieczątka w rogu (--wb-crimson), nie zielony akcent-primary — dwa niezależne
+ * miejsca teraz zgodnie mówią "w budowie", nie tylko jedno.
+ */
+.spec-plate__badge--in-progress {
+  background: var(--wb-crimson);
+  color: var(--wb-card);
+  border-color: var(--wb-crimson);
+}
+
+/*
  * Stała wysokość (dokładnie 3 linie przy tym font-size/line-height) — realny feedback: opis ma
  * różną długość na różnych kartach, więc wszystko pod nim (zdjęcie, przycisk "Zobacz") lądowało
  * na innej wysokości na każdej karcie. Dłuższy tekst ("about") obcięty elipsą (line-clamp) —
