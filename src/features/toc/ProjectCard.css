@@ -2,29 +2,77 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--eg-hairline);
-  padding: 14px 16px;
+  background: var(--wb-card);
+  border: 1px solid var(--wb-hairline);
+  padding: 22px 18px 16px;
   outline: 3px solid transparent;
   outline-offset: 4px;
+  box-shadow: 0 8px 18px rgba(36, 31, 26, 0.2);
   /* No isolation/z-index here — causes clipping of overflow (stamp, outline) when combined with
      CSS grid. Footer/masthead stay on top via their own z-index instead (see App.css). */
 }
 
+/*
+ * Pinezka — tylko na odblokowanych kartach (patrz .spec-plate--locked niżej: karta zablokowana
+ * "leży płasko na stole", jeszcze nieprzypięta). ::before zamiast osobnego elementu w JSX — czysto
+ * dekoracyjne, nic semantycznego do przekazania.
+ */
+.spec-plate--unlocked::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--wb-pin);
+  box-shadow: 0 2px 3px rgba(36, 31, 26, 0.45);
+}
+
+/*
+ * Delikatny, naprzemienny przechył — czyta się jak realnie przypięte karty, nie jedna
+ * powtarzalna dekoracja. Bezpośrednie dzieci .toc__cards (Toc.tsx renderuje <ProjectCard> wprost
+ * w gridzie), więc nth-child liczy pozycję w siatce, nie w jakimś pośrednim wrapperze.
+ */
+.spec-plate--unlocked:nth-child(3n + 1) {
+  transform: rotate(-1.4deg);
+}
+
+.spec-plate--unlocked:nth-child(3n + 2) {
+  transform: rotate(1deg);
+}
+
+.spec-plate--unlocked:nth-child(3n + 3) {
+  transform: rotate(-0.6deg);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .spec-plate {
-    transition: outline-color 250ms ease;
+    transition:
+      outline-color 250ms ease,
+      transform 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  /* "Podniesienie" karty pod kursorem — prostuje się i unosi, jakby ktoś ją realnie zdjął z
+     tablicy do przeczytania. Tylko odblokowane (locked i tak nie mają cienia/przechyłu do
+     animowania). */
+  .spec-plate--unlocked:hover {
+    transform: rotate(0deg) translateY(-3px);
+    box-shadow: 0 16px 26px rgba(36, 31, 26, 0.28);
   }
 }
 
 /*
  * Podświetlenie przez nawigację w headerze — stan TYMCZASOWY (nie trwały status jak
  * zablokowane/odblokowane/w budowie), więc osobny mechanizm: outline (nie border/tło), żeby nigdy
- * nie kolidować z istniejącą, trwałą obwódką/tłem tamtych stanów. Granat (--eg-navy) — jedyny
+ * nie kolidować z istniejącą, trwałą obwódką/tłem tamtych stanów. Granat (--wb-navy) — jedyny
  * chłodny akcent w tej ciepłej palecie, celowo zarezerwowany wyłącznie dla tego jednego,
  * przejściowego znaczenia.
  */
 .spec-plate--nav-highlighted {
-  outline-color: var(--eg-navy);
+  outline-color: var(--wb-navy);
 }
 
 .spec-plate__stamp {
@@ -44,10 +92,27 @@
 /*
  * Kontrast zablokowane/odblokowane wzmocniony 2026-07-24 (realny feedback — "ciężko rozróżnić").
  * Sama różnica koloru tekstu nie wystarczała; teraz różni się też obwódka, grubość obwódki
- * i tło całej karty, nie tylko jedna linia w środku.
+ * i tło całej karty, nie tylko jedna linia w środku. W Workbench doszedł trzeci, semantyczny
+ * sygnał: zablokowana karta leży płasko na stole (brak przechyłu, brak cienia, brak pinezki —
+ * patrz .spec-plate--unlocked::before wyżej) — jeszcze nikt jej nie przypiął do tablicy.
  */
 .spec-plate--locked {
-  border-color: var(--eg-muted);
+  background: var(--wb-paper);
+  border-color: var(--wb-muted);
+  box-shadow: none;
+}
+
+/*
+ * .plate-emphasized (index.css, shared with .skill-plate--core) sets its own
+ * background/border-color for "ważna karta" — dla kart projektów w Workbenchu ten sygnał już
+ * niosą pinezka + przechył + cień, więc nadpisane z powrotem na zwykłą kremową fiszkę
+ * (compound-selektor, żeby wygrać z .plate-emphasized niezależnie od kolejności w arkuszu — ten
+ * sam wzorzec co gdzie indziej w tym zestawie projektów). Sama .plate-emphasized (poza tą kartą)
+ * zostaje nietknięta.
+ */
+.spec-plate.plate-emphasized {
+  background: var(--wb-card);
+  border-color: var(--wb-hairline);
 }
 
 /* Ramka + tło — patrz .plate-emphasized w index.css (współdzielone z .skill-plate--core). */
@@ -66,15 +131,15 @@
 }
 
 .spec-plate__row + .spec-plate__row {
-  border-top: 1px solid var(--eg-hairline-inner);
+  border-top: 1px solid var(--wb-hairline-inner);
 }
 
 .spec-plate__label {
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
 
 .spec-plate__value {
@@ -83,32 +148,32 @@
 }
 
 .spec-plate--locked .spec-plate__value {
-  color: var(--eg-muted);
+  color: var(--wb-muted);
   letter-spacing: 0.04em;
 }
 
 .spec-plate--unlocked .spec-plate__value {
-  color: var(--eg-ink);
+  color: var(--wb-ink);
 }
 
 .spec-plate__badge {
   display: inline-block;
   border: 1px solid currentColor;
   padding: 2px 8px;
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .spec-plate__badge--locked {
-  color: var(--eg-muted);
+  color: var(--wb-muted);
 }
 
 .spec-plate__badge--unlocked {
-  background: var(--eg-accent-primary);
-  color: var(--eg-paper);
-  border-color: var(--eg-accent-primary);
+  background: var(--wb-accent-primary);
+  color: var(--wb-paper);
+  border-color: var(--wb-accent-primary);
 }
 
 /*
@@ -126,7 +191,7 @@
   height: 58.5px;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
 
 /* Ramka o stałym rozmiarze — overflow:hidden, żeby --zoomed (patrz niżej) nie wylewało się na
@@ -136,9 +201,9 @@
   width: 100%;
   height: 272px;
   margin-top: 12px;
-  border: 1px solid var(--eg-hairline);
+  border: 1px solid var(--wb-hairline);
   overflow: hidden;
-  background: var(--eg-divider);
+  background: var(--wb-divider);
 }
 
 /* Insider's own "visualization" slot (see ProjectCard.tsx) sits where tour-guide's live widget
@@ -187,7 +252,7 @@
 .tour-guide-widget {
   margin: 12px 0 0;
   min-height: 320px;
-  border: 1px solid var(--eg-hairline-inner);
+  border: 1px solid var(--wb-hairline-inner);
   overflow: hidden;
   /*
    * isolation:isolate — Leaflet wewnątrz widgetu ustawia własne, wysokie z-index na warstwach
@@ -213,19 +278,19 @@
   text-align: left;
   background: none;
   cursor: pointer;
-  border: 1px solid var(--eg-accent-primary);
+  border: 1px solid var(--wb-accent-primary);
   padding: 4px 10px;
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--eg-accent-primary);
+  color: var(--wb-accent-primary);
   text-decoration: none;
 }
 
 .spec-plate__cta:hover {
-  background: var(--eg-accent-primary);
-  color: var(--eg-paper);
+  background: var(--wb-accent-primary);
+  color: var(--wb-paper);
 }
 
 /*

@@ -19,15 +19,15 @@
 
 .insider-detail__block p {
   margin: 0.5rem 0 0;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   line-height: 1.6;
 }
 
 .insider-detail__heading {
   margin: 0;
-  font-family: var(--eg-font-serif);
+  font-family: var(--wb-font-display);
   font-size: 1rem;
-  color: var(--eg-ink);
+  color: var(--wb-ink);
 }
 
 .insider-detail__tags {
@@ -39,15 +39,15 @@
 
 .insider-detail__tag {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--eg-hairline-inner);
-  font-family: var(--eg-font-mono);
+  border: 1px solid var(--wb-hairline-inner);
+  font-family: var(--wb-font-mono);
   font-size: 0.75rem;
-  color: var(--eg-ink);
+  color: var(--wb-ink);
 }
 
 .insider-detail__external-link {
   align-self: flex-start;
-  color: var(--eg-accent-primary);
+  color: var(--wb-accent-primary);
 }
 
 /*
@@ -58,7 +58,7 @@
 .insider-detail__app {
   height: min(85vh, 800px);
   overflow-y: auto;
-  border: 1px solid var(--eg-hairline-inner);
+  border: 1px solid var(--wb-hairline-inner);
   /*
    * <insider-app> itself sets its own dark background (see insider/src/main-element.ts's :host
    * rule), but this container's own box is still visible — and transparent, showing this page's
@@ -80,9 +80,9 @@
   padding: 3rem 1.5rem;
   text-align: center;
   /* Sits directly on .insider-detail__app's dark backstop background (see above), not this
-     page's own paper background — needs a light color to stay readable, not --eg-ink-secondary. */
+     page's own paper background — needs a light color to stay readable, not --wb-ink-secondary. */
   color: #7c8794;
-  font-family: var(--eg-font-sans);
+  font-family: var(--wb-font-sans);
 }
 
 insider-app {

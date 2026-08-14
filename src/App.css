@@ -13,11 +13,22 @@
   min-height: calc(var(--app-vh, 1vh) * 100);
   margin: 0 auto;
   padding: 0 44px;
-  /* Własne tło + hairline po bokach — bez tego strona i --eg-divider pod spodem (patrz
-     index.css) byłyby wizualnie nierozróżnialne na szerokich ekranach. */
-  background: var(--eg-paper);
-  border-left: 1px solid var(--eg-hairline);
-  border-right: 1px solid var(--eg-hairline);
+  /*
+   * Kropkowana tekstura korka/płyty perforowanej — jedyny w tym designie background-image (poza
+   * pinezkami/taśmą na poszczególnych elementach). radial-gradient, nie plik graficzny — skaluje
+   * się bez utraty jakości, zero requestu sieciowego.
+   * Realny błąd (zgłoszony przez właściciela): pierwsza wersja używała pełnej barwy
+   * --wb-hairline — dobrana pod kontrast obwódek (3:1, celowo dobrze widoczna), zupełnie złe
+   * kryterium dla dekoracyjnej tekstury pod tekstem (hero siedzi wprost na tym tle, karty/stopka/
+   * nagłówek mają własne pełne tło i dotów nie widać). Kontrast matematycznie "przechodził", ale
+   * czytelność w praktyce ucierpiała — niska krycie (rgba, nie zmienna) naprawia to bez zmiany
+   * koloru dotów.
+   */
+  background-color: var(--wb-paper);
+  background-image: radial-gradient(circle at 1px 1px, rgba(99, 87, 69, 0.28) 1px, transparent 0);
+  background-size: 24px 24px;
+  border-left: 1px solid var(--wb-hairline);
+  border-right: 1px solid var(--wb-hairline);
 }
 
 @media (max-width: 480px) {
@@ -30,18 +41,18 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  border-bottom: 1px solid var(--eg-hairline-inner);
+  border-bottom: 1px solid var(--wb-hairline-inner);
   padding: 16px 0;
   /*
    * Sticky, nie fixed — ten sam wzorzec co nav w tour-guide (CLAUDE.md, "Nav/shell polish").
-   * Tło jawnie ustawione na --eg-paper (identyczne z tłem strony) — bez tego sticky element
+   * Tło jawnie ustawione na --wb-paper (identyczne z tłem strony) — bez tego sticky element
    * byłby przezroczysty i treść przewijałaby się "przez" niego. Oddzielenie od treści pod spodem
    * to sam istniejący dolny hairline, bez cienia — ta sama, już sprawdzona decyzja co w tour-guide.
    */
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--eg-paper);
+  background: var(--wb-paper);
 }
 
 /*
@@ -65,20 +76,21 @@
 }
 
 .masthead__name {
-  font-family: var(--eg-font-serif);
-  font-style: italic;
-  font-size: 15px;
-  letter-spacing: 0.03em;
+  font-family: var(--wb-font-display);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .masthead__nav {
   display: flex;
   gap: 22px;
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
 
 /*
@@ -97,7 +109,7 @@
 }
 
 .masthead__nav button:hover {
-  color: var(--eg-navy);
+  color: var(--wb-navy);
 }
 
 /*
@@ -109,15 +121,15 @@
  * tour-guide, Leaflet).
  */
 .masthead__nav button.masthead__nav-item--active {
-  color: var(--eg-navy);
-  border-bottom-color: var(--eg-navy);
+  color: var(--wb-navy);
+  border-bottom-color: var(--wb-navy);
 }
 
 .masthead__vol {
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.1em;
-  color: var(--eg-accent-secondary);
+  color: var(--wb-accent-secondary);
 }
 
 /*
@@ -139,7 +151,7 @@
 }
 
 .hero__highlight {
-  background: var(--eg-paper);
+  background: var(--wb-paper);
   padding: 1px 8px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -157,7 +169,7 @@
   /* Dwie sylwetki na ścieżce siedzą ok. 68% w dół oryginalnego kadru (sprawdzone bezpośrednio na
      zdjęciu) — wycentrowane tak, żeby zmieściły się w widocznym, krótkim pasku. */
   object-position: center 68%;
-  border: 1px solid var(--eg-hairline);
+  border: 1px solid var(--wb-hairline);
 }
 
 @media (max-width: 720px) {
@@ -185,16 +197,18 @@
 }
 
 .hero__title {
-  font-family: var(--eg-font-serif);
-  font-weight: 700;
-  font-size: 42px;
-  line-height: 1.06;
+  font-family: var(--wb-font-display);
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   margin: 0 0 16px;
 }
 
 .hero__title em {
-  font-style: italic;
-  color: var(--eg-accent-primary);
+  font-style: normal;
+  color: var(--wb-accent-primary);
 }
 
 /*
@@ -214,27 +228,27 @@
   gap: 16px;
   margin-top: 40px;
   padding: 14px 0;
-  border-top: 1px solid var(--eg-hairline-inner);
-  background: var(--eg-paper);
+  border-top: 1px solid var(--wb-hairline-inner);
+  background: var(--wb-paper);
 }
 
 .site-footer__link {
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   text-decoration: underline dashed;
   text-underline-offset: 3px;
 }
 
 .site-footer__link:hover {
-  color: var(--eg-accent-primary);
+  color: var(--wb-accent-primary);
 }
 
 .site-footer__year {
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.06em;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }

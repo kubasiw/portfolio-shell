@@ -1,16 +1,16 @@
 /*
  * Efekt "pieczątki" bez gradientów/cieni/tekstur (zgodnie z "flat" z Editorial Garage) — sama
  * rotacja (ustawiana przez konsumenta, patrz .masthead__stamp/.spec-plate__stamp), podwójna
- * ramka i pełne (nieprzezroczyste) tło --eg-paper, żeby nie "prześwitywało" tego, co pod spodem.
+ * ramka i pełne (nieprzezroczyste) tło --wb-paper, żeby nie "prześwitywało" tego, co pod spodem.
  */
 .stamp {
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   text-transform: uppercase;
   text-align: center;
   line-height: 1.3;
-  border: 3px double var(--eg-crimson);
-  background: var(--eg-paper);
-  color: var(--eg-crimson);
+  border: 3px double var(--wb-crimson);
+  background: var(--wb-paper);
+  color: var(--wb-crimson);
   padding: 7px 12px;
   white-space: nowrap;
 }

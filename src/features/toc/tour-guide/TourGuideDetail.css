@@ -54,15 +54,15 @@
 
 .tour-guide-detail__block p {
   margin: 0.5rem 0 0;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   line-height: 1.6;
 }
 
 .tour-guide-detail__heading {
   margin: 0;
-  font-family: var(--eg-font-serif);
+  font-family: var(--wb-font-display);
   font-size: 1rem;
-  color: var(--eg-ink);
+  color: var(--wb-ink);
 }
 
 .tour-guide-detail__tags {
@@ -74,15 +74,15 @@
 
 .tour-guide-detail__tag {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--eg-hairline-inner);
-  font-family: var(--eg-font-mono);
+  border: 1px solid var(--wb-hairline-inner);
+  font-family: var(--wb-font-mono);
   font-size: 0.75rem;
-  color: var(--eg-ink);
+  color: var(--wb-ink);
 }
 
 .tour-guide-detail__external-link {
   align-self: flex-start;
-  color: var(--eg-accent-primary);
+  color: var(--wb-accent-primary);
 }
 
 /*
@@ -130,9 +130,9 @@
 
 .tour-guide-detail__callout {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--eg-accent-secondary);
-  font-family: var(--eg-font-mono);
+  border: 1px solid var(--wb-accent-secondary);
+  font-family: var(--wb-font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.03em;
-  color: var(--eg-accent-secondary);
+  color: var(--wb-accent-secondary);
 }

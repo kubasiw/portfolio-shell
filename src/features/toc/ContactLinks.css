@@ -9,23 +9,23 @@
   gap: 10px;
   padding: 7px 0;
   text-decoration: none;
-  color: var(--eg-ink);
+  color: var(--wb-ink);
 }
 
 .contact-links__row + .contact-links__row {
-  border-top: 1px solid var(--eg-hairline-inner);
+  border-top: 1px solid var(--wb-hairline-inner);
 }
 
 .contact-links__row:hover .contact-links__value {
-  color: var(--eg-accent-primary);
+  color: var(--wb-accent-primary);
 }
 
 .contact-links__label {
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
 
 .contact-links__value {

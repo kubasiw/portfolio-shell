@@ -10,11 +10,11 @@ body,
 
 body {
   margin: 0;
-  /* --eg-divider (nie --eg-paper) — "blat", na którym leży strona; .landing dostaje własne,
+  /* --wb-divider (nie --wb-paper) — "blat", na którym leży strona; .landing dostaje własne,
      jaśniejsze tło + hairline po bokach, żeby ta różnica była widoczna na szerokich ekranach. */
-  background: var(--eg-divider);
-  color: var(--eg-ink);
-  font-family: var(--eg-font-sans);
+  background: var(--wb-divider);
+  color: var(--wb-ink);
+  font-family: var(--wb-font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -30,18 +30,18 @@ a {
   background: none;
   border: none;
   padding: 0;
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   text-decoration: underline dashed;
   text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .link-dashed:hover {
-  color: var(--eg-accent-primary);
+  color: var(--wb-accent-primary);
 }
 
 /* Wspólny "wyróżniony plate" (gruba ramka w kolorze primary + bladozielone tło) — ten sam wygląd
@@ -49,6 +49,6 @@ a {
    same 3 deklaracje w drugim pliku pod inną nazwą. */
 .plate-emphasized {
   border-width: 2px;
-  border-color: var(--eg-accent-primary);
-  background: var(--eg-unlocked-bg);
+  border-color: var(--wb-accent-primary);
+  background: var(--wb-unlocked-bg);
 }

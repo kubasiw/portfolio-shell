@@ -1,6 +1,6 @@
 .toc {
   padding: 8px 0 64px;
-  border-top: 1px solid var(--eg-hairline-inner);
+  border-top: 1px solid var(--wb-hairline-inner);
 }
 
 /*
@@ -69,16 +69,16 @@
 }
 
 .toc__heading {
-  font-family: var(--eg-font-serif);
+  font-family: var(--wb-font-display);
   font-weight: 700;
   font-size: 20px;
   margin: 0;
 }
 
 .toc__subheading {
-  font-family: var(--eg-font-sans);
+  font-family: var(--wb-font-sans);
   font-size: 13px;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   margin: 4px 0 0;
   max-height: 40px;
   opacity: 1;
@@ -131,8 +131,13 @@
    * krawędź hover-owego `transform: scale(1.15)` na skrajnie prawej kolumnie planszy (realny bug
    * zgłoszony przez właściciela, nie teoretyczny) — plansza rośnie w prawo z tego samego 372px
    * boxa, ale ma teraz 8px wolnej przestrzeni zanim cokolwiek zostanie obcięte.
+   *
+   * +30px do 410px (2026-08-14) — reskin "Workbench" dodał .board własny padding (14px × 2) i
+   * border (1px × 2), więc realny box urósł do 402px; ta kolumna została w tyle na starych 380px,
+   * co realnie kolidowało z pierwszym kafelkiem projektu obok (zgłoszone przez właściciela).
+   * 402px + ten sam 8px bufor = 410px.
    */
-  width: 380px;
+  width: 410px;
   opacity: 1;
   overflow: hidden;
 }
@@ -150,8 +155,9 @@
 
 @media (max-width: 480px) {
   .toc__board-col {
-    /* Mobilna siatka w Board.css: 16px + 10×24px + 9×2px gap = 274px + 6px bufora hover. */
-    width: 280px;
+    /* Mobilna siatka w Board.css: 16px + 10×24px + 9×2px gap = 274px, + .board's own 10px×2
+       padding i 1px×2 border (Workbench reskin) = 296px, + 6px bufora hover = 302px. */
+    width: 302px;
   }
 }
 
@@ -205,10 +211,10 @@
 
 .toc__artillery-btn {
   display: inline-block;
-  border: 1px solid var(--eg-accent-secondary);
+  border: 1px solid var(--wb-accent-secondary);
   background: none;
-  color: var(--eg-accent-secondary);
-  font-family: var(--eg-font-mono);
+  color: var(--wb-accent-secondary);
+  font-family: var(--wb-font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -217,14 +223,14 @@
 }
 
 .toc__artillery-btn:disabled {
-  border-color: var(--eg-muted);
-  color: var(--eg-muted);
+  border-color: var(--wb-muted);
+  color: var(--wb-muted);
   cursor: default;
 }
 
 .toc__artillery-btn--armed {
-  background: var(--eg-accent-secondary);
-  color: var(--eg-paper);
+  background: var(--wb-accent-secondary);
+  color: var(--wb-paper);
 }
 
 .toc__artillery-hint {
@@ -232,15 +238,15 @@
   max-width: 32ch;
   font-size: 12px;
   line-height: 1.4;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
 
 .toc__status {
   min-height: 1.4em;
   margin: 16px 0 0;
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 12px;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   overflow-wrap: anywhere;
   /*
    * width:0 + min-width:100% — sprawdzony trik: przy liczeniu naturalnej (auto) szerokości

@@ -2,6 +2,7 @@ import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
 import contactCoverPhoto from '../../assets/about/old_phones.webp';
 import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
 import insiderCoverPhoto from '../../assets/insider/insider_preview.webp';
+import serwisantCoverPhoto from '../../assets/about/garage.webp';
 
 // Grupy linków nagłówka (.masthead__nav) — "Projekty" podświetla naraz wszystkie sekcje z tą
 // grupą, "O mnie"/"Kontakt" tylko swoją jedną. `null` = sekcja nigdy nie jest celem nawigacji
@@ -78,10 +79,18 @@ export const SECTIONS: Section[] = [
   {
     id: 'serwisant',
     title: 'Projekt 03 — Serwisant',
-    description: 'Asystent serwisowy samochodu: Angular, OCR książki serwisowej i faktur.',
+    description: 'Asystent serwisowy samochodu: React Native, OCR książki serwisowej i faktur.',
     navGroup: 'projects',
     hasDetailView: false,
     inProgress: true,
+    // Butelka oleju nad otwartą maską — jedno z "O mnie" zdjęć motoryzacyjnych, ponownie użyte
+    // tu, bo trafia w temat wprost (żaden zrzut ekranu jeszcze nie istnieje, projekt bez
+    // frontendowego widoku szczegółów na razie).
+    coverPhoto: {
+      src: serwisantCoverPhoto,
+      alt: 'Silnik pod otwartą maską, obok butelka oleju',
+      position: 'center 40%',
+    },
   },
   {
     id: 'about',

@@ -1,5 +1,16 @@
+/*
+ * Reskin do "Workbench" (2026-08-14) — sama logika gry (use-battleship.ts, Board.tsx) bez zmian,
+ * tylko wygląd: plansza czyta się teraz jako fizyczna płyta perforowana zamontowana na biurku
+ * (własna kremowa karta, cień), a pola to okrągłe otwory (border-radius:50%), nie kwadraciki —
+ * niezajęte pole = puste okrągłe wgłębienie w tym samym kraftowym kolorze co tło strony, trafienie
+ * = czerwona pinezka, pudło = przypalona/zaznaczona dziurka.
+ */
 .board {
   display: inline-block;
+  background: var(--wb-card);
+  border: 1px solid var(--wb-hairline);
+  box-shadow: 0 6px 16px rgba(36, 31, 26, 0.2);
+  padding: 14px;
 }
 
 .board__grid {
@@ -18,10 +29,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--eg-font-mono);
+  font-family: var(--wb-font-mono);
   font-size: 10px;
   letter-spacing: 0.06em;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
   text-transform: uppercase;
 }
 
@@ -35,7 +46,7 @@
 
 .board__col-header--active,
 .board__row-header--active {
-  color: var(--eg-accent-secondary);
+  color: var(--wb-accent-secondary);
   font-weight: 700;
 }
 
@@ -45,11 +56,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--eg-font-mono);
-  font-size: 14px;
-  border: 1px solid var(--eg-hairline);
-  background: var(--eg-paper);
-  color: var(--eg-ink);
+  border-radius: 50%;
+  font-family: var(--wb-font-mono);
+  font-size: 13px;
+  border: 2px solid var(--wb-hairline);
+  /* Kraftowy kolor strony, nie kremowy jak reszta karty — czyta się jak realny otwór, nie
+     wypełnione pole. Tylko stan --hit renderuje jakikolwiek glif (Board.tsx, cellMark) i ustawia
+     własny kolor tekstu — ten tutaj to tylko sensowny domyślny. */
+  background: var(--wb-paper);
+  color: var(--wb-ink);
   padding: 0;
   transition: transform 120ms ease, border-color 120ms ease;
 }
@@ -59,23 +74,23 @@
 }
 
 .board__cell--unknown:hover {
-  border-color: var(--eg-accent-secondary);
+  border-color: var(--wb-accent-secondary);
   transform: scale(1.15);
   position: relative;
   z-index: 1;
 }
 
 .board__cell--hit {
-  background: var(--eg-accent-primary);
-  border-color: var(--eg-accent-primary);
-  color: var(--eg-paper);
+  background: var(--wb-accent-primary);
+  border-color: var(--wb-accent-primary);
+  color: var(--wb-paper);
   cursor: default;
 }
 
 .board__cell--miss {
-  background: var(--eg-miss-bg);
-  border-color: var(--eg-hairline-inner);
-  color: var(--eg-ink-secondary);
+  background: var(--wb-miss-bg);
+  border-color: var(--wb-hairline-inner);
+  color: var(--wb-ink-secondary);
   cursor: default;
 }
 
@@ -84,7 +99,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--eg-ink-secondary);
+  background: var(--wb-ink-secondary);
 }
 
 /* Podgląd obszaru "(Art)yleria" — kwadrat 3×3 wokół pola pod kursorem, gdy strzał jest
@@ -92,8 +107,8 @@
    (skip-link, stepper). */
 .board__cell--preview {
   border-style: dashed;
-  border-color: var(--eg-accent-secondary);
-  background: var(--eg-preview-bg);
+  border-color: var(--wb-accent-secondary);
+  background: var(--wb-preview-bg);
 }
 
 .board--armed .board__cell {
@@ -101,6 +116,10 @@
 }
 
 @media (max-width: 480px) {
+  .board {
+    padding: 10px;
+  }
+
   .board__grid {
     grid-template-columns: 16px repeat(10, 24px);
     gap: 2px;

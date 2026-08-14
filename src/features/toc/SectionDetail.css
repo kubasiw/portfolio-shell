@@ -8,7 +8,7 @@
 }
 
 .section-detail__title {
-  font-family: var(--eg-font-serif);
+  font-family: var(--wb-font-display);
   font-weight: 700;
   font-size: 28px;
   margin: 0 0 8px;
@@ -21,14 +21,14 @@
   margin: 0 0 24px;
   font-size: 14px;
   line-height: 1.6;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
 
 .section-detail__placeholder {
   margin: 0;
   padding: 48px 24px;
-  border: 1px dashed var(--eg-hairline-inner);
+  border: 1px dashed var(--wb-hairline-inner);
   text-align: center;
   font-size: 14px;
-  color: var(--eg-ink-secondary);
+  color: var(--wb-ink-secondary);
 }
