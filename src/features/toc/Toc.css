@@ -100,7 +100,14 @@
 .toc__layout {
   display: flex;
   gap: 32px;
-  align-items: flex-start;
+  /*
+   * stretch (nie flex-start), 2026-08-14 — potrzebne, żeby .toc__board-col (patrz niżej) sięgał
+   * tej samej wysokości co .toc__cards-wrap, dając miejsce wewnętrznemu sticky wrapperowi
+   * (.toc__board-sticky) na "podążanie" za scrollem wzdłuż kafelków, zamiast być uwięzionym w
+   * wysokości samej planszy. Bez wpływu na wąski/stackowany układ (flex-wrap: każdy wiersz ma
+   * wtedy tylko jeden element, stretch nie ma czego rozciągać).
+   */
+  align-items: stretch;
   flex-wrap: wrap;
 }
 
@@ -125,21 +132,46 @@
    */
   min-width: 0;
   /*
-   * Szerokość na sztywno (nie auto/content-based) — potrzebna, żeby móc animować do/z 0.
-   * Rzeczywista szerokość siatki planszy to 22px + 10×32px + 9×3px gap = 372px (patrz Board.css)
-   * + 8px bufora — bez niego `overflow: hidden` (potrzebny do tej samej animacji) przycinał prawą
-   * krawędź hover-owego `transform: scale(1.15)` na skrajnie prawej kolumnie planszy (realny bug
-   * zgłoszony przez właściciela, nie teoretyczny) — plansza rośnie w prawo z tego samego 372px
-   * boxa, ale ma teraz 8px wolnej przestrzeni zanim cokolwiek zostanie obcięte.
-   *
-   * +30px do 410px (2026-08-14) — reskin "Workbench" dodał .board własny padding (14px × 2) i
-   * border (1px × 2), więc realny box urósł do 402px; ta kolumna została w tyle na starych 380px,
-   * co realnie kolidowało z pierwszym kafelkiem projektu obok (zgłoszone przez właściciela).
-   * 402px + ten sam 8px bufor = 410px.
+   * Reżim wąski (plansza NAD kafelkami, patrz .toc__layout flex-wrap) — pełna szerokość
+   * (2026-08-14, realny feedback: "na rozdzielczości, w której gra jest nad kafelkami,
+   * moglibyśmy rozszerzyć grę na całą szerokość"). Board.css robi resztę — komórki płynne
+   * (1fr + aspect-ratio) w tym samym reżimie, więc realnie wypełniają tę pełną szerokość, nie
+   * tylko sam kontener wokół stałej, małej siatki.
    */
-  width: 410px;
+  width: 100%;
   opacity: 1;
-  overflow: hidden;
+  /*
+   * overflow:hidden NIE tutaj na stałe (2026-08-14, realny bug złapany testem izolowanym) —
+   * `position: sticky` na dziecku (.toc__board-sticky) przestaje działać, gdy JAKIKOLWIEK
+   * przodek ma overflow inny niż visible, NAWET jeśli ten przodek jest już rozciągnięty
+   * (align-items: stretch, wyżej) do wysokości, która teoretycznie daje dziecku miejsce do
+   * "pływania" — potwierdzone bezpośrednim testem A/B na dwóch minimalnych reprodukcjach,
+   * różniących się wyłącznie tą jedną właściwością. overflow:hidden zostaje więc WARUNKOWY —
+   * tylko na czas animacji zwijania (.toc__layout--collapsed niżej), kiedy naprawdę trzeba
+   * przyciąć znikającą zawartość, nie przez cały czas przeglądania strony.
+   */
+  overflow: visible;
+}
+
+/*
+ * Reżim szeroki — plansza obok kafelków, ten sam próg 900px co Board.css (oba pliki muszą się
+ * zgadzać). Stała szerokość (nie auto/content-based) — potrzebna, żeby móc animować do/z 0.
+ * Rzeczywista szerokość planszy przy większych, stałych komórkach (Board.css) to 499px siatki +
+ * 28px padding + 2px border = 529px + 8px bufora (bez niego `overflow: hidden`, potrzebny do tej
+ * samej animacji zwijania, przycinał prawą krawędź hover-owego `transform: scale(1.15)` na
+ * skrajnie prawej kolumnie planszy — realny bug złapany na żywo, nie teoretyczny) = 537px.
+ *
+ * Stosunek do .toc__cards-wrap (2026-08-14, realny feedback: "rozszerzyć trochę szerokość dla
+ * gry a zwęzić dla kafelków, mniej więcej w stosunku 4 do 6 na 10") — przy pełnej szerokości
+ * treści (.landing__content, max 1440px - 88px padding = 1352px) 537px to ~40%, zgodnie z
+ * prośbą. Sama plansza zostaje przy tym stałym px (siatka ma stałe komórki, nie płynne, w tym
+ * reżimie), więc stosunek jest dokładny w punkcie projektowym (1440px), nie idealnie
+ * proporcjonalny na każdej pośredniej szerokości — świadomy kompromis, nie błąd.
+ */
+@media (min-width: 900px) {
+  .toc__board-col {
+    width: 537px;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -151,13 +183,22 @@
 .toc__layout--collapsed .toc__board-col {
   width: 0;
   opacity: 0;
+  overflow: hidden;
 }
 
-@media (max-width: 480px) {
-  .toc__board-col {
-    /* Mobilna siatka w Board.css: 16px + 10×24px + 9×2px gap = 274px, + .board's own 10px×2
-       padding i 1px×2 border (Workbench reskin) = 296px, + 6px bufora hover = 302px. */
-    width: 302px;
+/*
+ * Podąża za scrollem wzdłuż kafelków (2026-08-14, realny feedback) — tylko w reżimie szerokim,
+ * gdzie plansza faktycznie siedzi OBOK dużo wyższej kolumny kafelków (przy stackowaniu nie ma
+ * czego "podążać", plansza i tak jest już zawsze w polu widzenia tuż nad kafelkami). top:70px —
+ * wysokość .masthead to ~55px (sprawdzone na żywo), +15px odstępu. .toc__board-col musi być
+ * rozciągnięty do wysokości .toc__cards-wrap (.toc__layout: align-items: stretch, wyżej), inaczej
+ * ten wrapper nie miałby w ogóle miejsca, żeby "pływać" — złapane realnie (position:sticky bez
+ * efektu, dopóki rodzic nie był wyższy niż sama plansza).
+ */
+@media (min-width: 900px) {
+  .toc__board-sticky {
+    position: sticky;
+    top: 70px;
   }
 }
 

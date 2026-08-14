@@ -4,24 +4,31 @@
  * (własna kremowa karta, cień), a pola to okrągłe otwory (border-radius:50%), nie kwadraciki —
  * niezajęte pole = puste okrągłe wgłębienie w tym samym kraftowym kolorze co tło strony, trafienie
  * = czerwona pinezka, pudło = przypalona/zaznaczona dziurka.
+ *
+ * Dwa reżimy szerokości (2026-08-14, realny feedback) — ten sam próg co Toc.css (900px), bo oba
+ * pliki muszą się zgadzać, żeby wrapowanie flexboksa i przełączenie stylu planszy szło w parze:
+ * - szeroki (plansza obok kafelków): stałe, większe komórki (45px) — plansza dostała więcej
+ *   miejsca (Toc.css: 4:6 zamiast wąskiej stałej kolumny), więc komórki rosną razem z nią.
+ * - wąski (plansza NAD kafelkami): płynna siatka — komórki `1fr` zamiast stałego px, kwadratowe
+ *   dzięki aspect-ratio (nie stałej wysokości, która przy płynnej szerokości dawałaby prostokąty).
+ *   Plansza wypełnia wtedy całą dostępną szerokość, nie tylko wąski stały pasek.
  */
 .board {
-  display: inline-block;
   background: var(--wb-card);
   border: 1px solid var(--wb-hairline);
   box-shadow: 0 6px 16px rgba(36, 31, 26, 0.2);
-  padding: 14px;
+  padding: 10px;
 }
 
 .board__grid {
   display: grid;
-  grid-template-columns: 22px repeat(10, 32px);
-  gap: 3px;
+  grid-template-columns: 20px repeat(10, 1fr);
+  gap: 2px;
 }
 
 .board__corner {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
 
 .board__col-header,
@@ -30,18 +37,18 @@
   align-items: center;
   justify-content: center;
   font-family: var(--wb-font-mono);
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 0.06em;
   color: var(--wb-ink-secondary);
   text-transform: uppercase;
 }
 
 .board__col-header {
-  height: 22px;
+  height: 20px;
 }
 
 .board__row-header {
-  width: 22px;
+  width: 20px;
 }
 
 .board__col-header--active,
@@ -51,14 +58,15 @@
 }
 
 .board__cell {
-  width: 32px;
-  height: 32px;
+  aspect-ratio: 1;
+  width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   font-family: var(--wb-font-mono);
-  font-size: 13px;
+  font-size: 11px;
   border: 2px solid var(--wb-hairline);
   /* Kraftowy kolor strony, nie kremowy jak reszta karty — czyta się jak realny otwór, nie
      wypełnione pole. Tylko stan --hit renderuje jakikolwiek glif (Board.tsx, cellMark) i ustawia
@@ -96,8 +104,8 @@
 
 .board__cell--miss::after {
   content: '';
-  width: 7px;
-  height: 7px;
+  width: 22%;
+  height: 22%;
   border-radius: 50%;
   background: var(--wb-ink-secondary);
 }
@@ -115,38 +123,43 @@
   cursor: crosshair;
 }
 
-@media (max-width: 480px) {
+/* Reżim szeroki — plansza obok kafelków (patrz Toc.css, ten sam próg 900px). Stałe, większe
+   komórki: 22px (róg/nagłówki) + 10×45px (komórki) + 9×3px (gap) = 499px siatki, + 14px×2
+   padding + 1px×2 border (.board) = 529px, + 8px bufora hover = 537px (Toc.css:
+   .toc__board-col). */
+@media (min-width: 900px) {
   .board {
-    padding: 10px;
+    padding: 14px;
   }
 
   .board__grid {
-    grid-template-columns: 16px repeat(10, 24px);
-    gap: 2px;
+    grid-template-columns: 22px repeat(10, 45px);
+    gap: 3px;
   }
 
   .board__corner {
-    width: 16px;
-    height: 16px;
+    width: 22px;
+    height: 22px;
   }
 
   .board__row-header {
-    width: 16px;
+    width: 22px;
   }
 
   .board__col-header {
-    height: 16px;
-    font-size: 8px;
+    height: 22px;
+    font-size: 10px;
   }
 
   .board__cell {
-    width: 24px;
-    height: 24px;
-    font-size: 11px;
+    aspect-ratio: auto;
+    width: 45px;
+    height: 45px;
+    font-size: 14px;
   }
 
   .board__cell--miss::after {
-    width: 5px;
-    height: 5px;
+    width: 7px;
+    height: 7px;
   }
 }

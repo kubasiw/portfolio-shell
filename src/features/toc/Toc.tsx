@@ -99,27 +99,34 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
 
           <div className={`toc__layout ${boardCollapsed ? 'toc__layout--collapsed' : ''}`}>
             <div className="toc__board-col">
-              <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
+              {/* position:sticky żyje tu, na wewnętrznym wrapperze, nie na .toc__board-col —
+                  .toc__board-col ma overflow:hidden (potrzebne do animacji zwijania szerokości
+                  do 0) i musi zostać rozciągnięty do wysokości .toc__cards-wrap (patrz
+                  .toc__layout w Toc.css), żeby ten sticky wrapper miał w ogóle miejsce, żeby
+                  "podążać" za scrollem, zamiast być uwięziony w wysokości samej planszy. */}
+              <div className="toc__board-sticky">
+                <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
 
-              <div className="toc__artillery">
-                <button
-                  type="button"
-                  className={`toc__artillery-btn ${artilleryArmed ? 'toc__artillery-btn--armed' : ''}`}
-                  onClick={toggleArtillery}
-                  disabled={artilleryCharges <= 0}
-                >
-                  🎯 (Art)yleria ({artilleryCharges})
-                </button>
-                <p className="toc__artillery-hint">
-                  {artilleryArmed
-                    ? 'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.'
-                    : 'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.'}
+                <div className="toc__artillery">
+                  <button
+                    type="button"
+                    className={`toc__artillery-btn ${artilleryArmed ? 'toc__artillery-btn--armed' : ''}`}
+                    onClick={toggleArtillery}
+                    disabled={artilleryCharges <= 0}
+                  >
+                    🎯 (Art)yleria ({artilleryCharges})
+                  </button>
+                  <p className="toc__artillery-hint">
+                    {artilleryArmed
+                      ? 'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.'
+                      : 'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.'}
+                  </p>
+                </div>
+
+                <p className="toc__status" role="status" aria-live="polite">
+                  {statusMessage}
                 </p>
               </div>
-
-              <p className="toc__status" role="status" aria-live="polite">
-                {statusMessage}
-              </p>
             </div>
             <div className="toc__cards-wrap">
               <div className="toc__cards">
