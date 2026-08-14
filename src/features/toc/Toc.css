@@ -124,6 +124,9 @@
 .toc__board-col {
   display: flex;
   flex-direction: column;
+  /* Kontekst pozycjonowania dla .toc__board-sticky--bottom (position:absolute; bottom:0) —
+     patrz use-sticky-board.ts. */
+  position: relative;
   /*
    * min-width: 0 — bez tego flex item domyślnie nie może się zmniejszyć poniżej min-content
    * rozmiaru swojej zawartości. Jeśli .toc__status kiedykolwiek dostanie długi, niełamliwy ciąg
@@ -141,14 +144,12 @@
   width: 100%;
   opacity: 1;
   /*
-   * overflow:hidden NIE tutaj na stałe (2026-08-14, realny bug złapany testem izolowanym) —
-   * `position: sticky` na dziecku (.toc__board-sticky) przestaje działać, gdy JAKIKOLWIEK
-   * przodek ma overflow inny niż visible, NAWET jeśli ten przodek jest już rozciągnięty
-   * (align-items: stretch, wyżej) do wysokości, która teoretycznie daje dziecku miejsce do
-   * "pływania" — potwierdzone bezpośrednim testem A/B na dwóch minimalnych reprodukcjach,
-   * różniących się wyłącznie tą jedną właściwością. overflow:hidden zostaje więc WARUNKOWY —
-   * tylko na czas animacji zwijania (.toc__layout--collapsed niżej), kiedy naprawdę trzeba
-   * przyciąć znikającą zawartość, nie przez cały czas przeglądania strony.
+   * overflow:hidden NIE tutaj na stałe — tylko na czas animacji zwijania
+   * (.toc__layout--collapsed niżej), kiedy naprawdę trzeba przyciąć znikającą zawartość. (Nie
+   * jest już potrzebne dla CSS position:sticky, jak w poprzedniej wersji tego komentarza —
+   * sticky okazało się strukturalnie zablokowane gdzie indziej w drzewie i zastąpione JS-ową
+   * wersją, patrz use-sticky-board.ts. Ale zasada "overflow:hidden tylko kiedy faktycznie
+   * potrzebne" zostaje, to nadal dobry powód, żeby nie mieć go tu na stałe.)
    */
   overflow: visible;
 }
@@ -187,19 +188,21 @@
 }
 
 /*
- * Podąża za scrollem wzdłuż kafelków (2026-08-14, realny feedback) — tylko w reżimie szerokim,
- * gdzie plansza faktycznie siedzi OBOK dużo wyższej kolumny kafelków (przy stackowaniu nie ma
- * czego "podążać", plansza i tak jest już zawsze w polu widzenia tuż nad kafelkami). top:70px —
- * wysokość .masthead to ~55px (sprawdzone na żywo), +15px odstępu. .toc__board-col musi być
- * rozciągnięty do wysokości .toc__cards-wrap (.toc__layout: align-items: stretch, wyżej), inaczej
- * ten wrapper nie miałby w ogóle miejsca, żeby "pływać" — złapane realnie (position:sticky bez
- * efektu, dopóki rodzic nie był wyższy niż sama plansza).
+ * Podąża za scrollem wzdłuż kafelków (2026-08-14, realny feedback) — JS, nie CSS position:sticky
+ * (patrz use-sticky-board.ts dla pełnego uzasadnienia: sticky jest tu strukturalnie zablokowane
+ * przez overflow:hidden gdzie indziej w drzewie, wymagany przez istniejący mechanizm przełącznika
+ * spis-treści ↔ widok szczegółowy, nie do usunięcia). Trzy stany, sterowane przez React (klasa
+ * --bottom + inline style position:fixed dodawane warunkowo w Toc.tsx):
+ * - statyczny (domyślny, brak dodatkowych reguł tutaj) — jeszcze nie doscrollowano do progu.
+ * - fixed — inline style z JS (top/left/width przeliczane na bieżąco), nie CSS.
+ * - --bottom — doscrollowano do końca (wyższej) kolumny kafelków, przypięte do dołu kontenera
+ *   zamiast wystawać poza niego przy sztywnym top.
  */
-@media (min-width: 900px) {
-  .toc__board-sticky {
-    position: sticky;
-    top: 70px;
-  }
+.toc__board-sticky--bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 .toc__cards-wrap {

@@ -5,6 +5,7 @@ import { SectionDetail } from './SectionDetail';
 import type { NavTarget, Section } from './sections';
 import { SECTIONS } from './sections';
 import { useBattleship } from './use-battleship';
+import { useStickyBoard } from './use-sticky-board';
 import './Toc.css';
 
 interface TocProps {
@@ -47,6 +48,11 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
   // Niezależny od `skipped` — jedyny sposób wejścia w ten stan to skip (skip ustawia oba naraz),
   // ale odtąd przełącza się osobno w obie strony (patrz przycisk w .toc__intro niżej).
   const [boardCollapsed, setBoardCollapsed] = useState(false);
+  // enabled: false podczas zwijania — .toc__board-col ma wtedy width:0/opacity:0, więc
+  // przeliczanie fixed/left/width z realnych (chwilowo bezsensownych) wymiarów tylko marnowałoby
+  // pracę, patrz use-sticky-board.ts.
+  const { containerRef, stickyRef, mode: boardStickyMode, style: boardStickyStyle } =
+    useStickyBoard(!boardCollapsed);
 
   const effectiveUnlocked = useMemo((): ReadonlySet<string> => {
     if (skipped) {
@@ -98,13 +104,17 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
           </div>
 
           <div className={`toc__layout ${boardCollapsed ? 'toc__layout--collapsed' : ''}`}>
-            <div className="toc__board-col">
-              {/* position:sticky żyje tu, na wewnętrznym wrapperze, nie na .toc__board-col —
-                  .toc__board-col ma overflow:hidden (potrzebne do animacji zwijania szerokości
-                  do 0) i musi zostać rozciągnięty do wysokości .toc__cards-wrap (patrz
-                  .toc__layout w Toc.css), żeby ten sticky wrapper miał w ogóle miejsce, żeby
-                  "podążać" za scrollem, zamiast być uwięziony w wysokości samej planszy. */}
-              <div className="toc__board-sticky">
+            <div className="toc__board-col" ref={containerRef}>
+              {/* CSS position:sticky nie działa tu — patrz use-sticky-board.ts (overflow:hidden
+                  wymagany gdzie indziej w drzewie, nie do usunięcia). JS-owy odpowiednik:
+                  position:fixed z przeliczanymi top/left/width (mode==='fixed'), przypięcie do
+                  dołu kontenera po doscrollowaniu do końca (mode==='bottom'), albo zwykły
+                  przepływ (mode==='static'). */}
+              <div
+                className={`toc__board-sticky ${boardStickyMode === 'bottom' ? 'toc__board-sticky--bottom' : ''}`}
+                ref={stickyRef}
+                style={boardStickyMode === 'fixed' ? boardStickyStyle : undefined}
+              >
                 <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
 
                 <div className="toc__artillery">
