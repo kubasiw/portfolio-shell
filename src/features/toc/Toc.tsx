@@ -109,7 +109,14 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
                   wymagany gdzie indziej w drzewie, nie do usunięcia). JS-owy odpowiednik:
                   position:fixed z przeliczanymi top/left/width (mode==='fixed'), przypięcie do
                   dołu kontenera po doscrollowaniu do końca (mode==='bottom'), albo zwykły
-                  przepływ (mode==='static'). */}
+                  przepływ (mode==='static').
+                  Inline style tutaj — świadomy wyjątek od "brak inline styles"
+                  (PORTFOLIO_PLAN.md, dobre praktyki): top/left/width są tu wartościami
+                  przeliczanymi w locie z realnej pozycji scrolla, nie stałą decyzją projektową,
+                  której miejsce byłoby w arkuszu stylów. Klasa .toc__board-sticky--bottom
+                  (statyczna, w CSS) obsługuje drugi z trzech stanów bez inline style'a — tylko
+                  "fixed" naprawdę potrzebuje wartości, których nie da się z góry zapisać jako
+                  klasę. */}
               <div
                 className={`toc__board-sticky ${boardStickyMode === 'bottom' ? 'toc__board-sticky--bottom' : ''}`}
                 ref={stickyRef}

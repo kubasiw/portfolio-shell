@@ -7,7 +7,9 @@
   padding: 22px 18px 16px;
   outline: 3px solid transparent;
   outline-offset: 4px;
-  box-shadow: 0 8px 18px rgba(36, 31, 26, 0.2);
+  /* color-mix(), nie wpisana na sztywno rgb --wb-ink (2026-08-14, audyt dobrych praktyk) — jedno
+     źródło prawdy dla koloru cienia, ten sam wzorzec co App.css. */
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--wb-ink) 20%, transparent);
   /* No isolation/z-index here — causes clipping of overflow (stamp, outline) when combined with
      CSS grid. Footer/masthead stay on top via their own z-index instead (see App.css). */
 }
@@ -27,7 +29,7 @@
   height: 13px;
   border-radius: 50%;
   background: var(--wb-pin);
-  box-shadow: 0 2px 3px rgba(36, 31, 26, 0.45);
+  box-shadow: 0 2px 3px color-mix(in srgb, var(--wb-ink) 45%, transparent);
 }
 
 /*
@@ -60,7 +62,7 @@
      animowania). */
   .spec-plate--unlocked:hover {
     transform: rotate(0deg) translateY(-3px);
-    box-shadow: 0 16px 26px rgba(36, 31, 26, 0.28);
+    box-shadow: 0 16px 26px color-mix(in srgb, var(--wb-ink) 28%, transparent);
   }
 }
 

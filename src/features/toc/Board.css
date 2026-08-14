@@ -16,7 +16,9 @@
 .board {
   background: var(--wb-card);
   border: 1px solid var(--wb-hairline);
-  box-shadow: 0 6px 16px rgba(36, 31, 26, 0.2);
+  /* color-mix(), nie wpisana na sztywno rgb --wb-ink (2026-08-14, audyt dobrych praktyk) — jedno
+     źródło prawdy dla koloru cienia, ten sam wzorzec co ProjectCard.css/App.css. */
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--wb-ink) 20%, transparent);
   padding: 10px;
 }
 

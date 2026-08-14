@@ -575,7 +575,14 @@ czynienia z **kilkoma niezależnymi apkami spiętymi w jedną całość**, nie j
   projekt tego samego kształtu, żeby dało się to łatwo porównać/pokazać w portfolio jako spójny
   standard, nie przypadkowy zestaw skryptów per projekt.
 
-## Design system — "Editorial Garage" (zablokowany kierunek wizualny portfolio shell)
+## Design system — "Editorial Garage" (zastąpiony 2026-08-14, patrz "Workbench" niżej)
+
+**Zastąpiony 2026-08-14.** Realny feedback po zobaczeniu w pełni zbudowanego Editorial Garage:
+zbyt ubogi/generyczny na portfolio, właściciel poprosił o "mocno fancy, ale nie trzęsące myszką".
+Porównano 4 klikalne makiety inspirowane realnymi referencjami (mode.com, b-egg.farm,
+overrrides.com, crew.tubikstudio.com) — wygrał kierunek "Workbench" (patrz osobna sekcja niżej,
+zaraz po tej). Ta sekcja zostaje jako historyczny zapis pierwszego kierunku, nie jako aktualny
+opis strony — nic tu nie jest już wdrożone.
 
 Kierunek ustalony 2026-07-23 po przejrzeniu 4 wariantów (moodboard: Dark Editorial, Bold Mono
 Grid, Swiss Grid, Warm Paper Editorial) i zmiksowaniu ich pod kątem "designer UX + layout
@@ -653,6 +660,91 @@ aktualizacji, jeśli paleta się kiedyś zmieni.
 - Zachowanie mastheadu na wąskich ekranach (chowana nawigacja?)
 - Docelowa liczba/rozmieszczenie "celów" na planszy (roboczo: 6, jeden na sekcję portfolio)
 - Realny font serif/mono do samodzielnego hostowania (na razie system fallback w makietach)
+
+## Design system — "Workbench" (aktualny kierunek wizualny portfolio shell, od 2026-08-14)
+
+Zastąpił Editorial Garage (patrz sekcja wyżej) po realnym feedbacku, że ten pierwszy kierunek
+wyszedł zbyt ubogo/generycznie jak na portfolio. Ustalony przez porównanie 4 klikalnych makiet
+inspirowanych realnymi referencjami (mode.com, b-egg.farm, overrrides.com,
+crew.tubikstudio.com) — wygrał kierunek D: taktylna korkowa tablica (pinboard) z
+"przypiętymi" kartami projektów, font Big Shoulders Display. Kryteria wyboru: "mocno fancy, ale
+nie trzęsące myszką" (żadnych gimmicków typu parallax-na-scrollu czy cursor-follow).
+
+### Paleta (`src/styles/tokens.css`, prefiks `--wb-`)
+
+| Token | Wartość | Rola |
+|---|---|---|
+| `--wb-paper` | `#bdb097` | tło strony (kraft/karton) |
+| `--wb-card` | `#faf6ee` | tło kart (kremowy papier) |
+| `--wb-divider` | `#e2dbc9` | delikatne linie podziału |
+| `--wb-ink` | `#241f1a` | główny tekst |
+| `--wb-ink-secondary` | `#463d33` | tekst drugorzędny |
+| `--wb-hairline` | `#635745` | obwódki, cienkie linie |
+| `--wb-hairline-inner` | `#584d38` | obwódki wewnętrzne (np. pudło na planszy) |
+| `--wb-accent-primary` | `#6e2818` | główny akcent (trafienie, przyciski) |
+| `--wb-accent-secondary` | `#4f3d10` | drugorzędny akcent (hover, podgląd) |
+| `--wb-muted` | `#756a54` | tekst wyciszony |
+| `--wb-crimson` | `#7a2a24` | status "w budowie" |
+| `--wb-navy` | `#1e3a5f` | rzadki akcent (linki w treści) |
+| `--wb-pin` | `#e8b923` | żółta pinezka — **wyłącznie dekoracyjny**, ~1.5:1 kontrastu, nigdy jako kolor tekstu/obwódki |
+| `--wb-miss-bg` / `--wb-preview-bg` / `--wb-unlocked-bg` | — | tła stanów planszy |
+
+Każda para tekst/tło zweryfikowana realnym przeliczeniem kontrastu WCAG (skrypt Node liczący
+względną luminancję), nie na oko — ta sama rygorystyczność co przy Editorial Garage.
+
+### Typografia
+
+- **`--wb-font-display`**: `'Big Shoulders Display', 'Arial Narrow', sans-serif` — nagłówki,
+  masthead, duże liczby. Wagi 600/800, wersaliki. Ładowany przez Google Fonts `<link>` w
+  `index.html` (brak ograniczeń CSP na produkcji, w przeciwieństwie do Claude Artifacts, gdzie
+  makiety musiały osadzać fonty jako base64).
+- **`--wb-font-sans`**: `'IBM Plex Sans', ...` — treść, UI.
+- **`--wb-font-mono`**: `'IBM Plex Mono', ...` — etykiety, współrzędne planszy, metadane.
+
+### Kluczowe decyzje strukturalne
+
+- **Karty projektów jako przypięte kartki** (`ProjectCard.css`) — lekka rotacja na
+  odblokowanych kartach (naprzemiennie -1.4°/1°/-0.6° co 3. kartę), żółta pinezka
+  (`--wb-pin`) w rogu, prostowanie + uniesienie na hover. Zablokowane karty są płaskie, bez
+  pinezki, bez rotacji, tło `--wb-paper` zamiast `--wb-card` — czytelna semantyka "jeszcze nie
+  podniesione z biurka".
+- **Battleship jako płyta perforowana** (`Board.css`) — okrągłe otwory (`border-radius: 50%`)
+  zamiast kwadracików, sama logika gry (`use-battleship.ts`, `Board.tsx`) niezmieniona, tylko
+  warstwa wizualna.
+- **Pełny bleed header/footer** — `.masthead`/`.site-footer` rozciągnięte na całą szerokość
+  viewportu (tło + obwódka), treść wewnątrz (`__inner`) nadal ograniczona `max-width: 1440px`.
+  Odpowiedź na feedback, że strona wyglądała za wąsko na tle referencji.
+- **Floating/sticky plansza obok kart** (`use-sticky-board.ts`) — na szerokich ekranach (≥900px)
+  plansza "podąża" za scrollem wzdłuż listy kart, zamiast znikać z widoku. **CSS
+  `position: sticky` okazał się strukturalnie niemożliwy** — blokowany przez
+  `.toc__view-panel-inner { overflow: hidden }`, potrzebny gdzie indziej (animacja przełączania
+  spis-treści↔widok-szczegółów przez `grid-template-rows: 0fr↔1fr`) i niemożliwy do usunięcia.
+  Potwierdzone izolowaną redukcją A/B poza realnym DOM-em, nie tylko teoretycznie. Rozwiązanie:
+  własny hook liczący 3 stany scrolla (`static`/`fixed`/`bottom`) na `requestAnimationFrame`,
+  aplikujący `position: fixed` przez inline style (świadomy, udokumentowany wyjątek od "brak
+  inline styles" — wartości są przeliczane w locie z realnej pozycji scrolla, nie stałą decyzją
+  projektową) oraz klasę CSS dla stanu "przypięty do dołu kontenera".
+  Proporcja szerokości plansza:karty ≈ 4:6 (537px stała kolumna planszy na szerokich ekranach).
+  Na wąskich ekranach (plansza NAD kartami) plansza rozciąga się na pełną szerokość, siatka
+  komórek płynna (`1fr` + `aspect-ratio: 1`) zamiast stałych px.
+- **Kolory tylko przez `color-mix()`, nigdy `rgba()` na sztywno** — każdy cień/przezroczysty
+  wariant tokenu liczony jako `color-mix(in srgb, var(--wb-token) N%, transparent)`, żeby nie
+  dryfował po ewentualnej zmianie wartości tokenu (znalezione i naprawione 2026-08-14 podczas
+  audytu dobrych praktyk: 5 miejsc miało wpisany na sztywno `rgba()` odpowiadający wartościom
+  tokenów — `App.css` tło kropkowane, `ProjectCard.css` ×3 cienie, `Board.css` cień planszy).
+- **Znana, zaakceptowana duplikacja**: próg `900px` (przełącznik wąski/szeroki reżim) występuje
+  osobno w `Board.css`, `Toc.css` i jako stała `WIDE_REGIME_QUERY` w `use-sticky-board.ts` — nie
+  ma jednego źródła prawdy między arkuszami CSS bez preprocesora (którego ten projekt nie ma).
+  JS-owa strona centralizuje przynajmniej swoją własną kopię jako nazwaną stałą.
+
+### Etapy wdrożenia (status na 2026-08-14)
+
+1. ✅ Fundament (tokeny, fonty, masthead/hero/footer full-bleed)
+2. ✅ Karty projektów + plansza battleship (pinboard reskin, sticky board, poprawki po
+   realnym review: kolizja plansza+karta, czytelność tła, status "w budowie" dla Serwisant)
+3. ⏳ Nie rozpoczęte: strony About/Skills/Kontakt
+4. ⏳ Nie rozpoczęte: widoki szczegółów tour-guide/Insider (ostrożnie, bez naruszania
+   osadzonych widgetów/mikrofrontendów)
 
 ## Otwarte pytania / do ustalenia w kolejnych krokach
 

@@ -26,11 +26,18 @@
    * --wb-hairline — dobrana pod kontrast obwódek (3:1, celowo dobrze widoczna), zupełnie złe
    * kryterium dla dekoracyjnej tekstury pod tekstem (hero siedzi wprost na tym tle, karty/stopka/
    * nagłówek mają własne pełne tło i dotów nie widać). Kontrast matematycznie "przechodził", ale
-   * czytelność w praktyce ucierpiała — niska krycie (rgba, nie zmienna) naprawia to bez zmiany
-   * koloru dotów.
+   * czytelność w praktyce ucierpiała — niska krycie naprawia to bez zmiany koloru dotów.
+   * color-mix(), nie osobna zmienna z wpisaną na sztywno wartością rgb --wb-hairline (2026-08-14,
+   * audyt dobrych praktyk) — jedno źródło prawdy: gdyby --wb-hairline kiedyś się zmienił, ten dot
+   * automatycznie by za nim podążył, zamiast po cichu się rozjechać. Ten sam wzorzec co
+   * już sprawdzony w tour-guide (motyw regionalny na plan-summary).
    */
   background-color: var(--wb-paper);
-  background-image: radial-gradient(circle at 1px 1px, rgba(99, 87, 69, 0.28) 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--wb-hairline) 28%, transparent) 1px,
+    transparent 0
+  );
   background-size: 24px 24px;
 }
 
