@@ -1,12 +1,17 @@
 import { useMemo, useState } from 'react';
-import { SECTIONS } from './sections';
+import { NOTES } from './notes';
 
 export const BOARD_COLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] as const;
 export const BOARD_ROWS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] as const;
 
-// Klasyczny zestaw wielkości statków (1,2,3,4,5) + dodatkowy 1x1, żeby dopasować liczbę
-// statków do liczby sekcji spisu treści (6) — każda sekcja dostaje dokładnie jeden statek.
+// Klasyczny zestaw wielkości statków (1,2,3,4,5) + dodatkowy 1x1, żeby dopasować liczbę statków
+// do liczby notek "za kulisami" (6, notes.ts) — każda notka dostaje dokładnie jeden statek.
+// Suma tych rozmiarów (16) to też "Trafienia: X/16" w nagłówku szuflady (BattleshipDrawer.tsx).
+// Do 2026-08-24 statki celowały w SECTIONS (spis treści) zamiast w notki — po redesignie
+// "Atrament" statki przestały bramkować jakąkolwiek treść (patrz PORTFOLIO_PLAN.md, etap 4), więc
+// ten mechanizm jest teraz w pełni niezależny od SECTIONS/liczby sekcji portfolio.
 const SHIP_SIZES = [1, 1, 2, 3, 4, 5] as const;
+export const TOTAL_SHIP_CELLS = SHIP_SIZES.reduce((sum, size) => sum + size, 0);
 
 // "(Art)yleria" — specjalny strzał sprawdzający naraz kwadrat 3×3 (promień 1 wokół celu),
 // ograniczony liczbą użyć na sesję (jedną planszę), żeby zostać ciekawym przyspieszeniem,
@@ -28,13 +33,14 @@ export interface FireResult {
   coordinate: Coordinate;
   hit: boolean;
   sunk: boolean;
-  sectionTitle?: string;
+  noteTitle?: string;
   burst?: BurstResult;
 }
 
 export interface BattleshipState {
   cellStatus: (coordinate: Coordinate) => CellStatus;
-  unlockedSectionIds: ReadonlySet<string>;
+  revealedNoteIds: ReadonlySet<string>;
+  hitsCount: number;
   fireAt: (coordinate: Coordinate) => void;
   lastResult: FireResult | null;
   artilleryCharges: number;
@@ -43,7 +49,7 @@ export interface BattleshipState {
 }
 
 interface ShipPlacement {
-  sectionId: string;
+  noteId: string;
   cells: Coordinate[];
 }
 
@@ -139,21 +145,21 @@ function placeOneShip(size: number, blocked: ReadonlySet<Coordinate>): Coordinat
 }
 
 function placeShipsOnce(): ShipPlacement[] {
-  const shuffledSections = shuffle(SECTIONS);
+  const shuffledNotes = shuffle(NOTES);
   // "blocked" zawiera pola już zajętych statków ORAZ ich pełną otoczkę (8 sąsiadów) — nowy statek
   // nie może wylądować na żadnym z tych pól, więc żadne dwa statki nigdy się nie stykają, nawet
   // rogami.
   const blocked = new Set<Coordinate>();
   const placements: ShipPlacement[] = [];
 
-  shuffledSections.forEach((section, index) => {
+  shuffledNotes.forEach((note, index) => {
     const size = SHIP_SIZES[index];
     const cells = placeOneShip(size, blocked);
     cells.forEach((coordinate) => {
       blocked.add(coordinate);
       neighbors8(coordinate).forEach((neighbor) => blocked.add(neighbor));
     });
-    placements.push({ sectionId: section.id, cells });
+    placements.push({ noteId: note.id, cells });
   });
 
   return placements;
@@ -176,15 +182,15 @@ function placeShips(): ShipPlacement[] {
 
 function buildLookups(placements: ShipPlacement[]): {
   shipsByCoordinate: Map<Coordinate, string>;
-  cellsBySection: Map<string, Coordinate[]>;
+  cellsByNote: Map<string, Coordinate[]>;
 } {
   const shipsByCoordinate = new Map<Coordinate, string>();
-  const cellsBySection = new Map<string, Coordinate[]>();
-  placements.forEach(({ sectionId, cells }) => {
-    cellsBySection.set(sectionId, cells);
-    cells.forEach((coordinate) => shipsByCoordinate.set(coordinate, sectionId));
+  const cellsByNote = new Map<string, Coordinate[]>();
+  placements.forEach(({ noteId, cells }) => {
+    cellsByNote.set(noteId, cells);
+    cells.forEach((coordinate) => shipsByCoordinate.set(coordinate, noteId));
   });
-  return { shipsByCoordinate, cellsBySection };
+  return { shipsByCoordinate, cellsByNote };
 }
 
 interface GameState {
@@ -195,11 +201,11 @@ interface GameState {
 }
 
 function isSunk(
-  sectionId: string,
-  cellsBySection: Map<string, Coordinate[]>,
+  noteId: string,
+  cellsByNote: Map<string, Coordinate[]>,
   revealedMap: Map<Coordinate, CellStatus>,
 ): boolean {
-  const cells = cellsBySection.get(sectionId) ?? [];
+  const cells = cellsByNote.get(noteId) ?? [];
   return cells.length > 0 && cells.every((coordinate) => revealedMap.get(coordinate) === 'hit');
 }
 
@@ -207,20 +213,20 @@ function fireSingleCell(
   coordinate: Coordinate,
   prev: GameState,
   shipsByCoordinate: Map<Coordinate, string>,
-  cellsBySection: Map<string, Coordinate[]>,
+  cellsByNote: Map<string, Coordinate[]>,
 ): GameState {
   if (prev.revealed.has(coordinate)) {
     return prev;
   }
-  const sectionId = shipsByCoordinate.get(coordinate);
-  const status: CellStatus = sectionId ? 'hit' : 'miss';
+  const noteId = shipsByCoordinate.get(coordinate);
+  const status: CellStatus = noteId ? 'hit' : 'miss';
   const nextRevealed = new Map(prev.revealed).set(coordinate, status);
-  const sunk = sectionId ? isSunk(sectionId, cellsBySection, nextRevealed) : false;
-  const section = sectionId ? SECTIONS.find((s) => s.id === sectionId) : undefined;
+  const sunk = noteId ? isSunk(noteId, cellsByNote, nextRevealed) : false;
+  const note = noteId ? NOTES.find((n) => n.id === noteId) : undefined;
   return {
     ...prev,
     revealed: nextRevealed,
-    lastResult: { coordinate, hit: status === 'hit', sunk, sectionTitle: section?.title },
+    lastResult: { coordinate, hit: status === 'hit', sunk, noteTitle: note?.title },
   };
 }
 
@@ -228,7 +234,7 @@ function fireArtilleryBurst(
   center: Coordinate,
   prev: GameState,
   shipsByCoordinate: Map<Coordinate, string>,
-  cellsBySection: Map<string, Coordinate[]>,
+  cellsByNote: Map<string, Coordinate[]>,
 ): GameState {
   const area = getSquareArea(center, ARTILLERY_RADIUS);
   const nextRevealed = new Map(prev.revealed);
@@ -239,8 +245,8 @@ function fireArtilleryBurst(
     if (nextRevealed.has(coordinate)) {
       return;
     }
-    const sectionId = shipsByCoordinate.get(coordinate);
-    const status: CellStatus = sectionId ? 'hit' : 'miss';
+    const noteId = shipsByCoordinate.get(coordinate);
+    const status: CellStatus = noteId ? 'hit' : 'miss';
     nextRevealed.set(coordinate, status);
     if (status === 'hit') {
       hits += 1;
@@ -250,13 +256,13 @@ function fireArtilleryBurst(
   });
 
   const sunkTitles: string[] = [];
-  cellsBySection.forEach((_cells, sectionId) => {
-    const wasSunk = isSunk(sectionId, cellsBySection, prev.revealed);
-    const nowSunk = isSunk(sectionId, cellsBySection, nextRevealed);
+  cellsByNote.forEach((_cells, noteId) => {
+    const wasSunk = isSunk(noteId, cellsByNote, prev.revealed);
+    const nowSunk = isSunk(noteId, cellsByNote, nextRevealed);
     if (!wasSunk && nowSunk) {
-      const section = SECTIONS.find((s) => s.id === sectionId);
-      if (section) {
-        sunkTitles.push(section.title);
+      const note = NOTES.find((n) => n.id === noteId);
+      if (note) {
+        sunkTitles.push(note.title);
       }
     }
   });
@@ -275,7 +281,7 @@ function fireArtilleryBurst(
 }
 
 export function useBattleship(): BattleshipState {
-  const [{ shipsByCoordinate, cellsBySection }] = useState(() => buildLookups(placeShips()));
+  const [{ shipsByCoordinate, cellsByNote }] = useState(() => buildLookups(placeShips()));
   const [game, setGame] = useState<GameState>(() => ({
     revealed: new Map(),
     lastResult: null,
@@ -283,15 +289,21 @@ export function useBattleship(): BattleshipState {
     artilleryArmed: false,
   }));
 
-  const unlockedSectionIds = useMemo((): ReadonlySet<string> => {
+  const revealedNoteIds = useMemo((): ReadonlySet<string> => {
     const ids = new Set<string>();
-    cellsBySection.forEach((_cells, sectionId) => {
-      if (isSunk(sectionId, cellsBySection, game.revealed)) {
-        ids.add(sectionId);
+    cellsByNote.forEach((_cells, noteId) => {
+      if (isSunk(noteId, cellsByNote, game.revealed)) {
+        ids.add(noteId);
       }
     });
     return ids;
-  }, [game.revealed, cellsBySection]);
+  }, [game.revealed, cellsByNote]);
+
+  const hitsCount = useMemo(
+    (): number =>
+      Array.from(game.revealed.values()).filter((status) => status === 'hit').length,
+    [game.revealed],
+  );
 
   const cellStatus = (coordinate: Coordinate): CellStatus =>
     game.revealed.get(coordinate) ?? 'unknown';
@@ -302,9 +314,9 @@ export function useBattleship(): BattleshipState {
     // wcześniejsze trafienia/uzbrojenie zamiast je poprawnie kumulować.
     setGame((prev) => {
       if (prev.artilleryArmed) {
-        return fireArtilleryBurst(coordinate, prev, shipsByCoordinate, cellsBySection);
+        return fireArtilleryBurst(coordinate, prev, shipsByCoordinate, cellsByNote);
       }
-      return fireSingleCell(coordinate, prev, shipsByCoordinate, cellsBySection);
+      return fireSingleCell(coordinate, prev, shipsByCoordinate, cellsByNote);
     });
   };
 
@@ -319,7 +331,8 @@ export function useBattleship(): BattleshipState {
 
   return {
     cellStatus,
-    unlockedSectionIds,
+    revealedNoteIds,
+    hitsCount,
     fireAt,
     lastResult: game.lastResult,
     artilleryCharges: game.artilleryCharges,

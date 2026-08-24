@@ -1,11 +1,7 @@
-import { useMemo, useState } from 'react';
-import { Board } from './Board';
 import { ProjectCard } from './ProjectCard';
 import { SectionDetail } from './SectionDetail';
 import type { NavTarget, Section } from './sections';
 import { SECTIONS } from './sections';
-import { useBattleship } from './use-battleship';
-import { useStickyBoard } from './use-sticky-board';
 import './Toc.css';
 
 interface TocProps {
@@ -14,70 +10,7 @@ interface TocProps {
   onOpenSectionChange: (id: string | null) => void;
 }
 
-function buildStatusMessage(
-  lastResult: ReturnType<typeof useBattleship>['lastResult'],
-): string {
-  if (!lastResult) {
-    return '';
-  }
-  if (lastResult.burst) {
-    const { size, hits, misses, sunkTitles } = lastResult.burst;
-    const base = `(Art)yleria: sprawdzono ${size} pól — ${hits} trafień, ${misses} pudeł.`;
-    return sunkTitles.length > 0 ? `${base} Zatopiono: ${sunkTitles.join(', ')}.` : base;
-  }
-  if (!lastResult.hit) {
-    return `Pudło (${lastResult.coordinate}).`;
-  }
-  if (lastResult.sunk) {
-    return `Zatopiony! Odblokowano: ${lastResult.sectionTitle}.`;
-  }
-  return `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`;
-}
-
 export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocProps) {
-  const {
-    cellStatus,
-    unlockedSectionIds,
-    fireAt,
-    lastResult,
-    artilleryCharges,
-    artilleryArmed,
-    toggleArtillery,
-  } = useBattleship();
-  const [skipped, setSkipped] = useState(false);
-  // Niezależny od `skipped` — jedyny sposób wejścia w ten stan to skip (skip ustawia oba naraz),
-  // ale odtąd przełącza się osobno w obie strony (patrz przycisk w .toc__intro niżej).
-  const [boardCollapsed, setBoardCollapsed] = useState(false);
-  // enabled: false podczas zwijania — .toc__board-col ma wtedy width:0/opacity:0, więc
-  // przeliczanie fixed/left/width z realnych (chwilowo bezsensownych) wymiarów tylko marnowałoby
-  // pracę, patrz use-sticky-board.ts.
-  const { containerRef, stickyRef, mode: boardStickyMode, style: boardStickyStyle } =
-    useStickyBoard(!boardCollapsed);
-
-  const effectiveUnlocked = useMemo((): ReadonlySet<string> => {
-    if (skipped) {
-      return new Set(SECTIONS.map((section) => section.id));
-    }
-    return unlockedSectionIds;
-  }, [skipped, unlockedSectionIds]);
-
-  const statusMessage = buildStatusMessage(lastResult);
-
-  const handleActionClick = (): void => {
-    if (!skipped) {
-      setSkipped(true);
-      setBoardCollapsed(true);
-      return;
-    }
-    setBoardCollapsed((prev) => !prev);
-  };
-
-  const actionLabel = !skipped
-    ? 'Przejdź od razu do treści →'
-    : boardCollapsed
-      ? 'Otwórz grę w statki →'
-      : 'Schowaj planszę ↑';
-
   const detailOpen = openSection !== null;
 
   return (
@@ -87,82 +20,24 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
         aria-hidden={detailOpen}
       >
         <div className="toc__view-panel-inner">
-          <div className="toc__intro">
-            <div>
-              <h2 id="toc-heading" className="toc__heading">
-                {skipped ? 'Spis treści' : 'Spis treści — zatop statek, żeby odkryć'}
-              </h2>
-              <p
-                className={`toc__subheading ${!skipped || boardCollapsed ? 'toc__subheading--hidden' : ''}`}
-              >
-                Wszystko już odblokowane — i tak możesz zagrać w statki, jeśli chcesz.
-              </p>
-            </div>
-            <button type="button" className="link-dashed" onClick={handleActionClick}>
-              {actionLabel}
-            </button>
-          </div>
+          <h2 id="toc-heading" className="toc__heading">
+            Więcej
+          </h2>
 
-          <div className={`toc__layout ${boardCollapsed ? 'toc__layout--collapsed' : ''}`}>
-            <div className="toc__board-col" ref={containerRef}>
-              {/* CSS position:sticky nie działa tu — patrz use-sticky-board.ts (overflow:hidden
-                  wymagany gdzie indziej w drzewie, nie do usunięcia). JS-owy odpowiednik:
-                  position:fixed z przeliczanymi top/left/width (mode==='fixed'), przypięcie do
-                  dołu kontenera po doscrollowaniu do końca (mode==='bottom'), albo zwykły
-                  przepływ (mode==='static').
-                  Inline style tutaj — świadomy wyjątek od "brak inline styles"
-                  (PORTFOLIO_PLAN.md, dobre praktyki): top/left/width są tu wartościami
-                  przeliczanymi w locie z realnej pozycji scrolla, nie stałą decyzją projektową,
-                  której miejsce byłoby w arkuszu stylów. Klasa .toc__board-sticky--bottom
-                  (statyczna, w CSS) obsługuje drugi z trzech stanów bez inline style'a — tylko
-                  "fixed" naprawdę potrzebuje wartości, których nie da się z góry zapisać jako
-                  klasę. */}
-              <div
-                className={`toc__board-sticky ${boardStickyMode === 'bottom' ? 'toc__board-sticky--bottom' : ''}`}
-                ref={stickyRef}
-                style={boardStickyMode === 'fixed' ? boardStickyStyle : undefined}
-              >
-                <Board cellStatus={cellStatus} onFire={fireAt} artilleryArmed={artilleryArmed} />
-
-                <div className="toc__artillery">
-                  <button
-                    type="button"
-                    className={`toc__artillery-btn ${artilleryArmed ? 'toc__artillery-btn--armed' : ''}`}
-                    onClick={toggleArtillery}
-                    disabled={artilleryCharges <= 0}
-                  >
-                    🎯 (Art)yleria ({artilleryCharges})
-                  </button>
-                  <p className="toc__artillery-hint">
-                    {artilleryArmed
-                      ? 'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.'
-                      : 'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.'}
-                  </p>
-                </div>
-
-                <p className="toc__status" role="status" aria-live="polite">
-                  {statusMessage}
-                </p>
-              </div>
-            </div>
-            <div className="toc__cards-wrap">
-              <div className="toc__cards">
-                {/* navGroup === 'projects' (tour-guide/insider/serwisant/portfolio-shell) teraz
-                    renderowane przez <ProjectIndex> (App.tsx, etap 2 redesignu "Atrament") —
-                    zawsze widoczne, nie bramkowane przez statki. Reszta (about/skills/contact)
-                    zostaje tu, na starym pinboardzie Workbencha, dopóki nie dostanie własnego
-                    etapu (patrz PORTFOLIO_PLAN.md, plan wdrożenia). */}
-                {SECTIONS.filter((section) => section.navGroup !== 'projects').map((section) => (
-                  <ProjectCard
-                    key={section.id}
-                    section={section}
-                    locked={!effectiveUnlocked.has(section.id)}
-                    highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
-                    onOpenDetail={onOpenSectionChange}
-                  />
-                ))}
-              </div>
-            </div>
+          <div className="toc__cards">
+            {/* navGroup === 'projects' (tour-guide/insider/serwisant/portfolio-shell) renderowane
+                przez <ProjectIndex> (App.tsx, etap 2 redesignu "Atrament") — zostaje tu tylko
+                reszta (about/skills/contact), dopóki nie dostanie własnego etapu (patrz
+                PORTFOLIO_PLAN.md, plan wdrożenia). Statki przestały bramkować treść (etap 4) —
+                wszystko poniżej jest zawsze odblokowane, patrz BattleshipDrawer dla samej gry. */}
+            {SECTIONS.filter((section) => section.navGroup !== 'projects').map((section) => (
+              <ProjectCard
+                key={section.id}
+                section={section}
+                highlighted={activeNavTarget !== null && section.navGroup === activeNavTarget}
+                onOpenDetail={onOpenSectionChange}
+              />
+            ))}
           </div>
         </div>
       </div>

@@ -6,7 +6,6 @@ import './ProjectCard.css';
 
 interface ProjectCardProps {
   section: Section;
-  locked: boolean;
   highlighted: boolean;
   onOpenDetail: (id: string) => void;
 }
@@ -22,25 +21,20 @@ const TOUR_GUIDE_SECTION_ID = 'tour-guide';
 const INSIDER_SECTION_ID = 'insider';
 const CONTACT_SECTION_ID = 'contact';
 
-function maskText(text: string): string {
-  return text.replace(/[^\s—-]/g, '•');
-}
-
-export function ProjectCard({
-  section,
-  locked,
-  highlighted,
-  onOpenDetail,
-}: ProjectCardProps) {
+export function ProjectCard({ section, highlighted, onOpenDetail }: ProjectCardProps) {
   const coverPhoto = section.coverPhoto;
-  const showInProgressStamp = !locked && section.inProgress;
+  const showInProgressStamp = section.inProgress;
 
+  // "locked"/"Zablokowane" usunięte (etap 4 redesignu "Atrament") — statki przestały bramkować
+  // treść, więc ta karta jest zawsze w stanie dawniej zwanym "unlocked". Klasy `spec-plate--
+  // unlocked`/`plate-emphasized` zostają bezwarunkowo, żeby nie przepisywać całego
+  // ProjectCard.css tylko dlatego, że jedna z dwóch gałęzi przestała istnieć.
   const cardClassName = [
     'spec-plate',
-    locked ? 'spec-plate--locked' : 'spec-plate--unlocked plate-emphasized',
+    'spec-plate--unlocked plate-emphasized',
     highlighted && 'spec-plate--nav-highlighted',
     showInProgressStamp && 'spec-plate--in-progress',
-    !locked && coverPhoto && 'spec-plate--has-cover',
+    coverPhoto && 'spec-plate--has-cover',
   ]
     .filter(Boolean)
     .join(' ');
@@ -53,28 +47,21 @@ export function ProjectCard({
       <div className="spec-plate__rows">
         <div className="spec-plate__row">
           <span className="spec-plate__label">Sekcja</span>
-          <span className="spec-plate__value">
-            {locked ? maskText(section.title) : section.title}
-          </span>
+          <span className="spec-plate__value">{section.title}</span>
         </div>
         <div className="spec-plate__row">
           <span className="spec-plate__label">Status</span>
           <span
             className={`spec-plate__badge ${
-              locked
-                ? 'spec-plate__badge--locked'
-                : showInProgressStamp
-                  ? 'spec-plate__badge--in-progress'
-                  : 'spec-plate__badge--unlocked'
+              showInProgressStamp ? 'spec-plate__badge--in-progress' : 'spec-plate__badge--unlocked'
             }`}
           >
-            {locked ? 'Zablokowane' : showInProgressStamp ? 'W budowie' : 'Odblokowane'}
+            {showInProgressStamp ? 'W budowie' : 'Odblokowane'}
           </span>
         </div>
       </div>
-      {!locked && (
-        <>
-          {coverPhoto &&
+      <>
+        {coverPhoto &&
             section.id !== INSIDER_SECTION_ID &&
             section.id !== TOUR_GUIDE_SECTION_ID && (
               <div className="spec-plate__cover-photo-frame">
@@ -154,8 +141,7 @@ export function ProjectCard({
                 Zobacz →
               </button>
             )}
-        </>
-      )}
+      </>
     </div>
   );
 }

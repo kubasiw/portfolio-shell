@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import heroPhoto from './assets/about/night_drive.webp';
 import './App.css';
+import { BattleshipDrawer } from './features/battleship-drawer/BattleshipDrawer';
 import { MicrofrontendBand } from './features/microfrontend-band/MicrofrontendBand';
 import { ProjectIndex } from './features/project-index/ProjectIndex';
 import { StatsBar } from './features/project-index/StatsBar';
@@ -212,7 +213,7 @@ function App() {
               <a className="hero__cta-primary" href="#projekty">
                 Zobacz projekty →
               </a>
-              <a className="hero__cta-secondary" href="#kontakt">
+              <a className="btn-outline" href="#kontakt">
                 Napisz do mnie
               </a>
             </div>
@@ -228,6 +229,7 @@ function App() {
       <StatsBar />
       <ProjectIndex onOpenDetail={handleSectionChange} />
       <MicrofrontendBand />
+      <BattleshipDrawer />
 
       <div className="landing__content">
         <Toc

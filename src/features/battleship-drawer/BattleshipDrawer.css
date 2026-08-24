@@ -1,0 +1,305 @@
+/*
+ * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co .masthead/.hero/
+ * .stats-bar/.project-index/.microfrontend-band.
+ */
+.battleship-drawer {
+  background: var(--md-ink);
+  border-bottom: 2px solid var(--md-rule);
+}
+
+.battleship-drawer__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.battleship-drawer__intro {
+  padding: 38px 44px;
+}
+
+.battleship-drawer__kicker {
+  display: block;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--md-text-62);
+  margin-bottom: 16px;
+}
+
+.battleship-drawer__title {
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--md-paper);
+  margin: 0 0 18px;
+}
+
+.battleship-drawer__body {
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 56ch;
+  color: var(--md-text-80);
+  margin: 0 0 24px;
+}
+
+.battleship-drawer__stats {
+  padding: 38px 44px;
+  border-left: 2px solid var(--md-rule);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.battleship-drawer__stat {
+  margin: 0;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: right;
+  line-height: 2;
+  color: var(--md-text-80);
+}
+
+.battleship-drawer__stat-value {
+  color: var(--md-accent-hover);
+  font-weight: 500;
+}
+
+/* grid-template-rows: 0fr↔1fr — ta sama technika co Toc.css (.toc__view-panel), z handoffu wprost
+   jako "do reużycia, nie do wymyślania od nowa" (inny czas przejścia: 380ms, z handoffu). */
+.battleship-drawer__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.battleship-drawer__panel--open {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .battleship-drawer__panel {
+    transition: grid-template-rows 380ms ease;
+  }
+}
+
+.battleship-drawer__panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.battleship-drawer__content {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 26px 44px 34px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  border-top: 2px solid var(--md-rule-soft);
+}
+
+.battleship-drawer__board-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.battleship-drawer__artillery {
+  margin-top: 12px;
+}
+
+.battleship-drawer__artillery-btn {
+  display: inline-block;
+  border: 2px solid var(--md-accent-hover);
+  background: none;
+  color: var(--md-accent-hover);
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.battleship-drawer__artillery-btn:disabled {
+  border-color: var(--md-text-62);
+  color: var(--md-text-62);
+  cursor: default;
+}
+
+.battleship-drawer__artillery-btn--armed {
+  background: var(--md-accent-hover);
+  color: var(--md-ink);
+}
+
+.battleship-drawer__artillery-hint {
+  margin: 6px 0 0;
+  max-width: 32ch;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--md-text-62);
+}
+
+.battleship-drawer__status {
+  min-height: 1.4em;
+  margin: 16px 0 0;
+  font-family: var(--md-font-mono);
+  font-size: 12px;
+  color: var(--md-text-62);
+  overflow-wrap: anywhere;
+}
+
+.battleship-drawer__notes {
+  flex: 1 1 260px;
+  min-width: 260px;
+  font-family: var(--md-font-mono);
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--md-text-80);
+}
+
+.battleship-drawer__notes-empty {
+  margin: 0;
+  color: var(--md-text-62);
+}
+
+.battleship-drawer__note + .battleship-drawer__note {
+  margin-top: 20px;
+}
+
+.battleship-drawer__note-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--md-accent-hover);
+}
+
+.battleship-drawer__note-body {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .battleship-drawer__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .battleship-drawer__stats {
+    border-left: none;
+    border-top: 2px solid var(--md-rule);
+    align-items: flex-start;
+  }
+
+  .battleship-drawer__stat {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .battleship-drawer__intro,
+  .battleship-drawer__stats {
+    padding: 24px 16px;
+  }
+
+  .battleship-drawer__content {
+    padding: 20px 16px 24px;
+  }
+}
+
+/*
+ * Board.tsx/Board.css to jeszcze niezmigrowany komponent Workbencha (kwadratowe->okrągłe komórki,
+ * kraftowe kolory) — reużyty tu bez zmian w samym pliku (ten sam mechanizm gry), ale odświeżony
+ * wizualnie WYŁĄCZNIE w tym kontekście przez selektory potomkowe o wyższej specyficzności (2 klasy
+ * tutaj vs. 1 klasa w Board.css) — ten sam, już ustalony w tym repo sposób nadpisywania Leaflet/
+ * Board bez dotykania współdzielonego pliku źródłowego. Kolor/kształt (kwadraty, border-radius:0,
+ * zerwanie z "otworami" Workbencha) bezwarunkowo, na każdej szerokości.
+ *
+ * Rozmiar 34×34 z handoffu NIE jest bezwarunkowy, mimo że tak zapisano w README — realny bug
+ * złapany na żywo (2026-08-24): stały 34px×10 kolumn + gap + nagłówek to ~408px, szerzej niż
+ * viewport 375px, więc bezwarunkowe 34px łamało "zero poziomego przewijania na 375px" (ten sam
+ * wymóg, który sam handoff osobno wymienia w sekcji "Responsive behavior"). Board.css ma już
+ * gotowe, sprawdzone rozwiązanie tego dokładnego problemu — płynne komórki (1fr + aspect-ratio)
+ * poniżej 900px, stałe px od 900px wzwyż — więc 34×34 nadpisane TYLKO w tym samym progu 900px, nie
+ * bezwarunkowo; poniżej 900px dziedziczy płynną siatkę Board.css bez zmian (tylko kolor/kształt z
+ * reguł wyżej).
+ */
+.battleship-drawer .board {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.battleship-drawer .board__col-header,
+.battleship-drawer .board__row-header {
+  font-family: var(--md-font-mono);
+  color: var(--md-text-62);
+}
+
+.battleship-drawer .board__col-header--active,
+.battleship-drawer .board__row-header--active {
+  color: var(--md-accent-hover);
+}
+
+.battleship-drawer .board__cell {
+  border-radius: 0;
+  border: 2px solid color-mix(in srgb, var(--md-paper) 28%, transparent);
+  background: transparent;
+  color: var(--md-paper);
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+@media (min-width: 900px) {
+  .battleship-drawer .board__grid {
+    grid-template-columns: 24px repeat(10, 34px);
+    gap: 4px;
+  }
+
+  .battleship-drawer .board__corner {
+    width: 24px;
+    height: 24px;
+  }
+
+  .battleship-drawer .board__row-header {
+    width: 24px;
+  }
+
+  .battleship-drawer .board__col-header {
+    height: 24px;
+  }
+
+  .battleship-drawer .board__cell {
+    aspect-ratio: auto;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.battleship-drawer .board__cell--unknown:hover {
+  border-color: var(--md-accent-hover);
+  transform: scale(1.12);
+}
+
+.battleship-drawer .board__cell--hit {
+  background: var(--md-accent);
+  border-color: var(--md-accent);
+}
+
+.battleship-drawer .board__cell--miss {
+  background: color-mix(in srgb, var(--md-paper) 16%, transparent);
+  border-color: color-mix(in srgb, var(--md-paper) 28%, transparent);
+}
+
+.battleship-drawer .board__cell--miss::after {
+  background: var(--md-text-62);
+}
+
+.battleship-drawer .board__cell--preview {
+  border-style: dashed;
+  border-color: var(--md-accent-hover);
+  background: color-mix(in srgb, var(--md-accent-hover) 18%, transparent);
+}

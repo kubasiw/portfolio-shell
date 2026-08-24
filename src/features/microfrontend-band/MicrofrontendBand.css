@@ -51,29 +51,8 @@
   margin: 0 0 24px;
 }
 
-.microfrontend-band__cta {
-  display: inline-block;
-  font-family: var(--md-font-display);
-  font-weight: 800;
-  font-size: 14px;
-  color: var(--md-paper);
-  text-decoration: none;
-  border: 2px solid color-mix(in srgb, var(--md-paper) 55%, transparent);
-  padding: 11px 16px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .microfrontend-band__cta {
-    transition:
-      background 160ms ease,
-      color 160ms ease;
-  }
-}
-
-.microfrontend-band__cta:hover {
-  background: var(--md-paper);
-  color: var(--md-ink);
-}
+/* .microfrontend-band__cta -> .btn-outline (index.css), wydzielone przy 3. wystąpieniu tego
+   samego wyglądu (hero secondary CTA, ten band, szuflada statków). */
 
 /*
  * min-height:320px + lewa linia 2px + isolation:isolate — z handoffu, ale isolation w

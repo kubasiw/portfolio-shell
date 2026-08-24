@@ -11,7 +11,10 @@
  * nieznana z góry (placeholder dziś, docelowo np. galeria zdjęć w "O mnie"), a `0fr`/`1fr`
  * poprawnie animuje do/z prawdziwej, naturalnej wysokości niezależnie od tego, ile jej finalnie
  * będzie. Oba panele (spis treści, widok szczegółowy) zawsze zostają zamontowane — nic się nie
- * odmontowuje przy przełączeniu, więc stan planszy/gry pod spodem przetrwa powrót.
+ * odmontowuje przy przełączeniu.
+ *
+ * Ta sama technika ponownie użyta w BattleshipDrawer.css (szuflada statków, etap 4 redesignu
+ * "Atrament") — nie do wymyślania od nowa tam, patrz handoff.
  */
 .toc__view-panel {
   display: grid;
@@ -38,12 +41,12 @@
 /*
  * padding + ujemny margin (lewo/prawo/dół) — bufor, żeby stamp/outline kart wychodzące poza
  * własną kartę (spec-plate__stamp, spec-plate--nav-highlighted) nie były ucinane przez to
- * overflow:hidden, kiedy karta stoi tuż przy krawędzi panelu (skrajna kolumna/wiersz siatki,
- * szczególnie po zwinięciu planszy do width:0). Góra celowo pominięta — tam nic nie wychodzi.
- * Tylko na otwartym panelu (`--open`) — realny bug złapany na żywo: bezwarunkowy padding-bottom
- * dawał zwiniętemu (0fr) panelowi prawdziwą wysokość 24px zamiast 0, więc "ogon" collapsed
- * spisu treści zachodził na górę widoku szczegółowego pod spodem, kradnąc kliknięcie przyciskowi
- * "Wróć do spisu treści" (właściciel zgłosił: klikalny tylko wąski poziomy pasek tekstu).
+ * overflow:hidden, kiedy karta stoi tuż przy krawędzi panelu. Góra celowo pominięta — tam nic nie
+ * wychodzi. Tylko na otwartym panelu (`--open`) — realny bug złapany na żywo: bezwarunkowy
+ * padding-bottom dawał zwiniętemu (0fr) panelowi prawdziwą wysokość 24px zamiast 0, więc "ogon"
+ * collapsed spisu treści zachodził na górę widoku szczegółowego pod spodem, kradnąc kliknięcie
+ * przyciskowi "Wróć do spisu treści" (właściciel zgłosił: klikalny tylko wąski poziomy pasek
+ * tekstu).
  */
 .toc__view-panel--open .toc__view-panel-inner {
   padding: 0 24px 24px;
@@ -59,247 +62,40 @@
   }
 }
 
-.toc__intro {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 32px 0 24px;
-}
-
 .toc__heading {
   font-family: var(--wb-font-display);
   font-weight: 700;
   font-size: 20px;
-  margin: 0;
-}
-
-.toc__subheading {
-  font-family: var(--wb-font-sans);
-  font-size: 13px;
-  color: var(--wb-ink-secondary);
-  margin: 4px 0 0;
-  max-height: 40px;
-  opacity: 1;
-  overflow: hidden;
-}
-
-.toc__subheading--hidden {
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .toc__subheading {
-    transition: max-height 220ms ease, opacity 160ms ease, margin-top 220ms ease;
-  }
-}
-
-.toc__layout {
-  display: flex;
-  gap: 32px;
-  /*
-   * stretch (nie flex-start), 2026-08-14 — potrzebne, żeby .toc__board-col (patrz niżej) sięgał
-   * tej samej wysokości co .toc__cards-wrap, dając miejsce wewnętrznemu sticky wrapperowi
-   * (.toc__board-sticky) na "podążanie" za scrollem wzdłuż kafelków, zamiast być uwięzionym w
-   * wysokości samej planszy. Bez wpływu na wąski/stackowany układ (flex-wrap: każdy wiersz ma
-   * wtedy tylko jeden element, stretch nie ma czego rozciągać).
-   */
-  align-items: stretch;
-  flex-wrap: wrap;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .toc__layout {
-    transition: gap 280ms ease;
-  }
-}
-
-.toc__layout--collapsed {
-  gap: 0;
-}
-
-.toc__board-col {
-  display: flex;
-  flex-direction: column;
-  /* Kontekst pozycjonowania dla .toc__board-sticky--bottom (position:absolute; bottom:0) —
-     patrz use-sticky-board.ts. */
-  position: relative;
-  /*
-   * min-width: 0 — bez tego flex item domyślnie nie może się zmniejszyć poniżej min-content
-   * rozmiaru swojej zawartości. Jeśli .toc__status kiedykolwiek dostanie długi, niełamliwy ciąg
-   * znaków (bez spacji), ta kolumna urosłaby do pełnej szerokości tego tekstu, wypychając
-   * .toc__cards pod planszę — złapane realnie (2026-07-24), nie tylko teoretycznie.
-   */
-  min-width: 0;
-  /*
-   * Reżim wąski (plansza NAD kafelkami, patrz .toc__layout flex-wrap) — pełna szerokość
-   * (2026-08-14, realny feedback: "na rozdzielczości, w której gra jest nad kafelkami,
-   * moglibyśmy rozszerzyć grę na całą szerokość"). Board.css robi resztę — komórki płynne
-   * (1fr + aspect-ratio) w tym samym reżimie, więc realnie wypełniają tę pełną szerokość, nie
-   * tylko sam kontener wokół stałej, małej siatki.
-   */
-  width: 100%;
-  opacity: 1;
-  /*
-   * overflow:hidden NIE tutaj na stałe — tylko na czas animacji zwijania
-   * (.toc__layout--collapsed niżej), kiedy naprawdę trzeba przyciąć znikającą zawartość. (Nie
-   * jest już potrzebne dla CSS position:sticky, jak w poprzedniej wersji tego komentarza —
-   * sticky okazało się strukturalnie zablokowane gdzie indziej w drzewie i zastąpione JS-ową
-   * wersją, patrz use-sticky-board.ts. Ale zasada "overflow:hidden tylko kiedy faktycznie
-   * potrzebne" zostaje, to nadal dobry powód, żeby nie mieć go tu na stałe.)
-   */
-  overflow: visible;
+  margin: 0 0 24px;
+  padding-top: 32px;
 }
 
 /*
- * Reżim szeroki — plansza obok kafelków, ten sam próg 900px co Board.css (oba pliki muszą się
- * zgadzać). Stała szerokość (nie auto/content-based) — potrzebna, żeby móc animować do/z 0.
- * Rzeczywista szerokość planszy przy większych, stałych komórkach (Board.css) to 499px siatki +
- * 28px padding + 2px border = 529px + 8px bufora (bez niego `overflow: hidden`, potrzebny do tej
- * samej animacji zwijania, przycinał prawą krawędź hover-owego `transform: scale(1.15)` na
- * skrajnie prawej kolumnie planszy — realny bug złapany na żywo, nie teoretyczny) = 537px.
- *
- * Stosunek do .toc__cards-wrap (2026-08-14, realny feedback: "rozszerzyć trochę szerokość dla
- * gry a zwęzić dla kafelków, mniej więcej w stosunku 4 do 6 na 10") — przy pełnej szerokości
- * treści (.landing__content, max 1440px - 88px padding = 1352px) 537px to ~40%, zgodnie z
- * prośbą. Sama plansza zostaje przy tym stałym px (siatka ma stałe komórki, nie płynne, w tym
- * reżimie), więc stosunek jest dokładny w punkcie projektowym (1440px), nie idealnie
- * proporcjonalny na każdej pośredniej szerokości — świadomy kompromis, nie błąd.
+ * Statki przestały bramkować treść (etap 4 redesignu "Atrament") — nie ma już zwijanej/
+ * rozwijanej planszy obok tej siatki, więc zawsze wielokolumnowa (dawniej: tylko po zwinięciu
+ * planszy). 260px (nie 220px) — po poszerzeniu .landing 220px dawało 4 wąskie kolumny (nierówny
+ * podział 4+2 na kilka sekcji); 260px trzyma czytelne, węższe karty.
  */
-@media (min-width: 900px) {
-  .toc__board-col {
-    width: 537px;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .toc__board-col {
-    transition: width 280ms ease, opacity 200ms ease;
-  }
-}
-
-.toc__layout--collapsed .toc__board-col {
-  width: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-/*
- * Podąża za scrollem wzdłuż kafelków (2026-08-14, realny feedback) — JS, nie CSS position:sticky
- * (patrz use-sticky-board.ts dla pełnego uzasadnienia: sticky jest tu strukturalnie zablokowane
- * przez overflow:hidden gdzie indziej w drzewie, wymagany przez istniejący mechanizm przełącznika
- * spis-treści ↔ widok szczegółowy, nie do usunięcia). Trzy stany, sterowane przez React (klasa
- * --bottom + inline style position:fixed dodawane warunkowo w Toc.tsx):
- * - statyczny (domyślny, brak dodatkowych reguł tutaj) — jeszcze nie doscrollowano do progu.
- * - fixed — inline style z JS (top/left/width przeliczane na bieżąco), nie CSS.
- * - --bottom — doscrollowano do końca (wyższej) kolumny kafelków, przypięte do dołu kontenera
- *   zamiast wystawać poza niego przy sztywnym top.
- */
-.toc__board-sticky--bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-}
-
-.toc__cards-wrap {
-  flex: 1 1 260px;
-  min-width: 260px;
-}
-
 .toc__cards {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
-  /* start, nie stretch (domyślne dla grida) — karta z mapą (tour-guide) ma naturalnie dużo
-     większą wysokość niż reszta; bez tego cały jej wiersz rozciągał się do jej wysokości. */
+  /* start, nie stretch (domyślne dla grida) — karta "w budowie"/ze zdjęciem obok krótszej mogłaby
+     inaczej rozciągać się do wysokości sąsiada. */
   align-items: start;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .toc__cards {
-    transition: grid-template-columns 280ms ease;
-  }
-}
-
-.toc__layout--collapsed .toc__cards {
-  /* 260px (nie 220px) — po poszerzeniu .landing 220px dawało 4 wąskie kolumny (nierówny
-     podział 4+2 na 6 sekcji); 260px trzyma czytelne, węższe karty w 3 równych kolumnach. */
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-}
-
 /*
- * Karty "w budowie" (obok dużo wyższej karty, np. tour-guide z mapą) i karty ze zdjęciem
- * (about/skills/kontakt, różna długość opisu/ContactLinks) rozciągają się do wysokości wiersza
- * zamiast zostawiać pustą "dziurę" pod sobą — tylko przy zwiniętej planszy (rozwinięta: jedna
- * kolumna, każda karta sama w swoim wierszu, więc bez zmiany). Bez sztywnego capu wysokości —
- * na razie tylko tour-guide jest realnie wysoka, dodać limit dopiero gdy realnie zaboli.
+ * Karty "w budowie" i karty ze zdjęciem (about/skills/kontakt, różna długość opisu/ContactLinks)
+ * rozciągają się do wysokości wiersza zamiast zostawiać pustą "dziurę" pod sobą.
  */
-.toc__layout--collapsed .spec-plate--in-progress,
-.toc__layout--collapsed .spec-plate--has-cover {
+.spec-plate--in-progress,
+.spec-plate--has-cover {
   align-self: stretch;
 }
 
-.toc__layout--collapsed .spec-plate--in-progress .spec-plate__stamp {
+.spec-plate--in-progress .spec-plate__stamp {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-8deg);
-}
-
-.toc__artillery {
-  margin-top: 12px;
-}
-
-.toc__artillery-btn {
-  display: inline-block;
-  border: 1px solid var(--wb-accent-secondary);
-  background: none;
-  color: var(--wb-accent-secondary);
-  font-family: var(--wb-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-.toc__artillery-btn:disabled {
-  border-color: var(--wb-muted);
-  color: var(--wb-muted);
-  cursor: default;
-}
-
-.toc__artillery-btn--armed {
-  background: var(--wb-accent-secondary);
-  color: var(--wb-paper);
-}
-
-.toc__artillery-hint {
-  margin: 6px 0 0;
-  max-width: 32ch;
-  font-size: 12px;
-  line-height: 1.4;
-  color: var(--wb-ink-secondary);
-}
-
-.toc__status {
-  min-height: 1.4em;
-  margin: 16px 0 0;
-  font-family: var(--wb-font-mono);
-  font-size: 12px;
-  color: var(--wb-ink-secondary);
-  overflow-wrap: anywhere;
-  /*
-   * width:0 + min-width:100% — sprawdzony trik: przy liczeniu naturalnej (auto) szerokości
-   * .toc__board-col ten element "nie liczy się" (width:0), więc to Board (stały grid) dyktuje
-   * szerokość kolumny; dopiero po ustaleniu tej szerokości min-width:100% rozciąga go z powrotem
-   * na całą dostępną szerokość. Samo min-width:0 na .toc__board-col nie wystarczyło — flex-wrap
-   * w trybie multi-line decyduje o zawinięciu na bazie hipotetycznego (max-content) rozmiaru,
-   * zanim algorytm kurczenia w ogóle zadziała, więc kolumna i tak rosła do szerokości tekstu.
-   */
-  width: 0;
-  min-width: 100%;
 }

@@ -52,3 +52,34 @@ a {
   border-color: var(--wb-accent-primary);
   background: var(--wb-unlocked-bg);
 }
+
+/*
+ * Przycisk-obwódka na ciemnym tle (--md-ink) — ten sam wygląd, wydzielony tu przy 3. wystąpieniu
+ * (hero secondary CTA, band mikrofrontendu, szuflada statków), tak jak .link-dashed wyżej.
+ * `background: none; cursor: pointer;` — jawnie, bo klasa żyje zarówno na <a> jak i <button>.
+ */
+.btn-outline {
+  display: inline-block;
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+  border: 2px solid color-mix(in srgb, var(--md-paper) 55%, transparent);
+  color: var(--md-paper);
+  padding: 11px 16px;
+  background: none;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-outline {
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+}
+
+.btn-outline:hover {
+  background: var(--md-paper);
+  color: var(--md-ink);
+}

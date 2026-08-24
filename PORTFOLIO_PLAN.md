@@ -866,9 +866,57 @@ Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościo
    stronie" H3 i "Otwórz całą aplikację ↗" CTA są jedynym dosłownym tekstem w tej sekcji handoffu).
    Zweryfikowano żywo: prawdziwy shadow DOM z 6 kaflami mapy i 43 realnymi markerami POI (nie
    placeholder), zero przewijania w poziomie na 375px i 1280px, `tsc`/`lint`/`build` czyste.
-4. ⏳ Statki jako szuflada — zmiana modelu stanu (`skipped`/`boardCollapsed`/`useStickyBoard`
-   znikają, nowy `boardOpen` + `revealedNotes`); do decyzji przed tym etapem: ile notek "za
-   kulisami" realnie powstanie (handoff zakłada 6, treść nieustalona).
+4. ✅ **Statki jako szuflada** (2026-08-24) — nowy `src/features/battleship-drawer/`
+   (`BattleshipDrawer.tsx`), przeniesione tu bez zmiany logiki gry z `toc/`: `Board.tsx`/
+   `Board.css`/`use-battleship.ts` (`git mv` odpowiednika — fizyczne przeniesienie plików, ta
+   sama zawartość mechaniki). **Zmiana modelu stanu, dokładnie jak zaplanowano**: `skipped`/
+   `boardCollapsed`/`useStickyBoard` usunięte całkowicie (plik `use-sticky-board.ts` skasowany —
+   był potrzebny tylko, gdy plansza sąsiadowała ze scrollowalną kolumną kart; szuflada nie ma tego
+   problemu), nowy `open` (lokalny stan w `BattleshipDrawer`, domyślnie `false`) + statki celują
+   teraz w 6 **notek** (`notes.ts`), nie w `SECTIONS` — `unlockedSectionIds` → `revealedNoteIds`,
+   `sectionId`/`sectionTitle` → `noteId`/`noteTitle` w całym `use-battleship.ts`.
+   **Realny, cichy bug znaleziony i naprawiony przy okazji tego przepisania**: statki od zawsze
+   celowały 1:1 w `SECTIONS.length` (6, `SHIP_SIZES` ma dokładnie 6 rozmiarów) — etap 2 tego
+   samego redesignu dodał 7. sekcję (`portfolio-shell`, "Ten shell") do `SECTIONS`, więc jeden
+   losowy statek na grę dostawał `SHIP_SIZES[6] === undefined` → 0-komórkowy, nigdy niezatapialny
+   "statek", co realnie mogło trwale blokować losowo wybraną kartę (about/skills/kontakt) w starym
+   mechanizmie bramkowania. Nieujawnione wcześniej, bo te sekcje w danym momencie mogły akurat nie
+   trafić na wylosowany pechowy indeks — naprawione tym samym przepisaniem (statki celują w stałe
+   6 notek, niezależne od `SECTIONS.length`), nie osobną łatką.
+   **Treść notek "za kulisami" — nieustalona w handoffie (tylko liczba: 6), napisana wprost z
+   realnych, udokumentowanych incydentów** z tego i pozostałych projektów (CSP na tour-guide,
+   JS-owy sticky z tej samej sesji redesignu, bug z wysokością wiersza z etapu 2 wyżej, konwencja
+   "AI nigdy nie udaje faktu" z Insidera/Serwisanta, Shadow DOM + Leaflet CSS z osadzenia
+   tour-guide, Traefik+Compose na jednym VPS) — nie wymyślona treść generyczna, każda faktycznie
+   się wydarzyła i jest gdzieś już udokumentowana (`CLAUDE.md` odpowiednich repo).
+   **Board.css re-skinowany WYŁĄCZNIE przez selektory potomkowe** w nowym `BattleshipDrawer.css`
+   (`.battleship-drawer .board__cell`, 2 klasy — wyższa specyficzność niż 1-klasowe reguły
+   `Board.css`), sam plik `Board.css` nietknięty — ten sam, już ustalony w tym repo sposób
+   nadpisywania współdzielonego komponentu bez jego kopiowania. Kwadratowe komórki
+   (`border-radius:0`, zerwanie z okrągłymi "otworami" Workbencha) bezwarunkowo, na każdej
+   szerokości.
+   **Realny bug złapany żywą weryfikacją w przeglądarce (nie na oko)**: pierwsza wersja
+   zastosowała stały rozmiar komórki 34×34 z handoffu **bezwarunkowo** (bez media query) — na
+   375px `document.documentElement.scrollWidth` realnie wynosiło 409px zamiast 375px (dokładnie
+   ~34px nadwyżki, ten sam rząd wielkości co jedna komórka). `Board.css` ma już gotowe,
+   sprawdzone rozwiązanie tego dokładnego problemu (płynne komórki `1fr`+`aspect-ratio` poniżej
+   900px, stałe px od 900px wzwyż) — naprawione przez ograniczenie stałego rozmiaru 34×34 do tego
+   samego progu 900px zamiast bezwarunkowo, więc poniżej 900px dziedziczy płynną siatkę bez zmian.
+   **Drugi, niepowiązany realny bug znaleziony przy tej samej weryfikacji, też naprawiony**: sam
+   `.masthead` (z etapu 1, nie tego etapu) miał identyczny objaw na 375px — nazwa + 4 linki nawigacji
+   + PL/EN nie mieściły się w jednym wierszu bez zawijania. PL/EN jest już udokumentowane jako
+   "wyłącznie wizualne" (bez realnej funkcji) — pierwsze do ukrycia na wąskim ekranie
+   (`@media (max-width:480px) { .masthead__lang { display:none; } }`), zamiast skracać realną
+   nawigację.
+   **Wydzielony wspólny `.btn-outline`** (`index.css`) przy 3. wystąpieniu identycznego stylu
+   "przycisk-obwódka na ciemnym tle" (hero secondary CTA, band mikrofrontendu, teraz szuflada
+   statków) — ten sam "wydziel przy 3. wystąpieniu" precedens, co `.link-dashed`/`.plate-emphasized`
+   już w tym pliku.
+   Zweryfikowano żywo: pełny przebieg gry (100 kliknięć programowo, `TRAFIENIA: 16/16`,
+   `NOTKI ODKRYTE: 6/6`, wszystkie 6 notek renderuje się z realną treścią), kwadratowe komórki
+   34×34/`border-radius:0` na desktopie (`getComputedStyle`, nie tylko wizualnie), płynna siatka
+   poniżej 900px, zero przewijania w poziomie na 375px zarówno przy zwiniętej jak i otwartej
+   szufladzie, `tsc`/`lint`/`build` czyste.
 5. ⏳ "O mnie" (galeria pozioma) + Umiejętności (dwie kolumny).
 6. ⏳ Banner kontaktu + Stopka (stopka już zrobiona w etapie 1, ten punkt tylko dla porządku
    względem numeracji handoffu).

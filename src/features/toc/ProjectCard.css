@@ -92,19 +92,6 @@
 }
 
 /*
- * Kontrast zablokowane/odblokowane wzmocniony 2026-07-24 (realny feedback — "ciężko rozróżnić").
- * Sama różnica koloru tekstu nie wystarczała; teraz różni się też obwódka, grubość obwódki
- * i tło całej karty, nie tylko jedna linia w środku. W Workbench doszedł trzeci, semantyczny
- * sygnał: zablokowana karta leży płasko na stole (brak przechyłu, brak cienia, brak pinezki —
- * patrz .spec-plate--unlocked::before wyżej) — jeszcze nikt jej nie przypiął do tablicy.
- */
-.spec-plate--locked {
-  background: var(--wb-paper);
-  border-color: var(--wb-muted);
-  box-shadow: none;
-}
-
-/*
  * .plate-emphasized (index.css, shared with .skill-plate--core) sets its own
  * background/border-color for "ważna karta" — dla kart projektów w Workbenchu ten sygnał już
  * niosą pinezka + przechył + cień, więc nadpisane z powrotem na zwykłą kremową fiszkę
@@ -149,11 +136,6 @@
   text-align: right;
 }
 
-.spec-plate--locked .spec-plate__value {
-  color: var(--wb-muted);
-  letter-spacing: 0.04em;
-}
-
 .spec-plate--unlocked .spec-plate__value {
   color: var(--wb-ink);
 }
@@ -166,10 +148,6 @@
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.spec-plate__badge--locked {
-  color: var(--wb-muted);
 }
 
 .spec-plate__badge--unlocked {

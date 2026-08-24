@@ -160,6 +160,20 @@
 }
 
 /*
+ * Realny bug złapany na żywo podczas weryfikacji etapu 4 (szuflada statków) — nie jego wina,
+ * ale znaleziony przy tej samej okazji: nazwa + 4 linki nawigacji + PL/EN nie mieszczą się w
+ * jednym wierszu (bez wrap/shrink) poniżej ~480px, co łamało "zero poziomego przewijania na
+ * 375px" (document.documentElement.scrollWidth realnie 408px zamiast 375px). PL/EN jest już
+ * udokumentowane jako "wyłącznie wizualne" (patrz komentarz w App.tsx) — bez realnej funkcji,
+ * więc pierwsze do poświęcenia na wąskim ekranie, zamiast np. skracać realną nawigację.
+ */
+@media (max-width: 480px) {
+  .masthead__lang {
+    display: none;
+  }
+}
+
+/*
  * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co .masthead/
  * .site-footer — .hero__inner niżej niesie faktyczną max-width:1440px treść.
  */
@@ -237,16 +251,14 @@
   flex-wrap: wrap;
 }
 
-.hero__cta-primary,
-.hero__cta-secondary {
+/* .hero__cta-secondary -> .btn-outline (index.css), wydzielone przy 3. wystąpieniu tego samego
+   wyglądu (patrz komentarz przy .btn-outline). */
+.hero__cta-primary {
   display: inline-block;
   font-family: var(--md-font-display);
   font-weight: 800;
   font-size: 14px;
   text-decoration: none;
-}
-
-.hero__cta-primary {
   background: var(--md-accent);
   color: var(--md-paper);
   padding: 13px 18px;
@@ -263,25 +275,6 @@
 .hero__cta-primary:hover {
   background: var(--md-accent-hover);
   transform: translateY(-2px);
-}
-
-.hero__cta-secondary {
-  border: 2px solid color-mix(in srgb, var(--md-paper) 55%, transparent);
-  color: var(--md-paper);
-  padding: 11px 16px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero__cta-secondary {
-    transition:
-      background 160ms ease,
-      color 160ms ease;
-  }
-}
-
-.hero__cta-secondary:hover {
-  background: var(--md-paper);
-  color: var(--md-ink);
 }
 
 .hero__photo {

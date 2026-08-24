@@ -40,7 +40,7 @@ export function Board({ cellStatus, onFire, artilleryArmed }: BoardProps) {
     <div
       className={`board ${artilleryArmed ? 'board--armed' : ''}`}
       role="group"
-      aria-label="Plansza w statki — kliknij pole, aby odkryć sekcję portfolio"
+      aria-label="Plansza w statki — kliknij pole, aby odkryć notkę „za kulisami”"
     >
       <div className="board__grid">
         <div className="board__corner" aria-hidden="true" />

@@ -16,7 +16,7 @@ export function MicrofrontendBand() {
             prawdziwe dane POI i renderuje żywą mapę Leaflet tuż tutaj, na tej stronie.
           </p>
           <a
-            className="microfrontend-band__cta"
+            className="btn-outline"
             href="https://tourguide.kubsiw.com"
             target="_blank"
             rel="noreferrer"
