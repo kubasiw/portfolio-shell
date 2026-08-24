@@ -1,0 +1,208 @@
+/*
+ * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co .masthead/.hero/
+ * .stats-bar w App.css/StatsBar.css.
+ */
+.project-index {
+  background: var(--md-ink);
+}
+
+.project-index__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 34px 44px 18px;
+  border-bottom: 2px solid var(--md-rule);
+}
+
+.project-index__heading {
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 32px;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--md-paper);
+  margin: 0;
+}
+
+.project-index__count {
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--md-text-62);
+}
+
+.project-index__rows {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/*
+ * Cały wiersz jako <button> (klikalne wiersze) reset do wyglądu zwykłego bloku — grid layout,
+ * pełna szerokość, bez domyślnej stylistyki przeglądarki (ta sama technika resetu co
+ * .masthead__nav button w App.css). Nazwane obszary, nie gołe kolumny — ułatwia reflow na wąskich
+ * ekranach niżej (ta sama liczba kolumn inaczej rozłożona, bez przepisywania każdego dziecka
+ * osobno).
+ */
+.index-row,
+.index-row--static {
+  display: grid;
+  grid-template-columns: minmax(0, 150px) minmax(0, 1fr) minmax(0, 320px) minmax(0, 170px);
+  grid-template-areas: 'num title note photo';
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--md-rule);
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+.index-row {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .index-row {
+    transition: background 200ms ease;
+  }
+}
+
+.index-row:hover {
+  background: var(--md-accent);
+}
+
+.index-row__number {
+  grid-area: num;
+  font-family: var(--md-font-mono);
+  font-size: 12px;
+  opacity: 0.62;
+  padding: 26px 24px 26px 44px;
+  align-self: start;
+}
+
+.index-row__title-block {
+  grid-area: title;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 0 26px;
+  min-width: 0;
+}
+
+.index-row__title {
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.index-row__stack {
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.68;
+}
+
+.index-row__note {
+  grid-area: note;
+  font-size: 13px;
+  line-height: 1.55;
+  opacity: 0.85;
+  padding: 26px 24px;
+  align-self: start;
+}
+
+.index-row__photo-frame {
+  grid-area: photo;
+  position: relative;
+  border-left: 2px solid var(--md-rule-soft);
+  overflow: hidden;
+  min-height: 140px;
+}
+
+/*
+ * position:absolute, nie width/height:100% — realny bug złapany na żywo: `height:100%` na <img>
+ * wewnątrz grid itema, którego wysokość dopiero się liczy (auto, zależna od zawartości innych
+ * kolumn wiersza), rozwiązuje się jako 'auto', czyli img renderuje się w SWOIM naturalnym
+ * proporcjach skalowanych do szerokości — insider_preview.webp jest portretowy (430×752), więc
+ * przy szerokości kolumny 168px dawało to ~294px wysokości i CIĄGNĘŁO cały wiersz do tej
+ * wysokości (potwierdzone bezpośrednim pomiarem: 294.6px policzone z proporcji zgadza się z
+ * realnie zmierzonymi 294.5px). position:absolute odrywa <img> od przepływu (rozmiar liczony
+ * względem już ustalonego, definitywnego boxa .index-row__photo-frame — nie cyklicznie zależnego
+ * od samego siebie), więc object-fit:cover faktycznie kadruje do wysokości wiersza wyznaczonej
+ * przez pozostałe kolumny, zamiast ją naciągać.
+ */
+.index-row__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.08);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .index-row__photo {
+    transition: transform 400ms ease;
+  }
+}
+
+.index-row:hover .index-row__photo {
+  transform: scale(1.06);
+}
+
+.index-row__status {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  font-family: var(--md-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--md-paper);
+  background: var(--md-ink);
+  padding: 3px 7px;
+}
+
+@media (max-width: 900px) {
+  .index-row,
+  .index-row--static {
+    grid-template-columns: minmax(0, 56px) minmax(0, 1fr) minmax(0, 120px);
+    grid-template-areas:
+      'num title photo'
+      'note note photo';
+  }
+
+  .index-row__number {
+    padding: 20px 12px 8px 16px;
+  }
+
+  .index-row__title-block {
+    padding: 20px 8px 8px 0;
+  }
+
+  .index-row__note {
+    padding: 0 16px 20px 0;
+  }
+
+  .index-row__photo {
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-index__header {
+    padding: 26px 16px 16px;
+  }
+
+  .index-row__number {
+    padding-left: 16px;
+  }
+}

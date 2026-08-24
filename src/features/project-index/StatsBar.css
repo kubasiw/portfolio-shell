@@ -1,0 +1,53 @@
+/*
+ * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co .masthead/.hero/
+ * .site-footer w App.css — .stats-bar__inner niesie faktyczną max-width:1440px treść.
+ */
+.stats-bar {
+  background: var(--md-ink);
+  border-bottom: 2px solid var(--md-rule);
+}
+
+.stats-bar__inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.stats-bar__cell {
+  border-left: 2px solid var(--md-rule-soft);
+  padding: 26px 24px 24px 44px;
+}
+
+.stats-bar__number {
+  display: block;
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 54px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--md-paper);
+}
+
+.stats-bar__label {
+  display: block;
+  font-family: var(--md-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--md-text-62);
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .stats-bar__inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-bar__cell {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

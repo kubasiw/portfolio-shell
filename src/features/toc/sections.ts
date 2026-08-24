@@ -93,6 +93,17 @@ export const SECTIONS: Section[] = [
     },
   },
   {
+    id: 'portfolio-shell',
+    title: 'Ten shell',
+    description: 'Mikrofrontendy przez Web Components, deploy z pusha na własny VPS, status per serwis.',
+    navGroup: 'projects',
+    // Wiersz w Indeksie projektów jest klikalny (project-index/project-rows.ts,
+    // clickable: true), ale nie ma jeszcze własnej treści w SectionDetail (żaden branch
+    // hasCustomDetail) — otwiera się z istniejącym placeholderem "Treść w przygotowaniu", tak
+    // jak każda inna sekcja bez custom-widoku. Świadomie nie budować tej treści teraz.
+    hasDetailView: true,
+  },
+  {
     id: 'about',
     title: 'O mnie',
     description: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko.',

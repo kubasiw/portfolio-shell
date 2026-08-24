@@ -822,8 +822,32 @@ Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościo
    przewijaniu w dół to potwierdzone, **pre-existing** zachowanie (identyczne już na produkcyjnym
    Workbenchu przed tą zmianą, sprawdzone bezpośrednio na kubsiw.com) — nie regresja tej sesji,
    poza zakresem tego etapu.
-2. ⏳ Pasek statystyk + Indeks projektów (`id="projekty"`) — zastępuje cały pinboard kart,
-   największa zmiana strukturalna.
+2. ✅ **Pasek statystyk + Indeks projektów** (2026-08-24, `id="projekty"`) — nowy
+   `src/features/project-index/` (`StatsBar`, `ProjectIndex`, `ProjectIndexRow`, dane w
+   `project-rows.ts` — celowo OSOBNE od `toc/sections.ts`: `note`/`stack` różnią się treścią od
+   `Section.description`, potwierdzone bezpośrednim porównaniem z handoffem, nie przypadkowa
+   duplikacja). Renderowany między Hero a starym `.landing__content` (Toc) — Toc filtruje teraz
+   `navGroup !== 'projects'`, więc tour-guide/insider/serwisant znikają ze starego pinboardu (nie
+   dublują się) i są zawsze widoczne w nowym indeksie, niezależnie od stanu statków. Dodany nowy
+   4. wiersz "Ten shell" (`Section.id: 'portfolio-shell'`, sam projekt jako meta-pozycja) — klikalny,
+   ale bez własnej treści w `SectionDetail` jeszcze (istniejący placeholder "Treść w
+   przygotowaniu"), świadomie nie budowane teraz. Nieklikalne wiersze (Serwisant, brak
+   `hasDetailView`) renderują się jako zwykły `<div>`, nie `disabled <button>` — bez sugerowania
+   czytnikom ekranu interaktywności, której nie ma.
+   **Dwa realne bugi złapane żywym pomiarem `getBoundingClientRect`, nie na oko**: (1) statyczny
+   wiersz miał `className="index-row index-row--static"` (obie klasy naraz) zamiast samego
+   `index-row--static` — `.index-row`'s own `cursor:pointer` z pierwszej klasy wygrywało mimo
+   drugiej, `cursor` faktycznie pokazywał "pointer" na nieklikalnym wierszu aż do naprawy. (2)
+   wysokości wierszy różniły się drastycznie (141–296px) mimo identycznego układu — `height:100%`
+   na `<img>` wewnątrz grid itema, którego wysokość dopiero się liczy, rozwiązuje się jako `auto`
+   (naturalne proporcje obrazka), nie jako wypełnienie wiersza; portretowy `insider_preview.webp`
+   (430×752) ciągnął cały swój wiersz do ~294px. Naprawione przez `position:absolute; inset:0` na
+   `<img>` zamiast `width/height:100%` — odrywa obrazek od cyklicznej zależności od wysokości
+   własnego rodzica, `object-fit:cover` faktycznie kadruje do wysokości ustalonej przez pozostałe
+   kolumny. Zweryfikowane po naprawie: wszystkie 4 wiersze dokładnie 141.6px na desktopie.
+   Zweryfikowano też klik-przez do `SectionDetail` (Tour Guide → realny widget w treści, Ten
+   shell → placeholder), zero przewijania w poziomie na 375px i 1280px, `tsc`/`lint`/`build`
+   czyste.
 3. ⏳ Band mikrofrontendu — realny `TourGuideWidget` osadzony obok opisu.
 4. ⏳ Statki jako szuflada — zmiana modelu stanu (`skipped`/`boardCollapsed`/`useStickyBoard`
    znikają, nowy `boardOpen` + `revealedNotes`); do decyzji przed tym etapem: ile notek "za

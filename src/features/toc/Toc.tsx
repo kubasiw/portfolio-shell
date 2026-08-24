@@ -147,7 +147,12 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
             </div>
             <div className="toc__cards-wrap">
               <div className="toc__cards">
-                {SECTIONS.map((section) => (
+                {/* navGroup === 'projects' (tour-guide/insider/serwisant/portfolio-shell) teraz
+                    renderowane przez <ProjectIndex> (App.tsx, etap 2 redesignu "Atrament") —
+                    zawsze widoczne, nie bramkowane przez statki. Reszta (about/skills/contact)
+                    zostaje tu, na starym pinboardzie Workbencha, dopóki nie dostanie własnego
+                    etapu (patrz PORTFOLIO_PLAN.md, plan wdrożenia). */}
+                {SECTIONS.filter((section) => section.navGroup !== 'projects').map((section) => (
                   <ProjectCard
                     key={section.id}
                     section={section}
