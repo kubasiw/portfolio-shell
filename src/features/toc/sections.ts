@@ -1,12 +1,13 @@
-import aboutCoverPhoto from '../../assets/about/leaf_light.webp';
 import contactCoverPhoto from '../../assets/about/old_phones.webp';
-import skillsCoverPhoto from '../../assets/about/coffee_desk.webp';
 import insiderCoverPhoto from '../../assets/insider/insider_preview.webp';
 import serwisantCoverPhoto from '../../assets/about/garage.webp';
 
 // Grupy linków nagłówka (.masthead__nav) — "Projekty" podświetla naraz wszystkie sekcje z tą
-// grupą, "O mnie"/"Kontakt" tylko swoją jedną. `null` = sekcja nigdy nie jest celem nawigacji
-// (dotyczy dziś tylko "skills" — nagłówek nie ma linku "Umiejętności").
+// grupą, "O mnie"/"Kontakt" tylko swoją jedną. `Section.navGroup` dopuszcza też `null` (sekcja
+// nigdy nie jest celem nawigacji) — bez aktualnego użycia (Umiejętności ma teraz własną, zawsze
+// widoczną sekcję, patrz `src/features/skills/`, nie jest już wpisem w SECTIONS), zostaje w typie
+// jako legalna opcja na przyszłość, nie do usunięcia tylko dlatego, że akurat nic z niej nie
+// korzysta.
 export type NavTarget = 'projects' | 'about' | 'contact';
 
 export interface Section {
@@ -104,34 +105,16 @@ export const SECTIONS: Section[] = [
     hasDetailView: true,
   },
   {
+    // Bez coverPhoto (etap 5 redesignu "Atrament") — sekcja "O mnie" nie renderuje się już jako
+    // kafelek pinboardu (Toc filtruje `id !== 'about'`, patrz Toc.tsx); ma teraz własną, zawsze
+    // widoczną `AboutSection` z paskiem 5 kafli (`src/features/about/`). Ten wpis zostaje w
+    // SECTIONS wyłącznie po to, żeby SectionDetail dalej wiedziało, co pokazać po kliknięciu
+    // kafla działu (`AboutGallery`, tytuł/opis w nagłówku widoku szczegółowego).
     id: 'about',
     title: 'O mnie',
     description: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko.',
     navGroup: 'about',
     hasDetailView: true,
-    coverPhoto: {
-      src: aboutCoverPhoto,
-      alt: 'Autoportret spod korony drzewa, w okularach przeciwsłonecznych',
-      // Zdjęcie ma własną, wbudowaną w kadr ramkę w stylu polaroidu — cover by ją przycinał.
-      fit: 'contain',
-      // Kosmetyczne 2% — contain zostawiało ~1-2px pustej przestrzeni po bokach (kwadratowe
-      // zdjęcie w ramce odrobinę szerszej niż wyższej).
-      zoom: 1.02,
-    },
-  },
-  {
-    id: 'skills',
-    title: 'Umiejętności',
-    description: 'Dziewięć lat w Angularze i architekturze frontendu korporacyjnego.',
-    navGroup: null,
-    hasDetailView: true,
-    coverPhoto: {
-      src: skillsCoverPhoto,
-      alt: 'Kawa i deser na biurku, w tle monitory z kodem',
-      // 65% -> 50% poszło w złą stronę (na localhost widoczne niżej, nie wyżej) — teoria o
-      // kierunku object-position okazała się myląca, korekta w przeciwną stronę względem 65%.
-      position: 'center 85%',
-    },
   },
   {
     id: 'contact',

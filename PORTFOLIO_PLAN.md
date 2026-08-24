@@ -917,7 +917,54 @@ Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościo
    34×34/`border-radius:0` na desktopie (`getComputedStyle`, nie tylko wizualnie), płynna siatka
    poniżej 900px, zero przewijania w poziomie na 375px zarówno przy zwiniętej jak i otwartej
    szufladzie, `tsc`/`lint`/`build` czyste.
-5. ⏳ "O mnie" (galeria pozioma) + Umiejętności (dwie kolumny).
+5. ✅ **"O mnie" (pasek pozioki) + Umiejętności (dwie kolumny)** (2026-08-24) — nowy
+   `src/features/about/AboutSection.tsx` (nagłówek + pasek 5 kafli, zawsze widoczny, `id="o-mnie"`)
+   i nowy top-level `src/features/skills/` (przeniesione z `toc/skills/`: `SkillsSection.tsx`
+   zamiast `SkillsDetail.tsx`, `skills-data.ts` bez zmian) — obie sekcje **zawsze widoczne na
+   stronie**, nie za klikiem, w przeciwieństwie do starego mechanizmu (kafelek pinboardu →
+   `SectionDetail`). `about`/`skills` usunięte z pinboardu `Toc` (`Toc.tsx` filtruje teraz
+   `id !== 'about'` obok istniejącego `navGroup !== 'projects'`) — zostaje tam tylko "contact" do
+   etapu 6. Wpis `skills` **usunięty całkowicie** z `SECTIONS`/`sections.ts` (nic już go nie
+   potrzebuje — `SkillsSection` nie routuje się przez `SectionDetail`); wpis `about` **zostaje**
+   (samo `title`/`description`/`hasDetailView`, bez `coverPhoto` — martwe po usunięciu z
+   pinboardu), bo `AboutGallery` dalej otwiera się przez istniejący mechanizm `SectionDetail`.
+   **Klik kafla w AboutSection otwiera AboutGallery od razu na wybranym dziale**, nie na siatce —
+   nowy `AboutGallery`'s `initialPassionId` prop (`useState(initialPassionId)`, świeży mount za
+   każdym otwarciem, bez efektu synchronizującego), przekazywany `App.tsx` → `Toc.tsx` →
+   `SectionDetail.tsx` → `AboutGallery.tsx` jako nowy stan `aboutPassionId` (`handleOpenAboutPassion`
+   ustawia go i wywołuje istniejący `handleSectionChange('about')` — reużyty mechanizm, nie drugi
+   równoległy).
+   **Realna treść zamiast ilustracyjnych przykładów z handoffu, ponownie**: `SkillsSection`
+   zachowuje bogatą, już wcześniej napisaną treść `SKILL_PLATES` (cytaty, grupy z tagami, notka "Jak
+   naprawdę pracuję z AI", link do CV) zamiast spłaszczać ją do prostych wierszy "nazwa/meta" z
+   makiety handoffu — 2 istniejące `SKILL_PLATES` już 1:1 odpowiadają dwóm kolumnom handoffu
+   ("Fundament..."/"Zbudowane dla tego portfolio"), więc handoff dał układ/kolorystykę, nie
+   dosłowną treść do skopiowania (ten sam precedens co `project-index`/`battleship-drawer` notes).
+   Link CV stylem `.btn-outline` (współdzielona klasa z etapu 4) — pasuje dosłownie pod opis
+   handoffu "styl secondary button".
+   **Realny, cichy bug w danych znaleziony przy budowie AboutSection, naprawiony w dwóch
+   miejscach naraz**: handoffowe "44 zdjęcia w galerii" (już użyte w `StatsBar` z etapu 2) okazało
+   się nieaktualne wobec realnych danych `passions.ts` (51 zdjęć) — sprawdzone bezpośrednim
+   przeliczeniem, nie na oko. Naprawione wspólnym `getTotalPhotoCount()` (nowy eksport w
+   `passions.ts`, obok samych danych — jedno źródło prawdy), użytym w obu miejscach
+   (`AboutSection`/`StatsBar`), żeby te dwie liczby nigdy więcej nie mogły się rozjechać.
+   **Masthead: "O mnie"/"Umiejętności" zamienione na realne kotwice** (`<a href="#o-mnie">`/
+   `<a href="#umiejetnosci">`), bo ich sekcje istnieją teraz jako prawdziwe elementy DOM z tymi
+   id — stary mechanizm (scroll do `#section-about`, kliknięcie ustawiające `activeNavTarget`) by
+   się tu po prostu zepsuł, skoro `#section-about` już nie istnieje (karta usunięta z pinboardu).
+   "Projekty"/"Kontakt" **świadomie zostają** state-driven (`<button>`) — częściowa konwersja tylko
+   2 z 4 linków, nie wszystkich na raz, żeby nie robić nawigacji dwoma niespójnymi mechanizmami na
+   stałe; pełna, jednorazowa konwersja wszystkich 4 dopiero w etapie 7, gdy `#kontakt` też będzie
+   realną sekcją (etap 6). `.masthead__nav button, .masthead__nav a` — wspólny reset/hover/active,
+   rozszerzony z samego `button` (ten sam realny bug z 2026-08-14 o specyficzności
+   `button.masthead__nav-item--active` vs `.masthead__nav-item--active`, teraz też dla `a`, żeby
+   nie wprowadzić go drugi raz).
+   Zweryfikowano żywo: klik kafla "Motoryzacja" otwiera `AboutGallery` bezpośrednio na zdjęciu
+   `garage.webp` z podpisem "Butelka oleju..." (nie na siatce), 5 kafli / 2 kolumny umiejętności /
+   31 tagów / link CV (`/cv/Jakub_Siwinski_CV.pdf`) wszystkie realnie w DOM-ie, oba nowe linki
+   nagłówka wskazują poprawne `href`, `SkillsDetail-*.js/css` zniknęły z outputu builda (lazy
+   chunk faktycznie usunięty, nie tylko martwy kod), zero przewijania w poziomie na 375px (z
+   otwartą galerią i bez), `tsc`/`lint`/`build` czyste.
 6. ⏳ Banner kontaktu + Stopka (stopka już zrobiona w etapie 1, ten punkt tylko dla porządku
    względem numeracji handoffu).
 7. ⏳ Sprzątanie: usunięcie `--wb-*`/Big Shoulders Display/IBM Plex Sans, gdy nic już ich nie

@@ -1,0 +1,189 @@
+/*
+ * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co reszta sekcji
+ * Atramentu. Dwie kolumny 1:1 z realnymi danymi (`skills-data.ts`, `SKILL_PLATES` ma dokładnie 2
+ * wpisy) — treść bogatsza niż przykładowe wiersze "nazwa/meta" z handoffu (grupy z tagami,
+ * cytaty, notka o AI), zachowana bez spłaszczania: handoff dał układ/kolorystykę, nie dosłowną
+ * treść do skopiowania (ten sam "prawdziwa treść ponad ilustracyjnym przykładem" precedens co
+ * project-index/battleship-drawer notes wyżej w tym pliku).
+ */
+.skills-section {
+  background: var(--md-ink);
+  border-bottom: 2px solid var(--md-rule);
+}
+
+.skills-section__columns {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.skills-section__column {
+  padding: 38px 44px;
+}
+
+.skills-section__column--right {
+  border-left: 2px solid var(--md-rule);
+}
+
+.skills-section__kicker {
+  display: block;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--md-text-62);
+  margin-bottom: 16px;
+}
+
+.skills-section__column--right .skills-section__kicker {
+  color: var(--md-accent-hover);
+}
+
+/* Jedyny mocny, wyróżniający fakt na tej karcie — kursywa + obwódka, żeby nie zginął w zwykłym
+   akapicie. Lewa kolumna: --md-text-62 (neutralnie); prawa: --md-accent-hover (ten sam akcent,
+   nie osobny drugi kolor jak w Workbenchu — Atrament ma świadomie tylko jedną czerwień). */
+.skills-section__pull-quote {
+  font-family: var(--md-font-display);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--md-paper);
+  margin: 0 0 12px;
+  padding-left: 12px;
+  border-left: 2px solid var(--md-text-62);
+}
+
+.skills-section__pull-quote--primary {
+  border-left-color: var(--md-accent-hover);
+}
+
+.skills-section__subtitle {
+  font-size: 13px;
+  color: var(--md-text-62);
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.skills-section__group {
+  padding: 11px 0;
+  border-top: 2px solid var(--md-rule-soft);
+}
+
+.skills-section__group-label {
+  display: block;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--md-text-62);
+  margin-bottom: 8px;
+}
+
+.skills-section__group-note {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--md-text-80);
+}
+
+.skills-section__tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skills-section__tag {
+  display: inline-block;
+  border: 2px solid var(--md-text-62);
+  padding: 3px 9px;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--md-text-80);
+}
+
+.skills-section__column--right .skills-section__tag {
+  border-color: var(--md-accent-hover);
+  color: var(--md-accent-hover);
+}
+
+.skills-section__tag--planned {
+  border-style: dashed;
+  color: var(--md-text-62);
+}
+
+.skills-section__cv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--md-rule-soft);
+}
+
+.skills-section__cv-text {
+  max-width: 40ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--md-text-80);
+  margin: 0;
+}
+
+.skills-section__ai-callout-wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 44px 38px;
+}
+
+.skills-section__ai-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid var(--md-accent-hover);
+  padding: 22px 24px;
+}
+
+.skills-section__ai-callout-label {
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--md-accent-hover);
+}
+
+.skills-section__ai-callout p {
+  max-width: 68ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--md-text-80);
+}
+
+/* 2 klasy potomne (nie 1 klasa + element jak reguła wyżej) — wygrywa specyficznością bez
+   !important, ten sam wzorzec co gdzie indziej w tym repo (patrz np. Board.css). */
+.skills-section__ai-callout .skills-section__ai-callout-secondary {
+  color: var(--md-text-62);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .skills-section__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .skills-section__column--right {
+    border-left: none;
+    border-top: 2px solid var(--md-rule);
+  }
+}
+
+@media (max-width: 480px) {
+  .skills-section__column,
+  .skills-section__ai-callout-wrap {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

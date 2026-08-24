@@ -2,11 +2,11 @@ import { Suspense, lazy, useEffect, useRef } from 'react';
 import type { Section } from './sections';
 import './SectionDetail.css';
 
-// Leniwie ładowane — ~44 zdjęcia w about/passions.ts i cała treść CV/umiejętności nie są
-// potrzebne w głównym bundlu dla każdego odwiedzającego spis treści, tylko dla kogoś, kto
-// faktycznie kliknie "Zobacz →" na tej konkretnej karcie.
+// Leniwie ładowane — ~50 zdjęć w about/passions.ts nie jest potrzebne w głównym bundlu dla
+// każdego odwiedzającego, tylko dla kogoś, kto faktycznie kliknie kafel w AboutSection.
+// Umiejętności (dawniej SkillsDetail/lazy tutaj) przeniesione do własnej, zawsze widocznej
+// sekcji na stronie (etap 5 redesignu "Atrament") — nie jest już częścią tego przełącznika.
 const AboutGallery = lazy(() => import('./about/AboutGallery').then((m) => ({ default: m.AboutGallery })));
-const SkillsDetail = lazy(() => import('./skills/SkillsDetail').then((m) => ({ default: m.SkillsDetail })));
 const InsiderDetail = lazy(() => import('./insider/InsiderDetail').then((m) => ({ default: m.InsiderDetail })));
 const TourGuideDetail = lazy(() =>
   import('./tour-guide/TourGuideDetail').then((m) => ({ default: m.TourGuideDetail })),
@@ -15,15 +15,14 @@ const TourGuideDetail = lazy(() =>
 interface SectionDetailProps {
   section: Section;
   onClose: () => void;
+  // Tylko dla section.id==='about' — patrz AboutGallery.tsx. Ignorowane dla innych sekcji.
+  aboutPassionId?: string | null;
 }
 
-export function SectionDetail({ section, onClose }: SectionDetailProps) {
+export function SectionDetail({ section, onClose, aboutPassionId = null }: SectionDetailProps) {
   const backButtonRef = useRef<HTMLButtonElement>(null);
   const hasCustomDetail =
-    section.id === 'about' ||
-    section.id === 'skills' ||
-    section.id === 'insider' ||
-    section.id === 'tour-guide';
+    section.id === 'about' || section.id === 'insider' || section.id === 'tour-guide';
 
   // Fokus na przycisk powrotu przy otwarciu — ten sam duch co "dostępność jako standard" z
   // dobrych praktyk w PORTFOLIO_PLAN.md; to nowy sposób nawigacji, więc użytkownik klawiatury/
@@ -46,8 +45,7 @@ export function SectionDetail({ section, onClose }: SectionDetailProps) {
       <p className="section-detail__description">{section.description}</p>
       {hasCustomDetail ? (
         <Suspense fallback={null}>
-          {section.id === 'about' && <AboutGallery />}
-          {section.id === 'skills' && <SkillsDetail />}
+          {section.id === 'about' && <AboutGallery initialPassionId={aboutPassionId} />}
           {section.id === 'insider' && <InsiderDetail />}
           {section.id === 'tour-guide' && <TourGuideDetail />}
         </Suspense>

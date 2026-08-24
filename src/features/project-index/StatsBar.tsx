@@ -1,3 +1,4 @@
+import { getTotalPhotoCount } from '../toc/about/passions';
 import './StatsBar.css';
 
 interface Stat {
@@ -5,13 +6,16 @@ interface Stat {
   label: string;
 }
 
-// Dane z handoffu (README, "3. Pasek statystyk") — statyczne, nie wyliczone z żadnego realnego
-// źródła (liczba projektów/lat/zdjęć), tak samo jak w prototypie.
+// Trzy pierwsze z handoffu (README, "3. Pasek statystyk") — statyczne, nie wyliczone z żadnego
+// realnego źródła (liczba aplikacji/lat/VPS), tak samo jak w prototypie. Czwarta ("zdjęcia w
+// galerii") NAPRAWIONA na realną liczbę (etap 5) — handoff podawał "44" ilustracyjnie, realne
+// passions.ts ma więcej; patrz getTotalPhotoCount (jedno źródło prawdy, użyte tu i w
+// AboutSection.tsx).
 const STATS: Stat[] = [
   { number: '04', label: 'Aplikacje / frameworki' },
   { number: '09', label: 'Lat we frontendzie' },
   { number: '01', label: 'VPS, Traefik, CI/CD' },
-  { number: '44', label: 'Zdjęcia w galerii' },
+  { number: String(getTotalPhotoCount()), label: 'Zdjęcia w galerii' },
 ];
 
 export function StatsBar() {

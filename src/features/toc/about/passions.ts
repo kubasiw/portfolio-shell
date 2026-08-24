@@ -354,3 +354,10 @@ export const PASSIONS: Passion[] = [
     ],
   },
 ];
+
+// Jedno źródło prawdy dla "ile zdjęć łącznie" — użyte w AboutSection.tsx i StatsBar.tsx (etap 5
+// redesignu "Atrament"); wyliczone tutaj, przy samych danych, żeby oba miejsca nigdy nie mogły
+// się rozjechać, tak jak rozjechał się wcześniej hardkodowany "44" z handoffu.
+export function getTotalPhotoCount(): number {
+  return PASSIONS.reduce((sum, passion) => sum + passion.photos.length, 0);
+}

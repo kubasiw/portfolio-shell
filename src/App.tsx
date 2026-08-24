@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import heroPhoto from './assets/about/night_drive.webp';
 import './App.css';
+import { AboutSection } from './features/about/AboutSection';
 import { BattleshipDrawer } from './features/battleship-drawer/BattleshipDrawer';
 import { MicrofrontendBand } from './features/microfrontend-band/MicrofrontendBand';
 import { ProjectIndex } from './features/project-index/ProjectIndex';
 import { StatsBar } from './features/project-index/StatsBar';
+import { SkillsSection } from './features/skills/SkillsSection';
 import { Toc } from './features/toc/Toc';
 import type { NavTarget } from './features/toc/sections';
 import { SECTIONS } from './features/toc/sections';
@@ -12,10 +14,14 @@ import { SECTIONS } from './features/toc/sections';
 function App() {
   const [activeNavTarget, setActiveNavTarget] = useState<NavTarget | null>(null);
   // Faza 3.5, punkt e — stan komponentu (nie router), zgodnie z ustaleniem: id aktualnie otwartej
-  // sekcji "pełnoekranowej" (about/skills/contact) albo null, gdy jesteśmy w normalnym spisie
-  // treści. Podniesione tu (nie w Toc) z App, żeby klik w nagłówku mógł zamknąć widok
-  // szczegółowy i wrócić do spisu treści — patrz handleNavClick niżej.
+  // sekcji "pełnoekranowej" (dziś: tylko "about"/"contact", "skills" ma teraz własną, zawsze
+  // widoczną sekcję — patrz SkillsSection) albo null, gdy jesteśmy w normalnym spisie treści.
+  // Podniesione tu (nie w Toc) z App, żeby klik w nagłówku mógł zamknąć widok szczegółowy i
+  // wrócić do spisu treści — patrz handleNavClick niżej.
   const [openSectionId, setOpenSectionId] = useState<string | null>(null);
+  // Który dział "O mnie" ma się otworzyć od razu w AboutGallery (etap 5) — patrz
+  // handleOpenAboutPassion niżej i AboutGallery.tsx. Tylko dla section.id==='about'.
+  const [aboutPassionId, setAboutPassionId] = useState<string | null>(null);
 
   // Real bug reported on a real iPhone (both Safari and Chrome for iOS — same WebKit engine
   // underneath): `.site-footer`'s `position: sticky; bottom: 0` doesn't recompute against the
@@ -124,6 +130,14 @@ function App() {
     setOpenSectionId(id);
   };
 
+  // Kafel w AboutSection (etap 5) — zapamiętuje, który dział ma się otworzyć, i reużywa dokładnie
+  // ten sam mechanizm widoku szczegółowego co reszta (SectionDetail -> AboutGallery), zamiast
+  // budować drugi, równoległy sposób pokazywania galerii.
+  const handleOpenAboutPassion = (passionId: string): void => {
+    setAboutPassionId(passionId);
+    handleSectionChange('about');
+  };
+
   const handleNavClick = (target: NavTarget): void => {
     // Widok szczegółowy otwarty -> nagłówek wcześniej nic nie robił (realny bug zgłoszony przez
     // właściciela); teraz zamyka widok i przenosi/podświetla właściwą grupę w spisie treści,
@@ -144,13 +158,15 @@ function App() {
         <div className="masthead__inner">
           <span className="masthead__name">Jakub Siwiński</span>
           {/*
-           * Wciąż przyciski + stan (nie realne <a href="#projekty">), mimo że handoff opisuje to
-           * jako kotwice — sekcje, do których miałyby prowadzić (#projekty, #o-mnie,
-           * #umiejetnosci, #kontakt jako realne id w DOM-ie), jeszcze nie istnieją: Toc poniżej to
-           * wciąż stary, niezmigrowany pinboard sterowany przez activeNavTarget/openSectionId, nie
-           * osobne sekcje strony. Zamienić na realne kotwice dopiero gdy Indeks projektów (etap 3)
-           * i reszta sekcji będą realnymi elementami z tymi id — patrz PORTFOLIO_PLAN.md, plan
-           * wdrożenia "Atrament".
+           * "Projekty"/"Kontakt": wciąż przyciski + stan (nie realne kotwice) — Projekty ma już
+           * realny cel (#projekty istnieje od etapu 2), ale zostaje state-driven świadomie, żeby
+           * nie konwertować nawigację częściowo w dwóch osobnych etapach (patrz PORTFOLIO_PLAN.md,
+           * plan wdrożenia, etap 7 "sprzątanie" — pełna, jednorazowa konwersja wszystkich 4
+           * linków, dopiero gdy #kontakt też będzie realną sekcją, etap 6). "O mnie"/
+           * "Umiejętności": już realne <a href="#..."> (etap 5) — ich sekcje istnieją teraz jako
+           * prawdziwe elementy DOM z tymi id (AboutSection/SkillsSection), więc stary
+           * scroll-do-karty mechanizm (szukający nieistniejącego już #section-about/#section-
+           * skills) by się tu po prostu zepsuł.
            */}
           <nav className="masthead__nav">
             <button
@@ -160,16 +176,8 @@ function App() {
             >
               Projekty
             </button>
-            <button
-              type="button"
-              className={displayNavTarget === 'about' ? 'masthead__nav-item--active' : ''}
-              onClick={() => handleNavClick('about')}
-            >
-              O mnie
-            </button>
-            <button type="button" disabled>
-              Umiejętności
-            </button>
+            <a href="#o-mnie">O mnie</a>
+            <a href="#umiejetnosci">Umiejętności</a>
             <button
               type="button"
               className={displayNavTarget === 'contact' ? 'masthead__nav-item--active' : ''}
@@ -230,12 +238,15 @@ function App() {
       <ProjectIndex onOpenDetail={handleSectionChange} />
       <MicrofrontendBand />
       <BattleshipDrawer />
+      <AboutSection onOpenPassion={handleOpenAboutPassion} />
+      <SkillsSection />
 
       <div className="landing__content">
         <Toc
           activeNavTarget={activeNavTarget}
           openSection={openSection}
           onOpenSectionChange={handleSectionChange}
+          aboutPassionId={aboutPassionId}
         />
       </div>
 

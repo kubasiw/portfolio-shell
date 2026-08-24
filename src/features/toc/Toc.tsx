@@ -8,9 +8,17 @@ interface TocProps {
   activeNavTarget: NavTarget | null;
   openSection: Section | null;
   onOpenSectionChange: (id: string | null) => void;
+  // Tylko dla widoku szczegółowego "O mnie" (patrz App.tsx/SectionDetail.tsx) — przekazywany tu
+  // przelotem do SectionDetail, sam Toc go nie czyta.
+  aboutPassionId: string | null;
 }
 
-export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocProps) {
+export function Toc({
+  activeNavTarget,
+  openSection,
+  onOpenSectionChange,
+  aboutPassionId,
+}: TocProps) {
   const detailOpen = openSection !== null;
 
   return (
@@ -21,16 +29,18 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
       >
         <div className="toc__view-panel-inner">
           <h2 id="toc-heading" className="toc__heading">
-            Więcej
+            Kontakt
           </h2>
 
           <div className="toc__cards">
-            {/* navGroup === 'projects' (tour-guide/insider/serwisant/portfolio-shell) renderowane
-                przez <ProjectIndex> (App.tsx, etap 2 redesignu "Atrament") — zostaje tu tylko
-                reszta (about/skills/contact), dopóki nie dostanie własnego etapu (patrz
-                PORTFOLIO_PLAN.md, plan wdrożenia). Statki przestały bramkować treść (etap 4) —
-                wszystko poniżej jest zawsze odblokowane, patrz BattleshipDrawer dla samej gry. */}
-            {SECTIONS.filter((section) => section.navGroup !== 'projects').map((section) => (
+            {/* navGroup === 'projects' -> <ProjectIndex> (etap 2), 'about' -> <AboutSection>
+                (etap 5, oba w App.tsx) — obie renderowane jako zawsze widoczne sekcje na stronie,
+                nie kafelki tutaj. Zostaje tylko "contact", dopóki nie dostanie własnego bannera
+                (etap 6, patrz PORTFOLIO_PLAN.md, plan wdrożenia). Statki przestały bramkować
+                treść (etap 4) — to, co tu zostało, jest zawsze odblokowane. */}
+            {SECTIONS.filter(
+              (section) => section.navGroup !== 'projects' && section.id !== 'about',
+            ).map((section) => (
               <ProjectCard
                 key={section.id}
                 section={section}
@@ -48,7 +58,11 @@ export function Toc({ activeNavTarget, openSection, onOpenSectionChange }: TocPr
       >
         <div className="toc__view-panel-inner">
           {openSection && (
-            <SectionDetail section={openSection} onClose={() => onOpenSectionChange(null)} />
+            <SectionDetail
+              section={openSection}
+              onClose={() => onOpenSectionChange(null)}
+              aboutPassionId={aboutPassionId}
+            />
           )}
         </div>
       </div>

@@ -3,12 +3,19 @@ import { Stamp } from '../../../components/Stamp';
 import { PASSIONS } from './passions';
 import './AboutGallery.css';
 
+interface AboutGalleryProps {
+  // Klik kafla w AboutSection (etap 5 redesignu "Atrament") otwiera ten komponent od razu na
+  // wybranym dziale, nie na siatce — świeży mount za każdym razem (SectionDetail odmontowuje przy
+  // zamknięciu), więc zwykły initial state, bez efektu synchronizującego.
+  initialPassionId?: string | null;
+}
+
 // Wariant B z PORTFOLIO_PLAN.md (punkt f, Faza 3.5) — "siatka się rozsuwa": klik na kafelek
 // pasji chowa siatkę i pokazuje jedno duże zdjęcie + filmstrip + podpis. Ten sam mechanizm
 // grid-template-rows 0fr/1fr co przełącznik spis-treści/widok szczegółowy w Toc.css — oba panele
 // zostają zamontowane, nic się nie odmontowuje przy przełączeniu.
-export function AboutGallery() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+export function AboutGallery({ initialPassionId = null }: AboutGalleryProps) {
+  const [selectedId, setSelectedId] = useState<string | null>(initialPassionId);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
   const selected = PASSIONS.find((passion) => passion.id === selectedId) ?? null;
