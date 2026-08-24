@@ -848,7 +848,24 @@ Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościo
    Zweryfikowano też klik-przez do `SectionDetail` (Tour Guide → realny widget w treści, Ten
    shell → placeholder), zero przewijania w poziomie na 375px i 1280px, `tsc`/`lint`/`build`
    czyste.
-3. ⏳ Band mikrofrontendu — realny `TourGuideWidget` osadzony obok opisu.
+3. ✅ **Band mikrofrontendu** (2026-08-24) — nowy `src/features/microfrontend-band/
+   MicrofrontendBand.tsx`, dwukolumnowy (tekst + `TourGuideWidget`, ten sam istniejący komponent
+   już używany w `toc/ProjectCard.tsx` — reużyty wprost, nie skopiowany). Skoro tour-guide nie
+   renderuje się już przez stary pinboard (etap 2, filtr `navGroup !== 'projects'`), to jedyne
+   miejsce, gdzie ten widget teraz w ogóle się montuje — brak podwójnej żywej mapy na stronie.
+   **`isolation:isolate` przeniesione wprost z już sprawdzonej naprawy w `toc/ProjectCard.css`**
+   (`.tour-guide-widget`) — ten sam realny bug (Leaflet wewnątrz widgetu ustawia własne wysokie
+   z-indexy, konkurujące ze sticky mastheadem/stopką bez własnego kontekstu stackowania), nie
+   odkrywany drugi raz. **Świadomie bez `height:100%`** na `.tour-guide-widget` wewnątrz nowej
+   ramki — ta sama pułapka co przy zdjęciach w indeksie projektów (etap 2): `min-height` na
+   rodzicu nie ustanawia definitywnej wysokości, więc `height:100%` na dziecku by się nie
+   rozwiązało; zamiast tego zostawiona naturalna, wewnętrzna wysokość mapy Tour Guide (400px,
+   `--poi-map-height`, sterowane wewnątrz repo tour-guide) — z zapasem spełnia `min-height:320px`
+   z handoffu bez potrzeby wymuszania dokładnej wartości. Paragraf w lewej kolumnie napisany od
+   nowa (handoff podaje tylko parametry stylu, nie treść — "Fragment Tour Guide / działa w tej
+   stronie" H3 i "Otwórz całą aplikację ↗" CTA są jedynym dosłownym tekstem w tej sekcji handoffu).
+   Zweryfikowano żywo: prawdziwy shadow DOM z 6 kaflami mapy i 43 realnymi markerami POI (nie
+   placeholder), zero przewijania w poziomie na 375px i 1280px, `tsc`/`lint`/`build` czyste.
 4. ⏳ Statki jako szuflada — zmiana modelu stanu (`skipped`/`boardCollapsed`/`useStickyBoard`
    znikają, nowy `boardOpen` + `revealedNotes`); do decyzji przed tym etapem: ile notek "za
    kulisami" realnie powstanie (handoff zakłada 6, treść nieustalona).

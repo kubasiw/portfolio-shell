@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import heroPhoto from './assets/about/night_drive.webp';
 import './App.css';
+import { MicrofrontendBand } from './features/microfrontend-band/MicrofrontendBand';
 import { ProjectIndex } from './features/project-index/ProjectIndex';
 import { StatsBar } from './features/project-index/StatsBar';
 import { Toc } from './features/toc/Toc';
@@ -226,6 +227,7 @@ function App() {
 
       <StatsBar />
       <ProjectIndex onOpenDetail={handleSectionChange} />
+      <MicrofrontendBand />
 
       <div className="landing__content">
         <Toc

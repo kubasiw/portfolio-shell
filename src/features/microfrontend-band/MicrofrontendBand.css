@@ -1,0 +1,124 @@
+/*
+ * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co .masthead/.hero/
+ * .stats-bar/.project-index.
+ */
+.microfrontend-band {
+  background: var(--md-ink);
+  border-bottom: 2px solid var(--md-rule);
+}
+
+.microfrontend-band__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.microfrontend-band__text {
+  padding: 44px;
+}
+
+.microfrontend-band__kicker {
+  display: block;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--md-accent-hover);
+  margin-bottom: 16px;
+}
+
+.microfrontend-band__heading {
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 2.9vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--md-paper);
+  margin: 0 0 18px;
+}
+
+.microfrontend-band__heading-line {
+  display: block;
+}
+
+.microfrontend-band__body {
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 52ch;
+  color: var(--md-text-80);
+  margin: 0 0 24px;
+}
+
+.microfrontend-band__cta {
+  display: inline-block;
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--md-paper);
+  text-decoration: none;
+  border: 2px solid color-mix(in srgb, var(--md-paper) 55%, transparent);
+  padding: 11px 16px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .microfrontend-band__cta {
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+}
+
+.microfrontend-band__cta:hover {
+  background: var(--md-paper);
+  color: var(--md-ink);
+}
+
+/*
+ * min-height:320px + lewa linia 2px + isolation:isolate — z handoffu, ale isolation w
+ * szczególności jest przeniesione WPROST z już sprawdzonego .tour-guide-widget w
+ * toc/ProjectCard.css (ten sam realny bug, ta sama naprawa): Leaflet wewnątrz widgetu ustawia
+ * własne wysokie z-indexy (200-1000) na kaflach/markerach/kontrolkach, które bez nowego kontekstu
+ * stackowania konkurują bezpośrednio z resztą strony (masthead/stopka to z-index:20) na poziomie
+ * całego dokumentu — mapa może "prześwitywać" nad sticky elementami mimo że wizualnie jest niżej.
+ * isolation:isolate zamyka te wartości wewnątrz tego elementu.
+ */
+.microfrontend-band__widget {
+  min-height: 320px;
+  border-left: 2px solid var(--md-rule);
+  isolation: isolate;
+}
+
+/*
+ * TourGuideWidget samo w sobie ma własny margin/border dobrany pod stare, kremowe tło karty
+ * Workbencha (toc/ProjectCard.css, .tour-guide-widget) — tutaj zresetowane, ramka i tło już
+ * ustawione na `.microfrontend-band__widget`. Świadomie BEZ `height:100%` tutaj — realna pułapka
+ * (ta sama klasa co przy zdjęciach w indeksie projektów, patrz PORTFOLIO_PLAN.md, etap 2):
+ * `min-height` na rodzicu nie ustanawia DEFINITYWNEJ wysokości, więc `height:100%` na dziecku by
+ * się nie rozwiązało. Zamiast tego zostawione naturalne, wewnętrzne 400px mapy Tour Guide
+ * (`--poi-map-height`, sterowane wewnątrz repo tour-guide, patrz jego własne CLAUDE.md) —
+ * spełnia z zapasem `min-height:320px` z handoffu, bez potrzeby wymuszania dokładnej wartości.
+ */
+.microfrontend-band__widget .tour-guide-widget {
+  margin: 0;
+  min-height: 0;
+  border: none;
+}
+
+@media (max-width: 900px) {
+  .microfrontend-band__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .microfrontend-band__widget {
+    border-left: none;
+    border-top: 2px solid var(--md-rule);
+  }
+}
+
+@media (max-width: 480px) {
+  .microfrontend-band__text {
+    padding: 32px 16px;
+  }
+}
