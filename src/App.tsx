@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import heroPhoto from './assets/about/couple_sea.webp';
+import heroPhoto from './assets/about/night_drive.webp';
 import './App.css';
-import { Stamp } from './components/Stamp';
 import { Toc } from './features/toc/Toc';
 import type { NavTarget } from './features/toc/sections';
 import { SECTIONS } from './features/toc/sections';
@@ -139,7 +138,16 @@ function App() {
     <div className="landing">
       <header className="masthead">
         <div className="masthead__inner">
-          <span className="masthead__name">Kuba S.</span>
+          <span className="masthead__name">Jakub Siwiński</span>
+          {/*
+           * Wciąż przyciski + stan (nie realne <a href="#projekty">), mimo że handoff opisuje to
+           * jako kotwice — sekcje, do których miałyby prowadzić (#projekty, #o-mnie,
+           * #umiejetnosci, #kontakt jako realne id w DOM-ie), jeszcze nie istnieją: Toc poniżej to
+           * wciąż stary, niezmigrowany pinboard sterowany przez activeNavTarget/openSectionId, nie
+           * osobne sekcje strony. Zamienić na realne kotwice dopiero gdy Indeks projektów (etap 3)
+           * i reszta sekcji będą realnymi elementami z tymi id — patrz PORTFOLIO_PLAN.md, plan
+           * wdrożenia "Atrament".
+           */}
           <nav className="masthead__nav">
             <button
               type="button"
@@ -155,6 +163,9 @@ function App() {
             >
               O mnie
             </button>
+            <button type="button" disabled>
+              Umiejętności
+            </button>
             <button
               type="button"
               className={displayNavTarget === 'contact' ? 'masthead__nav-item--active' : ''}
@@ -163,30 +174,55 @@ function App() {
               Kontakt
             </button>
           </nav>
-          <span className="masthead__vol">VOL. 01 — 2026</span>
-          <Stamp main="W budowie" sub="2026" className="masthead__stamp" />
+          {/* PL/EN — wyłącznie wizualne (handoff, sekcja "Fidelity"): treść EN jeszcze nie
+              istnieje, żaden realny przełącznik języka nie jest tu jeszcze podłączony. */}
+          <span className="masthead__lang" aria-hidden="true">
+            <span className="masthead__lang-active">PL</span>
+            <span className="masthead__lang-sep">/</span>
+            <span className="masthead__lang-inactive">EN</span>
+          </span>
         </div>
       </header>
 
-      <div className="landing__content">
-        <main className="hero">
+      {/*
+       * Pełnoszerokościowa sekcja (tło --md-ink sięga brzegów viewportu), ten sam wzorzec co
+       * .masthead/.site-footer — poza .landing__content (dzielonym dziś z <Toc>, wciąż
+       * kraftowo-jasnym Workbenchem), z własnym wewnętrznym .hero__inner ograniczonym do
+       * max-width:1440px. Świadomy, przejściowy szew: ciemny hero bezpośrednio nad jasnym Tokiem,
+       * dopóki ten drugi nie zostanie zmigrowany (patrz PORTFOLIO_PLAN.md, plan wdrożenia).
+       */}
+      <main className="hero">
+        <div className="hero__inner">
           <div className="hero__text">
-            <span className="hero__tag">Jakub Siwiński</span>
+            <span className="hero__kicker">Frontend architect · 9 lat · Kraków</span>
             <h1 className="hero__title">
-              <span className="hero__highlight">TRASY, KOD</span>
-              <br />
-              <span className="hero__highlight">
-                <em>i jeden obiektyw.</em>
-              </span>
+              <span className="hero__title-line">Cztery</span>
+              <span className="hero__title-line hero__title-line--accent">frameworki</span>
+              <span className="hero__title-line hero__title-line--outline">jeden stack</span>
             </h1>
+            <p className="hero__text-body">
+              Angular, React, Vue i React Native spięte Web Components, Traefikiem i jednym
+              pipeline&apos;em. Cztery aplikacje na własnym VPS — każda działa samodzielnie, każda
+              jest tu klikalna na żywo.
+            </p>
+            <div className="hero__cta">
+              <a className="hero__cta-primary" href="#projekty">
+                Zobacz projekty →
+              </a>
+              <a className="hero__cta-secondary" href="#kontakt">
+                Napisz do mnie
+              </a>
+            </div>
           </div>
           <img
             className="hero__photo"
             src={heroPhoto}
-            alt="Leśna ścieżka schodząca do morza o zmierzchu, dwie sylwetki"
+            alt="Mężczyzna oświetlony ekranem laptopa w ciemności, nocna jazda"
           />
-        </main>
+        </div>
+      </main>
 
+      <div className="landing__content">
         <Toc
           activeNavTarget={activeNavTarget}
           openSection={openSection}
@@ -196,10 +232,8 @@ function App() {
 
       <footer className="site-footer">
         <div className="site-footer__inner">
-          <a className="site-footer__link" href="#section-contact">
-            Kontakt ↑
-          </a>
-          <span className="site-footer__year">© 2026 Kuba S.</span>
+          <span className="site-footer__tagline">Portfolio jako aplikacja · vol. 01</span>
+          <span className="site-footer__year">© 2026 Jakub Siwiński</span>
         </div>
       </footer>
     </div>

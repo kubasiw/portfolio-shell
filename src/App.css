@@ -65,66 +65,39 @@
 }
 
 .masthead {
-  border-bottom: 1px solid var(--wb-hairline-inner);
+  border-bottom: 2px solid var(--md-rule);
   padding: 16px 0;
-  /*
-   * Sticky, nie fixed — ten sam wzorzec co nav w tour-guide (CLAUDE.md, "Nav/shell polish").
-   * Tło jawnie ustawione na --wb-paper (identyczne z tłem strony) — bez tego sticky element
-   * byłby przezroczysty i treść przewijałaby się "przez" niego. Oddzielenie od treści pod spodem
-   * to sam istniejący dolny hairline, bez cienia — ta sama, już sprawdzona decyzja co w tour-guide.
-   */
+  /* Sticky, nie fixed — ten sam wzorzec co przed redesignem (i co tour-guide). z-index 20 (nie
+     dawne 10) — handoff podnosi masthead ponad sekcje treściowe wprost. */
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: var(--wb-paper);
+  z-index: 20;
+  background: var(--md-ink);
 }
 
 .masthead__inner {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  /* .masthead__stamp (position:absolute) pozycjonuje się względem tego wrappera, nie względem
-     pełnoekranowego .masthead — inaczej "right: 20px" trzymałby się brzegu viewportu, nie
-     krawędzi realnej treści. */
-  position: relative;
-}
-
-/*
- * Dziecko sticky mastheadu — porusza się razem z nim automatycznie (bez własnej logiki sticky),
- * bo sticky element jest poprawnym containing blockiem dla position:absolute. Zachodzi lekko na
- * hero pod spodem (bottom ujemny) — sygnalizuje, że cały projekt portfolio też jest "w budowie",
- * nie tylko pojedyncze sekcje.
- */
-.masthead__stamp {
-  position: absolute;
-  bottom: -18px;
-  right: 20px;
-  transform: rotate(-7deg);
-}
-
-@media (max-width: 480px) {
-  .masthead__stamp {
-    right: 12px;
-    transform: rotate(-7deg) scale(0.85);
-  }
+  align-items: center;
 }
 
 .masthead__name {
-  font-family: var(--wb-font-display);
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: 0.02em;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--md-paper);
 }
 
 .masthead__nav {
   display: flex;
-  gap: 22px;
-  font-family: var(--wb-font-mono);
-  font-size: 10px;
+  gap: 26px;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-62);
 }
 
 /*
@@ -142,139 +115,205 @@
   border-bottom: 2px solid transparent;
 }
 
-.masthead__nav button:hover {
-  color: var(--wb-navy);
+.masthead__nav button:hover:not(:disabled) {
+  color: var(--md-paper);
+}
+
+/* "Umiejętności" — na razie zawsze disabled, sekcja jeszcze nie istnieje jako realny cel
+   nawigacji (patrz komentarz w App.tsx). Wyciszone, ale bez zmiany layoutu reszty nav. */
+.masthead__nav button:disabled {
+  cursor: default;
+  opacity: 0.4;
 }
 
 /*
  * `.masthead__nav button.masthead__nav-item--active` (nie sam `.masthead__nav-item--active`) —
- * realny bug złapany na żywo: sama klasa ma specyficzność 0-1-0, a `.masthead__nav button`
- * (klasa + element) to 0-1-1, więc `color: inherit` z tamtej reguły wygrywało mimo poprawnie
- * dodanej klasy `--active` na elemencie. Ta sama klasa błędu co już nieraz w tym zestawie
- * projektów (ancestor-scoped/compound selektor bijący płaski pojedynczy — patrz też CLAUDE.md
- * tour-guide, Leaflet).
+ * realny bug złapany na żywo w poprzednim designie: sama klasa ma specyficzność 0-1-0, a
+ * `.masthead__nav button` (klasa + element) to 0-1-1, więc `color: inherit` z tamtej reguły
+ * wygrywało mimo poprawnie dodanej klasy `--active` na elemencie. Zostawione w tym samym
+ * kształcie tutaj, żeby nie wprowadzić tego samego bugu drugi raz.
  */
 .masthead__nav button.masthead__nav-item--active {
-  color: var(--wb-navy);
-  border-bottom-color: var(--wb-navy);
+  color: var(--md-paper);
+  border-bottom-color: var(--md-accent-hover);
 }
 
-.masthead__vol {
-  font-family: var(--wb-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--wb-accent-secondary);
+.masthead__lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--md-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.masthead__lang-active {
+  color: var(--md-accent-hover);
+}
+
+.masthead__lang-sep {
+  color: color-mix(in srgb, var(--md-paper) 35%, transparent);
+}
+
+.masthead__lang-inactive {
+  color: var(--md-text-62);
 }
 
 /*
- * Zdjęcie szerokie i niskie, mocno nachodzące na tekst — realny feedback (trzecie podejście):
- * pełny, prostokątny blok tła pod całym .hero__text zasłaniał zbyt dużo zdjęcia, dużo więcej niż
- * sam tekst realnie zajmował. Zamiast tego tło ("podświetlenie") jest teraz na osobnych spanach
- * dokładnie wokół każdej linii (.hero__highlight) — ciasno dopasowane do słów, nie do całego bloku
- * — więc zdjęcie może nachodzić dużo głębiej, widoczne w przerwach wokół samego tekstu.
+ * Pełnoszerokościowa sekcja (tło do brzegów viewportu), ten sam wzorzec co .masthead/
+ * .site-footer — .hero__inner niżej niesie faktyczną max-width:1440px treść.
  */
 .hero {
-  position: relative;
-  padding: 64px 0 40px;
+  background: var(--md-ink);
+  border-bottom: 2px solid var(--md-rule);
+}
+
+/*
+ * Grid dwukolumnowy: tekst elastyczny, zdjęcie stała 420px kolumna — `minmax(0, …)` na obu, nie
+ * gołe `1fr`/`420px`, inaczej kolumny nie mają jak się skurczyć na wąskich ekranach i treść
+ * przelewa się poza sekcję (ta sama zasada co w handoffie, "Responsive").
+ */
+.hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .hero__text {
-  position: relative;
-  z-index: 1;
-  max-width: 560px;
+  padding: 76px 44px 56px;
+  /* Krytyczne dla .hero__title (patrz niżej) — H1 skaluje się względem SZEROKOŚCI TEJ KOLUMNY
+     (font-size: min(132px, 14cqw)), nie viewportu. Wersja z vw realnie ucinała "FRAMEWORKI" przy
+     ~900px, bo ta kolumna jest węższa niż viewport (obok niej stoi 420px zdjęcia) — nie zamieniać
+     na vw, patrz handoff (design_handoff_landing_atrament/README.md, "Responsive behavior"). */
+  container-type: inline-size;
 }
 
-/*
- * Żółta plakietka z makiety "Workbench" (porównanie kierunków, 2026-08-14) — właściciel wskazał
- * ją wprost jako element do przeniesienia do realnej strony, z innym napisem (imię i nazwisko
- * zamiast ogólnego "Portfolio" — ten sam duch co usunięcie słowa "portfolio" gdzie indziej).
- * --wb-pin jest WYŁĄCZNIE dekoracyjny wszędzie indziej w tej palecie (patrz tokens.css) — tu
- * jedyne miejsce, gdzie niesie tekst, więc kolor tekstu to --wb-ink (ciemny), nigdy sam pin jako
- * kolor liter.
- */
-.hero__tag {
-  display: inline-block;
-  font-family: var(--wb-font-mono);
+.hero__kicker {
+  display: block;
+  font-family: var(--md-font-mono);
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--wb-ink);
-  background: var(--wb-pin);
-  padding: 5px 11px;
-  margin-bottom: 18px;
-  transform: rotate(-2deg);
-}
-
-/*
- * Realny bug po deployu (2026-08-14): na wąskich ekranach "i jeden obiektyw." nie mieści się w
- * jednej linii i łamie się wewnątrz tego samego spana — box-decoration-break:clone dawał wtedy
- * DWA osobne prostokąty o różnej szerokości, jeden pod drugim, wyglądające jak wizualny błąd, nie
- * jak zamierzone podświetlenie. inline-block naprawia to całościowo: element dostaje jeden,
- * zwarty prostokąt tła obejmujący wszystkie zawinięte linie naraz (szerokość = najszersza linia),
- * zamiast osobnego tła per wizualna linia. Na szerokich ekranach oba spany i tak mieszczą się w
- * jednej linii, więc wygląd tam się nie zmienia — potwierdzone realnie w przeglądarce na 375px i
- * 1280px. box-decoration-break niepotrzebny przy inline-block (dotyczy tylko elementów inline
- * faktycznie rozbitych na wiele linii), więc usunięty razem z prefiksem.
- */
-.hero__highlight {
-  display: inline-block;
-  background: var(--wb-paper);
-  padding: 1px 8px;
-}
-
-.hero__photo {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 0;
-  width: 100%;
-  height: 170px;
-  object-fit: cover;
-  /* Dwie sylwetki na ścieżce siedzą ok. 68% w dół oryginalnego kadru (sprawdzone bezpośrednio na
-     zdjęciu) — wycentrowane tak, żeby zmieściły się w widocznym, krótkim pasku. */
-  object-position: center 68%;
-  border: 1px solid var(--wb-hairline);
-}
-
-@media (max-width: 720px) {
-  .hero {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 20px;
-  }
-
-  /* Poniżej łamania na wąskim ekranie nie ma miejsca na nachodzenie — zdjęcie wraca do zwykłego
-     bloku pod tekstem (column-reverse: h1 zostaje pierwszy w DOM dla czytników ekranu, wizualnie
-     zdjęcie i tak ląduje na dole). */
-  .hero__text {
-    position: static;
-    max-width: none;
-  }
-
-  .hero__photo {
-    position: static;
-    transform: none;
-    width: 100%;
-    height: 180px;
-  }
+  color: var(--md-accent-hover);
+  margin-bottom: 26px;
 }
 
 .hero__title {
-  font-family: var(--wb-font-display);
+  font-family: var(--md-font-display);
   font-weight: 800;
-  font-size: 48px;
-  line-height: 0.98;
-  letter-spacing: 0.01em;
+  font-size: min(132px, 14cqw);
+  line-height: 0.82;
+  letter-spacing: -0.035em;
   text-transform: uppercase;
-  margin: 0 0 16px;
+  margin: 0 0 24px;
 }
 
-.hero__title em {
-  font-style: normal;
-  color: var(--wb-accent-primary);
+.hero__title-line {
+  display: block;
+  color: var(--md-paper);
+}
+
+.hero__title-line--accent {
+  color: var(--md-accent-hover);
+}
+
+.hero__title-line--outline {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--md-paper);
+}
+
+.hero__text-body {
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 48ch;
+  color: var(--md-text-80);
+  margin: 0 0 32px;
+}
+
+.hero__cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero__cta-primary,
+.hero__cta-secondary {
+  display: inline-block;
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.hero__cta-primary {
+  background: var(--md-accent);
+  color: var(--md-paper);
+  padding: 13px 18px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__cta-primary {
+    transition:
+      background 160ms ease,
+      transform 160ms ease;
+  }
+}
+
+.hero__cta-primary:hover {
+  background: var(--md-accent-hover);
+  transform: translateY(-2px);
+}
+
+.hero__cta-secondary {
+  border: 2px solid color-mix(in srgb, var(--md-paper) 55%, transparent);
+  color: var(--md-paper);
+  padding: 11px 16px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__cta-secondary {
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+}
+
+.hero__cta-secondary:hover {
+  background: var(--md-paper);
+  color: var(--md-ink);
+}
+
+.hero__photo {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  object-fit: cover;
+  border-left: 2px solid var(--md-rule);
+  filter: grayscale(1) contrast(1.08);
+}
+
+@media (max-width: 900px) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero__text {
+    padding: 44px 44px 40px;
+  }
+
+  .hero__photo {
+    border-left: none;
+    border-top: 2px solid var(--md-rule);
+    height: 260px;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__text {
+    padding: 36px 16px 32px;
+  }
 }
 
 /*
@@ -287,11 +326,9 @@
 .site-footer {
   position: sticky;
   bottom: 0;
-  z-index: 10; /* same as masthead — chrome always wins over ordinary content, no per-element isolation needed */
-  margin-top: 40px;
-  padding: 14px 0;
-  border-top: 1px solid var(--wb-hairline-inner);
-  background: var(--wb-paper);
+  z-index: 20; /* matches .masthead — chrome always wins over ordinary content */
+  padding: 20px 0;
+  background: var(--md-ink);
 }
 
 .site-footer__inner {
@@ -301,23 +338,11 @@
   gap: 16px;
 }
 
-.site-footer__link {
-  font-family: var(--wb-font-mono);
+.site-footer__tagline,
+.site-footer__year {
+  font-family: var(--md-font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--wb-ink-secondary);
-  text-decoration: underline dashed;
-  text-underline-offset: 3px;
-}
-
-.site-footer__link:hover {
-  color: var(--wb-accent-primary);
-}
-
-.site-footer__year {
-  font-family: var(--wb-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-62);
 }

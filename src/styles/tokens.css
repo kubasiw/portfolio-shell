@@ -1,56 +1,67 @@
 /*
- * Design tokens — "Workbench"
- * Zastąpiło "Editorial Garage" (2026-08-14) — właściciel poprosił o bardziej "fancy" kierunek po
- * porównaniu 4 klikalnych makiet (mode.com / b-egg.farm / overrrides.com / crew.tubikstudio.com
- * jako inspiracje), wygranym kierunkiem był "Workbench": namacalna, korkowa/kraftowa tablica z
- * przypiętymi fiszkami projektów. Nazwy zmiennych zachowane jako --wb-* (proste globalne
- * przemianowanie z --eg-*, nie ręczne przepisywanie każdego miejsca użycia) — tylko WARTOŚCI są
- * nowe. Pełne uzasadnienie kierunku w PORTFOLIO_PLAN.md.
+ * Design tokens — "Atrament" ZASTĘPUJE "Workbench" (od 2026-08-24), redesign zamówiony u Cloud
+ * Design, pakiet handoff w (zignorowanym w git) design_handoff_landing_atrament/README.md. Zmiana
+ * strukturalna, nie tylko kolorystyczna: gra w statki przestaje blokować treść, kafelki-fiszki
+ * zamieniają się w pionowy indeks projektów. Nazwy zmiennych --md-* (Modernist — nazwa design
+ * systemu z handoffu). Pełne uzasadnienie kierunku w PORTFOLIO_PLAN.md.
  *
- * Każda para tekst/tło niżej zweryfikowana realnym przeliczeniem kontrastu WCAG (nie na oko) —
- * patrz komentarze przy --wb-paper (kraftowe tło strony, najciaśniejszy przypadek) i
- * --wb-accent-primary (jedyny akcent użyty jednocześnie jako tekst i obwódka).
+ * Wartości i uzasadnienia kontrastu przepisane wprost z handoffu (już tam realnie policzone przez
+ * Cloud Design) — patrz design_handoff_landing_atrament/README.md, sekcja "Design Tokens".
+ *
+ * PRZEJŚCIOWO oba zestawy tokenów współistnieją (--wb-* niżej, niezmienione) — w przeciwieństwie
+ * do Editorial Garage -> Workbench (prosty reskin, ta sama struktura) ten redesign jest
+ * strukturalny sekcja po sekcji (patrz PORTFOLIO_PLAN.md, plan wdrożenia), więc jeszcze
+ * niezmigrowane części strony (na razie: cały Toc — plansza, karty, statki) muszą dalej działać
+ * na starych tokenach, dopóki nie zostaną przepisane. Do usunięcia w całości, gdy migracja
+ * wszystkich sekcji się skończy.
  */
 :root {
   /* powierzchnie */
-  --wb-paper: #bdb097; /* kraft/kork — tło całej strony */
-  --wb-card: #faf6ee; /* kremowa fiszka — powierzchnia kart/notatek przypiętych na --wb-paper */
-  --wb-divider: #e2dbc9; /* cienka linia wewnątrz kart (na --wb-card) */
+  --md-ink: #201e1d; /* tło całej strony — ciemny atrament */
+  --md-ink-raised: #2d2b2b; /* tło podniesionych paneli/warstw (głębia przez warstwy, nie cień) */
+  --md-paper: #f3f2f2; /* tekst główny na atramencie; tło wariantu jasnego */
 
-  /* tekst */
-  --wb-ink: #241f1a; /* 7.64:1 na --wb-paper, 15.15:1 na --wb-card */
-  --wb-ink-secondary: #463d33; /* 4.97:1 na --wb-paper, 9.86:1 na --wb-card — AA na obu */
+  /* akcent — jedna czerwień, trzy warianty kontekstowe */
+  --md-accent: #ec3013; /* primary CTA, hover wiersza indeksu, banner kontaktu */
+  --md-accent-hover: #ff563c; /* akcent na ciemnym tle (tekst, hover przycisku) */
+  --md-accent-700: #ae1800; /* akcent jako tekst akapitowy na jasnym tle */
 
-  /* obwódki (próg WCAG dla obramowań to 3:1, nie 4.5:1 jak dla tekstu) */
-  --wb-hairline: #635745; /* 3.30:1 na --wb-paper */
-  --wb-hairline-inner: #584d38; /* mocniejszy wariant, wewnętrzne podziały kart */
+  /* neutralne (wariant jasny — banery/plakietki na --md-paper) */
+  --md-neutral-300: #d7d3d3; /* jasne linie na jasnym tle */
+  --md-neutral-700: #605d5d; /* tekst drugorzędny na jasnym tle */
 
-  /*
-   * Akcent primary (rdza/smar) — jedyny kolor w tej palecie użyty jednocześnie jako tekst, obwódka
-   * i tło odznak, więc musiał przejść najsurowszy test: 4.5:1 (AA, tekst) na OBU powierzchniach,
-   * nie tylko jednej. Pierwsza próba (#8f3722, bliższa mockupowi) dawała tylko 3.59:1 na --wb-paper
-   * — przyciemnione do #6e2818, teraz 4.96:1 / 9.84:1.
-   */
+  /* linie i tekst na --md-ink, przez color-mix od --md-paper — jedno źródło prawdy */
+  --md-rule: color-mix(in srgb, var(--md-paper) 30%, transparent); /* główne linie 2px */
+  --md-rule-soft: color-mix(in srgb, var(--md-paper) 18%, transparent); /* linie wewnętrzne */
+  --md-text-80: color-mix(in srgb, var(--md-paper) 80%, transparent); /* akapity na atramencie */
+  --md-text-62: color-mix(in srgb, var(--md-paper) 62%, transparent); /* mono, nawigacja nieaktywna */
+
+  /* zero zaokrągleń, wszędzie — zerwanie z Workbenchem, świadome, nie do zmiany per-komponent */
+  --md-radius: 0;
+
+  /* typografia — 2 role (Workbench miało 3: display/sans/mono; Atrament łączy display+sans w
+     jednym kroju, Big Shoulders Display i IBM Plex Sans wychodzą z użycia) */
+  --md-font-display: 'Archivo', -apple-system, 'Segoe UI', sans-serif; /* nagłówki (800) i tekst (400) */
+  --md-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; /* etykiety/dane */
+
+  /* --- "Workbench" (poprzedni system), przejściowo, patrz komentarz nagłówkowy --- */
+  --wb-paper: #bdb097;
+  --wb-card: #faf6ee;
+  --wb-divider: #e2dbc9;
+  --wb-ink: #241f1a;
+  --wb-ink-secondary: #463d33;
+  --wb-hairline: #635745;
+  --wb-hairline-inner: #584d38;
   --wb-accent-primary: #6e2818;
-  --wb-accent-secondary: #4f3d10; /* ciemny mosiądz — 4.89:1 / 9.70:1 */
-  --wb-muted: #756a54; /* zablokowane/nieaktywne — świadomie niższy kontrast, to jego rola */
-  --wb-crimson: #7a2a24; /* pieczątka "w budowie" — 4.50:1 na --wb-paper */
-  --wb-navy: #1e3a5f; /* tymczasowe podświetlenie przez nawigację — 5.38:1 na --wb-paper */
-
-  /*
-   * Pinezka — WYŁĄCZNIE dekoracyjna (kropka pinezki, tło plakietki pod ciemnym tekstem). Nigdy
-   * jako kolor samego tekstu/obwódki — realnie przeliczony kontrast to ~1.5:1 na obu
-   * powierzchniach, katastrofalnie za mało na cokolwiek czytelnego.
-   */
+  --wb-accent-secondary: #4f3d10;
+  --wb-muted: #756a54;
+  --wb-crimson: #7a2a24;
+  --wb-navy: #1e3a5f;
   --wb-pin: #e8b923;
-
-  /* plansza w statki — patrz Board.css dla pełnego uzasadnienia siatki/trafień/pudeł */
   --wb-miss-bg: #a89c81;
   --wb-preview-bg: #cabe9f;
-  --wb-unlocked-bg: #c9cead; /* stonowana zieleń-mech, nie sygnałowa zieleń */
-
-  /* typografia — 3 role, żadna nie jest Inter/Space Grotesk (patrz zasada w PORTFOLIO_PLAN.md) */
-  --wb-font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif; /* kondensowany, przemysłowy — nagłówki */
-  --wb-font-sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif; /* tekst */
-  --wb-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; /* etykiety/dane */
+  --wb-unlocked-bg: #c9cead;
+  --wb-font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --wb-font-sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+  --wb-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 }

@@ -18,3 +18,7 @@ yarn-error.log*
 
 # prywatny dziennik nauki — nie publiczny domyślnie, patrz nagłówek pliku
 DZIENNIK_NAUKI.md
+
+# handoff od Cloud Design — pliki referencyjne (prototypy .dc.html, zrzuty, zasoby), nie kod
+# produkcyjny; nie ma po co ich publikować w repo
+design_handoff_landing_atrament/

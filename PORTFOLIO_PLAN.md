@@ -661,6 +661,17 @@ aktualizacji, jeśli paleta się kiedyś zmieni.
 - Docelowa liczba/rozmieszczenie "celów" na planszy (roboczo: 6, jeden na sekcję portfolio)
 - Realny font serif/mono do samodzielnego hostowania (na razie system fallback w makietach)
 
+## Design system — "Workbench" (zastąpiony 2026-08-24, patrz "Atrament" niżej)
+
+**Zastąpiony 2026-08-24.** Pełny redesign zamówiony u Cloud Design — pakiet handoff w
+`design_handoff_landing_atrament/` (katalog w repo, zignorowany w git, patrz `.gitignore`).
+Zmiana strukturalna, nie tylko kolorystyczna: gra w statki przestaje blokować treść, kafelki
+zamieniają się w pionowy indeks projektów. Wygrany wariant: **2a ATRAMENT** (spośród tury
+porównawczej trzech kolorystyk: Atrament / Papier / Czerwony blok, na kierunku "INDEKS" spośród
+trzech układów: Siatka / Indeks / Warstwy — pełny kontekst decyzji w
+`design_handoff_landing_atrament/Kierunki 2026.dc.html`). Ta sekcja zostaje jako historyczny
+zapis, wdrażanie w toku (patrz "Design system — Atrament" niżej, sekcja "Plan wdrożenia").
+
 ## Design system — "Workbench" (aktualny kierunek wizualny portfolio shell, od 2026-08-14)
 
 Zastąpił Editorial Garage (patrz sekcja wyżej) po realnym feedbacku, że ten pierwszy kierunek
@@ -745,6 +756,83 @@ względną luminancję), nie na oko — ta sama rygorystyczność co przy Editor
 3. ⏳ Nie rozpoczęte: strony About/Skills/Kontakt
 4. ⏳ Nie rozpoczęte: widoki szczegółów tour-guide/Insider (ostrożnie, bez naruszania
    osadzonych widgetów/mikrofrontendów)
+
+## Design system — "Atrament" (aktualny kierunek wizualny portfolio shell, od 2026-08-24)
+
+Zastąpił Workbench (patrz sekcja wyżej) — pełny redesign zamówiony u Cloud Design, oparty na
+design systemie **Modernist**: ciemny atrament, Archivo, jedna czerwień, zero zaokrągleń, mocne
+linie 2px, zdjęcia czarno-białe. Handoff (README + prototypy `.dc.html` + zrzuty + zasoby) leży w
+`design_handoff_landing_atrament/`, świadomie zignorowanym w git (materiały referencyjne, nie kod
+produkcyjny — patrz `.gitignore`).
+
+Zmiana strukturalna, nie tylko kolorystyczna:
+
+1. Treść dostępna od pierwszej sekundy — gra w statki nie blokuje już niczego, schodzi do
+   opcjonalnej szuflady.
+2. Kafelki-fiszki (`spec-plate`) zamieniają się w jeden pionowy indeks — cztery wiersze pełnej
+   szerokości.
+3. Nowe sekcje: pasek statystyk, band z żywym mikrofrontendem (`TourGuideWidget`), pozioma
+   galeria "O mnie", banner kontaktu jako zamknięcie strony.
+
+### Paleta (`src/styles/tokens.css`, prefiks `--md-*`)
+
+| Token | Wartość | Rola |
+|---|---|---|
+| `--md-ink` | `#201e1d` | tło całej strony |
+| `--md-ink-raised` | `#2d2b2b` | tło podniesionych paneli (głębia przez warstwy, nie cień) |
+| `--md-paper` | `#f3f2f2` | tekst główny na atramencie; tło wariantu jasnego |
+| `--md-accent` | `#ec3013` | primary CTA, hover wiersza indeksu, banner kontaktu |
+| `--md-accent-hover` | `#ff563c` | akcent na ciemnym tle |
+| `--md-accent-700` | `#ae1800` | akcent jako tekst na jasnym tle |
+| `--md-neutral-300` / `--md-neutral-700` | `#d7d3d3` / `#605d5d` | linie/tekst na wariancie jasnym |
+| `--md-rule` / `--md-rule-soft` | `color-mix(...)` od `--md-paper` | linie 2px główne/wewnętrzne |
+| `--md-text-80` / `--md-text-62` | `color-mix(...)` od `--md-paper` | akapity / mono etykiety |
+| `--md-radius` | `0` | nigdy nie zaokrąglać niczego |
+
+Typografia: **Archivo** 800 (nagłówki, uppercase) i 400 (tekst), **IBM Plex Mono** 400–500
+(etykiety/dane) — Big Shoulders Display i IBM Plex Sans wychodzą z użycia. Linie zawsze 2px
+(świadome zerwanie z Workbenchowym hairline 1px). Cienie: brak, głębia przez warstwy tła.
+
+### Plan wdrożenia
+
+Sekcja po sekcji, nie jeden duży skok — inaczej niż Editorial Garage → Workbench (prosty reskin,
+ta sama struktura), Atrament zmienia strukturę niektórych sekcji całkowicie (indeks projektów,
+szuflada statków), więc tokeny **przejściowo współistnieją**: `--md-*` (nowe) obok `--wb-*`
+(stare, niezmienione), dopóki dana sekcja nie zostanie faktycznie przepisana — patrz komentarz
+nagłówkowy w `tokens.css`. To samo dotyczy fontów w `index.html` (Archivo + Big Shoulders
+Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościowo po etapie 7.
+
+1. ✅ **Fundament + Masthead + Hero + Stopka** (2026-08-24) — tokeny/fonty współistnieją ze
+   starymi (patrz wyżej); masthead: usunięty "W budowie"/VOL, dodany PL/EN (na razie wyłącznie
+   wizualny — treść EN nie istnieje), link "Umiejętności" na razie `disabled` (sekcja jeszcze nie
+   istnieje jako cel nawigacji); linki nawigacji **wciąż stary mechanizm state-driven**
+   (`activeNavTarget`/`openSectionId`), nie realne `<a href="#projekty">` — realne kotwice dopiero
+   gdy odpowiednie sekcje istnieją jako prawdziwe elementy DOM z tymi id (patrz komentarz w
+   `App.tsx`). Hero: `display:grid` dwie kolumny, `container-type:inline-size` na kolumnie
+   tekstu + `font-size:min(132px,14cqw)` (**nie `vw`** — handoff wprost ostrzega, że `vw` realnie
+   ucina "FRAMEWORKI" przy ~900px, bo kolumna tekstu jest węższa niż viewport), trzecia linia
+   H1 jako outline (`-webkit-text-stroke`), zdjęcie `night_drive.webp` przez
+   `filter: grayscale(1) contrast(1.08)`. Hero pełnoszerokościowy (`.hero` tło do brzegów
+   viewportu + `.hero__inner` max-width:1440px) — ten sam wzorzec co `.masthead`/`.site-footer`,
+   wyciągnięty z `.landing__content` (dzielonego dziś z jeszcze-niezmigrowanym `<Toc>`) żeby móc
+   nieść własne ciemne tło niezależnie od kraftowego tła Workbencha pod spodem. **Świadomy,
+   przejściowy szew**: ciemny hero bezpośrednio nad jasnym (wciąż Workbench) Tokiem, zniknie gdy
+   Toc zostanie zmigrowany w etapie 3. Zweryfikowano żywo (tsc/lint/build + przeglądarka, 375px i
+   1280px, zero przewijania w poziomie) — sticky-bottom stopki nachodzącej na treść przy
+   przewijaniu w dół to potwierdzone, **pre-existing** zachowanie (identyczne już na produkcyjnym
+   Workbenchu przed tą zmianą, sprawdzone bezpośrednio na kubsiw.com) — nie regresja tej sesji,
+   poza zakresem tego etapu.
+2. ⏳ Pasek statystyk + Indeks projektów (`id="projekty"`) — zastępuje cały pinboard kart,
+   największa zmiana strukturalna.
+3. ⏳ Band mikrofrontendu — realny `TourGuideWidget` osadzony obok opisu.
+4. ⏳ Statki jako szuflada — zmiana modelu stanu (`skipped`/`boardCollapsed`/`useStickyBoard`
+   znikają, nowy `boardOpen` + `revealedNotes`); do decyzji przed tym etapem: ile notek "za
+   kulisami" realnie powstanie (handoff zakłada 6, treść nieustalona).
+5. ⏳ "O mnie" (galeria pozioma) + Umiejętności (dwie kolumny).
+6. ⏳ Banner kontaktu + Stopka (stopka już zrobiona w etapie 1, ten punkt tylko dla porządku
+   względem numeracji handoffu).
+7. ⏳ Sprzątanie: usunięcie `--wb-*`/Big Shoulders Display/IBM Plex Sans, gdy nic już ich nie
+   używa; zamiana linków nawigacji masthead na realne kotwice.
 
 ## Otwarte pytania / do ustalenia w kolejnych krokach
 
