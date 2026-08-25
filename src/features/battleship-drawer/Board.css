@@ -1,27 +1,20 @@
 /*
- * Reskin do "Workbench" (2026-08-14) — sama logika gry (use-battleship.ts, Board.tsx) bez zmian,
- * tylko wygląd: plansza czyta się teraz jako fizyczna płyta perforowana zamontowana na biurku
- * (własna kremowa karta, cień), a pola to okrągłe otwory (border-radius:50%), nie kwadraciki —
- * niezajęte pole = puste okrągłe wgłębienie w tym samym kraftowym kolorze co tło strony, trafienie
- * = czerwona pinezka, pudło = przypalona/zaznaczona dziurka.
+ * Reskin do "Atrament" (etap 7, 2026-08-24) — sama logika gry (use-battleship.ts, Board.tsx) bez
+ * zmian, tylko wygląd: kwadratowe komórki (border-radius:0, zerwanie z okrągłymi "otworami"
+ * Workbencha), bez własnego tła/cienia karty (żyje bezpośrednio na ciemnym tle
+ * BattleshipDrawer). Wcześniej (do 2026-08-24) ten plik był wciąż niezmigrowanym Workbenchem,
+ * odświeżanym wyłącznie przez selektory potomkowe o wyższej specyficzności w
+ * BattleshipDrawer.css (2 klasy vs. 1 — ten sam sposób nadpisywania Leaflet/Board bez dotykania
+ * współdzielonego pliku, znany gdzie indziej w tym repo) — skoro Board jest dziś używany
+ * WYŁĄCZNIE wewnątrz `.battleship-drawer`, ta duplikacja (76 linii nadpisań) nie miała już
+ * żadnego uzasadnienia i została scalona z powrotem tutaj.
  *
- * Dwa reżimy szerokości (2026-08-14, realny feedback) — ten sam próg co Toc.css (900px), bo oba
- * pliki muszą się zgadzać, żeby wrapowanie flexboksa i przełączenie stylu planszy szło w parze:
- * - szeroki (plansza obok kafelków): stałe, większe komórki (45px) — plansza dostała więcej
- *   miejsca (Toc.css: 4:6 zamiast wąskiej stałej kolumny), więc komórki rosną razem z nią.
- * - wąski (plansza NAD kafelkami): płynna siatka — komórki `1fr` zamiast stałego px, kwadratowe
- *   dzięki aspect-ratio (nie stałej wysokości, która przy płynnej szerokości dawałaby prostokąty).
- *   Plansza wypełnia wtedy całą dostępną szerokość, nie tylko wąski stały pasek.
+ * Dwa reżimy szerokości — próg 900px (ten sam co reszta strony, patrz np. About/Skills):
+ * - szeroki: stałe komórki (34×34, z handoffu).
+ * - wąski (<900px): płynna siatka — komórki `1fr` + `aspect-ratio` zamiast stałego px. Bezwarunkowe
+ *   34px złamałoby "zero poziomego przewijania na 375px" (realny bug złapany na żywo 2026-08-24,
+ *   34px×10 kolumn + gap + nagłówek ≈ 408px, szerzej niż 375px viewport).
  */
-.board {
-  background: var(--wb-card);
-  border: 1px solid var(--wb-hairline);
-  /* color-mix(), nie wpisana na sztywno rgb --wb-ink (2026-08-14, audyt dobrych praktyk) — jedno
-     źródło prawdy dla koloru cienia, ten sam wzorzec co ProjectCard.css/App.css. */
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--wb-ink) 20%, transparent);
-  padding: 10px;
-}
-
 .board__grid {
   display: grid;
   grid-template-columns: 20px repeat(10, 1fr);
@@ -38,10 +31,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--wb-font-mono);
+  font-family: var(--md-font-mono);
   font-size: 9px;
   letter-spacing: 0.06em;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-62);
   text-transform: uppercase;
 }
 
@@ -55,7 +48,7 @@
 
 .board__col-header--active,
 .board__row-header--active {
-  color: var(--wb-accent-secondary);
+  color: var(--md-accent-hover);
   font-weight: 700;
 }
 
@@ -66,15 +59,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  font-family: var(--wb-font-mono);
+  border-radius: 0;
+  font-family: var(--md-font-mono);
   font-size: 11px;
-  border: 2px solid var(--wb-hairline);
-  /* Kraftowy kolor strony, nie kremowy jak reszta karty — czyta się jak realny otwór, nie
-     wypełnione pole. Tylko stan --hit renderuje jakikolwiek glif (Board.tsx, cellMark) i ustawia
-     własny kolor tekstu — ten tutaj to tylko sensowny domyślny. */
-  background: var(--wb-paper);
-  color: var(--wb-ink);
+  border: 2px solid color-mix(in srgb, var(--md-paper) 28%, transparent);
+  background: transparent;
+  color: var(--md-paper);
   padding: 0;
   transition: transform 120ms ease, border-color 120ms ease;
 }
@@ -84,23 +74,23 @@
 }
 
 .board__cell--unknown:hover {
-  border-color: var(--wb-accent-secondary);
-  transform: scale(1.15);
+  border-color: var(--md-accent-hover);
+  transform: scale(1.12);
   position: relative;
   z-index: 1;
 }
 
 .board__cell--hit {
-  background: var(--wb-accent-primary);
-  border-color: var(--wb-accent-primary);
-  color: var(--wb-paper);
+  background: var(--md-accent);
+  border-color: var(--md-accent);
+  color: var(--md-paper);
   cursor: default;
 }
 
 .board__cell--miss {
-  background: var(--wb-miss-bg);
-  border-color: var(--wb-hairline-inner);
-  color: var(--wb-ink-secondary);
+  background: color-mix(in srgb, var(--md-paper) 16%, transparent);
+  border-color: color-mix(in srgb, var(--md-paper) 28%, transparent);
+  color: var(--md-text-62);
   cursor: default;
 }
 
@@ -109,59 +99,45 @@
   width: 22%;
   height: 22%;
   border-radius: 50%;
-  background: var(--wb-ink-secondary);
+  background: var(--md-text-62);
 }
 
 /* Podgląd obszaru "(Art)yleria" — kwadrat 3×3 wokół pola pod kursorem, gdy strzał jest
-   uzbrojony. Przerywana obwódka spójna z motywem dashed-hairline użytym gdzie indziej
-   (skip-link, stepper). */
+   uzbrojony. */
 .board__cell--preview {
   border-style: dashed;
-  border-color: var(--wb-accent-secondary);
-  background: var(--wb-preview-bg);
+  border-color: var(--md-accent-hover);
+  background: color-mix(in srgb, var(--md-accent-hover) 18%, transparent);
 }
 
 .board--armed .board__cell {
   cursor: crosshair;
 }
 
-/* Reżim szeroki — plansza obok kafelków (patrz Toc.css, ten sam próg 900px). Stałe, większe
-   komórki: 22px (róg/nagłówki) + 10×45px (komórki) + 9×3px (gap) = 499px siatki, + 14px×2
-   padding + 1px×2 border (.board) = 529px, + 8px bufora hover = 537px (Toc.css:
-   .toc__board-col). */
 @media (min-width: 900px) {
-  .board {
-    padding: 14px;
-  }
-
   .board__grid {
-    grid-template-columns: 22px repeat(10, 45px);
-    gap: 3px;
+    grid-template-columns: 24px repeat(10, 34px);
+    gap: 4px;
   }
 
   .board__corner {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 
   .board__row-header {
-    width: 22px;
+    width: 24px;
   }
 
   .board__col-header {
-    height: 22px;
+    height: 24px;
     font-size: 10px;
   }
 
   .board__cell {
     aspect-ratio: auto;
-    width: 45px;
-    height: 45px;
+    width: 34px;
+    height: 34px;
     font-size: 14px;
-  }
-
-  .board__cell--miss::after {
-    width: 7px;
-    height: 7px;
   }
 }

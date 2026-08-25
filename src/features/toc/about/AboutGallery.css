@@ -59,11 +59,11 @@
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid var(--wb-hairline);
+  border: 2px solid var(--md-rule);
 }
 
 .about-gallery__tile:not(:disabled):hover .about-gallery__tile-img {
-  border-color: var(--wb-accent-primary);
+  border-color: var(--md-accent-hover);
 }
 
 .about-gallery__tile-empty {
@@ -71,18 +71,18 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 4 / 3;
-  border: 1px solid var(--wb-muted);
-  background: var(--wb-divider);
+  border: 2px solid var(--md-text-62);
+  background: var(--md-ink-raised);
 }
 
 .about-gallery__tile-label {
   display: block;
   margin-top: 8px;
-  font-family: var(--wb-font-mono);
+  font-family: var(--md-font-mono);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-80);
 }
 
 .about-gallery__viewer {
@@ -100,16 +100,16 @@
   max-width: 100%;
   max-height: 60vh;
   width: auto;
-  border: 1px solid var(--wb-hairline);
+  border: 2px solid var(--md-rule);
 }
 
 .about-gallery__viewer-caption {
   max-width: 60ch;
   margin: 0;
-  font-family: var(--wb-font-display);
+  font-family: var(--md-font-display);
   font-style: italic;
   font-size: 15px;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-80);
   text-align: center;
 }
 
@@ -139,5 +139,5 @@
 }
 
 .about-gallery__filmstrip-item--active {
-  border-color: var(--wb-accent-primary);
+  border-color: var(--md-accent-hover);
 }

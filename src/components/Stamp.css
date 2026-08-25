@@ -1,16 +1,18 @@
 /*
- * Efekt "pieczątki" bez gradientów/cieni/tekstur (zgodnie z "flat" z Editorial Garage) — sama
- * rotacja (ustawiana przez konsumenta, patrz .masthead__stamp/.spec-plate__stamp), podwójna
- * ramka i pełne (nieprzezroczyste) tło --wb-paper, żeby nie "prześwitywało" tego, co pod spodem.
+ * Efekt "pieczątki" bez gradientów/cieni/tekstur — sama rotacja (ustawiana przez konsumenta,
+ * patrz komponenty, które ją importują), podwójna ramka i pełne (nieprzezroczyste) tło
+ * --md-ink-raised, żeby nie "prześwitywało" tego, co pod spodem. Zaktualizowane na tokeny
+ * "Atrament" (etap 7) — jedyny pozostały konsument to AboutGallery (dział bez zdjęć jeszcze) i
+ * TourGuideDetail, oba na ciemnym tle, stąd ciemna, nie jasna, opaque powierzchnia.
  */
 .stamp {
-  font-family: var(--wb-font-mono);
+  font-family: var(--md-font-mono);
   text-transform: uppercase;
   text-align: center;
   line-height: 1.3;
-  border: 3px double var(--wb-crimson);
-  background: var(--wb-paper);
-  color: var(--wb-crimson);
+  border: 3px double var(--md-accent-hover);
+  background: var(--md-ink-raised);
+  color: var(--md-accent-hover);
   padding: 7px 12px;
   white-space: nowrap;
 }

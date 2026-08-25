@@ -672,7 +672,7 @@ trzech układów: Siatka / Indeks / Warstwy — pełny kontekst decyzji w
 `design_handoff_landing_atrament/Kierunki 2026.dc.html`). Ta sekcja zostaje jako historyczny
 zapis, wdrażanie w toku (patrz "Design system — Atrament" niżej, sekcja "Plan wdrożenia").
 
-## Design system — "Workbench" (aktualny kierunek wizualny portfolio shell, od 2026-08-14)
+## Design system — "Workbench" (pełny opis, historyczny — zastąpiony "Atramentem" 2026-08-24)
 
 Zastąpił Editorial Garage (patrz sekcja wyżej) po realnym feedbacku, że ten pierwszy kierunek
 wyszedł zbyt ubogo/generycznie jak na portfolio. Ustalony przez porównanie 4 klikalnych makiet
@@ -797,10 +797,12 @@ Typografia: **Archivo** 800 (nagłówki, uppercase) i 400 (tekst), **IBM Plex Mo
 
 Sekcja po sekcji, nie jeden duży skok — inaczej niż Editorial Garage → Workbench (prosty reskin,
 ta sama struktura), Atrament zmienia strukturę niektórych sekcji całkowicie (indeks projektów,
-szuflada statków), więc tokeny **przejściowo współistnieją**: `--md-*` (nowe) obok `--wb-*`
-(stare, niezmienione), dopóki dana sekcja nie zostanie faktycznie przepisana — patrz komentarz
-nagłówkowy w `tokens.css`. To samo dotyczy fontów w `index.html` (Archivo + Big Shoulders
-Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościowo po etapie 7.
+szuflada statków), więc przez etapy 1-6 tokeny **przejściowo współistniały**: `--md-*` (nowe)
+obok `--wb-*` (stare, niezmienione), dopóki dana sekcja nie została faktycznie przepisana. To
+samo dotyczyło fontów w `index.html` (Archivo + Big Shoulders Display + IBM Plex Sans ładowane
+naraz). **Etap 7 (2026-08-24) zakończył migrację całościowo** — ostatnie 4 pliki przepisane,
+`--wb-*` i stare fonty usunięte w całości; poniższa paleta/typografia jest teraz jedynym systemem
+na całej stronie, bez żadnego pozostałego Workbenchowego wyjątku.
 
 1. ✅ **Fundament + Masthead + Hero + Stopka** (2026-08-24) — tokeny/fonty współistnieją ze
    starymi (patrz wyżej); masthead: usunięty "W budowie"/VOL, dodany PL/EN (na razie wyłącznie
@@ -1016,11 +1018,60 @@ Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościo
    1 w mastheadzie) dostał własny leniwie ładowany chunk zamiast siedzieć w głównym bundlu (dowód,
    że sprzątanie realnie zmniejszyło eager bundle, nie tylko usunęło pliki), zero przewijania w
    poziomie na 375px i 1280px (po poprawce gap), `tsc`/`lint`/`build` czyste.
-7. ⏳ Sprzątanie: usunięcie `--wb-*`/Big Shoulders Display/IBM Plex Sans, gdy nic już ich nie
-   używa (jedyni pozostali konsumenci: `SectionDetail`/`AboutGallery`/`InsiderDetail`/
-   `TourGuideDetail`/`.landing`'s own base tło+tekstura — świadomie NIE ruszone w etapie 6, bo
-   `SectionDetail`'s jasna, kremowa stylistyka wciąż wizualnie zależy od jasnego tła `.landing`
-   pod spodem).
+7. ✅ **Sprzątanie: ostatni Workbench usunięty, redesign "Atrament" ukończony** (2026-08-24) —
+   wszystkie 4 pozostałe pliki restylowane: `SectionDetail.css`, `AboutGallery.css`,
+   `InsiderDetail.css`, `TourGuideDetail.css`, plus `Stamp.css`, `Board.css`
+   (`battleship-drawer/`), `index.css` (`body`, `.link-dashed`) i `App.css` (`.landing`).
+   Mechaniczna zamiana tokenów (`--wb-ink`→`--md-paper`, `--wb-ink-secondary`→`--md-text-80`,
+   `--wb-hairline(-inner)`→`--md-rule`, `--wb-accent-primary`/`--wb-accent-secondary`→
+   `--md-accent-hover`, `--wb-font-display`→`--md-font-display`, `--wb-font-mono`→
+   `--md-font-mono`) + podniesienie każdej `1px solid` obwódki do `2px` (konwencja Atramentu:
+   "wszystkie linie 2px, nigdy hairline" — nie tylko zamiana kolorów, żeby faktycznie pasowało do
+   reszty strony). Dwa świadome, udokumentowane wyjątki NIE ruszone (potwierdzone jeszcze raz
+   przed edycją, że to wciąż aktualne, nie przypadkowo ominięte): `#0a0e14`/`#7c8794` w
+   `InsiderDetail.css` — realny kolor tła/tekstu osadzonego widgetu Insidera, musi się zgadzać z
+   jego własnym `--insider-bg`, nie z tokenem tej strony.
+   **`Board.css` (battleship-drawer/) scalony z powrotem do jednego pliku** — do tego etapu miał
+   nadal Workbenchowe (okrągłe, kraftowe) wartości jako "bazowe", nadpisywane wyłącznie przez ~80
+   linii selektorów potomkowych w `BattleshipDrawer.css` (z etapu 4, bo Board wtedy jeszcze
+   teoretycznie mógł być używany gdzie indziej). Skoro Board jest dziś używany WYŁĄCZNIE wewnątrz
+   `.battleship-drawer`, ta duplikacja nie miała już uzasadnienia — bazowe wartości w `Board.css`
+   są teraz natywnie "Atrament", nadpisania w `BattleshipDrawer.css` usunięte (jedna z nich,
+   `.battleship-drawer .board`, okazała się całkowitym no-opem po scaleniu — usunięta też).
+   **`.landing` dostał właściwą teksturę "ziarna" z handoffu**, do tego etapu jeszcze
+   niewdrożoną — cała ta migracja zachowywała dotąd starą, kropkowaną teksturę korkowej płyty
+   Workbencha, tylko przemianowaną na nowe tokeny (etap 1). Prawdziwe ziarno filmowe z handoffu
+   (`radial-gradient(...), background-size:5px 5px, opacity:.5`) zaimplementowane jako `.landing::before`,
+   nie bezpośrednio `background-image` na `.landing` — realny namysł podczas budowy: skoro każda
+   sekcja ma własne, w pełni kryjące tło, ziarno leżące POD treścią (naturalny wybór dla
+   pseudo-elementu z `position:fixed` bez z-index) byłoby zawsze całkowicie zasłonięte i w ogóle
+   niewidoczne — poprawione jawnym `z-index:30` (wyżej niż masthead:20), żeby faktycznie leżało
+   NAD wszystkim, tak jak `opacity:.5` (subtelny nalot, nie warstwa tła) sugeruje, że powinno.
+   `pointer-events:none` (z samego handoffu) — nigdy nie przechwytuje kliknięć/hoverów pod spodem,
+   zweryfikowane żywo dalszym klikaniem kafli/wierszy bez problemu.
+   `body`/`.link-dashed` (`index.css`) też przepisane — `body`'s tło/kolor/font były ostatnim
+   miejscem w całej stronie wciąż niosącym Workbenchowe `--wb-divider`/`--wb-ink`/`--wb-font-sans`
+   jako fallback dla wszystkiego, co nie ustawia własnego fontu jawnie.
+   **Fonty**: `index.html`'s Google Fonts `<link>` już od etapu 1 ładował Archivo/IBM Plex Mono
+   OBOK (nie zamiast) Big Shoulders Display/IBM Plex Sans — jawnie udokumentowane jako
+   przejściowe wtedy. Ten etap w końcu przyciął `<link>` do samych Archivo+IBM Plex Mono, skoro
+   żaden plik nigdzie w repo nie odwołuje się już do tamtych dwóch.
+   **Prawdziwy, złapany na żywo bug narzędzia, nie logiki**: `npm run build` padał z realnym
+   błędem składni w `lightningcss`'s minifierze — nie w prawdziwym CSS, tylko w treści KOMENTARZA
+   w `tokens.css`, zawierającego dosłowny tekst z podwójnym myślnikiem tuż przed nawiasem
+   zamykającym (wzorzec przypominający custom-property mimo bycia wewnątrz `/* */`). Naprawione
+   przeformułowaniem tego jednego zdania komentarza, nie ucieczką znaków ani wyłączaniem
+   minifikacji — warty zapamiętania na przyszłość: unikać dosłownego `--cokolwiek` tuż przed `)`
+   wewnątrz komentarzy CSS w tym projekcie, minifier realnie się na tym wywraca.
+   Zweryfikowano żywo: klik wiersza "Insider" otwiera `SectionDetail` w pełni ciemnym motywem z
+   nadal poprawnie renderującym się osadzonym widgetem Insidera (i lepiej wygląda niż wcześniej —
+   ciemny widget na ciemnej stronie zamiast ciemnej wyspy na jasnym kraftowym tle), kafel
+   "Aktywność" w `AboutSection` otwiera `AboutGallery` z czytelnym zdjęciem/podpisem/filmstripem
+   na ciemnym tle, ziarno realnie obecne w DOM-ie (`getComputedStyle` na `::before`:
+   `position:fixed`, `z-index:30`, `opacity:0.5`, poprawnie rozwiązany `color-mix()` ≈ `--md-paper`
+   przy 10% krycia), zero przewijania w poziomie na 375px, `grep -rn "var(--wb-" src/` zwraca
+   zero wyników w całym repo, `tsc`/`lint`/`build` czyste (po naprawie buga minifiera).
+   **Redesign "Atrament" ukończony w całości** — wszystkie 7 etapów z tego planu zrobione.
 
 ## Otwarte pytania / do ustalenia w kolejnych krokach
 

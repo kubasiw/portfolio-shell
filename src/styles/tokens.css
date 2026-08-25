@@ -1,19 +1,18 @@
 /*
- * Design tokens — "Atrament" ZASTĘPUJE "Workbench" (od 2026-08-24), redesign zamówiony u Cloud
+ * Design tokens — "Atrament" ZASTĄPIŁ "Workbench" (2026-08-24), redesign zamówiony u Cloud
  * Design, pakiet handoff w (zignorowanym w git) design_handoff_landing_atrament/README.md. Zmiana
- * strukturalna, nie tylko kolorystyczna: gra w statki przestaje blokować treść, kafelki-fiszki
- * zamieniają się w pionowy indeks projektów. Nazwy zmiennych --md-* (Modernist — nazwa design
+ * strukturalna, nie tylko kolorystyczna: gra w statki przestała blokować treść, kafelki-fiszki
+ * zamieniły się w pionowy indeks projektów. Nazwy zmiennych --md-* (Modernist — nazwa design
  * systemu z handoffu). Pełne uzasadnienie kierunku w PORTFOLIO_PLAN.md.
  *
  * Wartości i uzasadnienia kontrastu przepisane wprost z handoffu (już tam realnie policzone przez
  * Cloud Design) — patrz design_handoff_landing_atrament/README.md, sekcja "Design Tokens".
  *
- * PRZEJŚCIOWO oba zestawy tokenów współistnieją (--wb-* niżej, niezmienione) — w przeciwieństwie
- * do Editorial Garage -> Workbench (prosty reskin, ta sama struktura) ten redesign jest
- * strukturalny sekcja po sekcji (patrz PORTFOLIO_PLAN.md, plan wdrożenia), więc jeszcze
- * niezmigrowane części strony (na razie: cały Toc — plansza, karty, statki) muszą dalej działać
- * na starych tokenach, dopóki nie zostaną przepisane. Do usunięcia w całości, gdy migracja
- * wszystkich sekcji się skończy.
+ * Migracja szła sekcja po sekcji (etapy 1-6, patrz PORTFOLIO_PLAN.md, plan wdrożenia): przez
+ * jakiś czas oba zestawy tokenów współistniały tutaj, dawny prefiks Workbencha obok tego. Etap 7
+ * (2026-08-24) przepisał ostatnie 4 pliki (SectionDetail, AboutGallery, InsiderDetail,
+ * TourGuideDetail) i usunął cały dawny blok stąd — pełna historia w git log, jeśli kiedyś
+ * potrzebna.
  */
 :root {
   /* powierzchnie */
@@ -43,25 +42,4 @@
      jednym kroju, Big Shoulders Display i IBM Plex Sans wychodzą z użycia) */
   --md-font-display: 'Archivo', -apple-system, 'Segoe UI', sans-serif; /* nagłówki (800) i tekst (400) */
   --md-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; /* etykiety/dane */
-
-  /* --- "Workbench" (poprzedni system), przejściowo, patrz komentarz nagłówkowy --- */
-  --wb-paper: #bdb097;
-  --wb-card: #faf6ee;
-  --wb-divider: #e2dbc9;
-  --wb-ink: #241f1a;
-  --wb-ink-secondary: #463d33;
-  --wb-hairline: #635745;
-  --wb-hairline-inner: #584d38;
-  --wb-accent-primary: #6e2818;
-  --wb-accent-secondary: #4f3d10;
-  --wb-muted: #756a54;
-  --wb-crimson: #7a2a24;
-  --wb-navy: #1e3a5f;
-  --wb-pin: #e8b923;
-  --wb-miss-bg: #a89c81;
-  --wb-preview-bg: #cabe9f;
-  --wb-unlocked-bg: #c9cead;
-  --wb-font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
-  --wb-font-sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
-  --wb-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 }

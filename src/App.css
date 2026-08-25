@@ -18,27 +18,39 @@
   min-height: 100vh;
   min-height: 100dvh;
   min-height: calc(var(--app-vh, 1vh) * 100);
-  /*
-   * Kropkowana tekstura korka/płyty perforowanej — jedyny w tym designie background-image (poza
-   * pinezkami/taśmą na poszczególnych elementach). radial-gradient, nie plik graficzny — skaluje
-   * się bez utraty jakości, zero requestu sieciowego.
-   * Realny błąd (zgłoszony przez właściciela): pierwsza wersja używała pełnej barwy
-   * --wb-hairline — dobrana pod kontrast obwódek (3:1, celowo dobrze widoczna), zupełnie złe
-   * kryterium dla dekoracyjnej tekstury pod tekstem (hero siedzi wprost na tym tle, karty/stopka/
-   * nagłówek mają własne pełne tło i dotów nie widać). Kontrast matematycznie "przechodził", ale
-   * czytelność w praktyce ucierpiała — niska krycie naprawia to bez zmiany koloru dotów.
-   * color-mix(), nie osobna zmienna z wpisaną na sztywno wartością rgb --wb-hairline (2026-08-14,
-   * audyt dobrych praktyk) — jedno źródło prawdy: gdyby --wb-hairline kiedyś się zmienił, ten dot
-   * automatycznie by za nim podążył, zamiast po cichu się rozjechać. Ten sam wzorzec co
-   * już sprawdzony w tour-guide (motyw regionalny na plan-summary).
-   */
-  background-color: var(--wb-paper);
+  background-color: var(--md-ink);
+  position: relative;
+}
+
+/*
+ * Ziarno filmowe (etap 7, 2026-08-24) — ostatni kawałek wizualnego języka "Atrament" z handoffu,
+ * do teraz niewdrożony (do tego etapu .landing miała jeszcze starą, kropkowaną teksturę
+ * korkowej płyty z Workbencha). Dokładnie wg specyfikacji handoffu: `radial-gradient(circle at
+ * 1px 1px, rgba(243,242,242,.10) 1px, transparent 0)`, `background-size: 5px 5px`, `opacity: .5`
+ * — kolor kropki to dosłownie --md-paper przy 10% krycia, więc color-mix() zamiast wpisanej na
+ * sztywno wartości rgb (jedno źródło prawdy, ten sam wzorzec co wszędzie indziej w tym projekcie
+ * i w tour-guide). Osobny `::before`, nie `background-image` bezpośrednio na `.landing` — spec
+ * chce OSOBNEGO `opacity: .5` tylko dla ziarna, nie dla całego tła (pełny `background-color`
+ * strony musi zostać w 100% kryjący, żeby nic nigdy przez niego nie prześwitywało).
+ * `pointer-events: none` — czysto dekoracyjne, nigdy nie ma przechwytywać kliknięć/hoverów
+ * elementów pod spodem. Musi leżeć NAD całą treścią (stąd wysoki z-index, wyżej niż masthead:20)
+ * — sekcje mają własne, w pełni kryjące tła (--md-ink/--md-accent), więc leżąc pod nimi ziarno
+ * byłoby zawsze zasłonięte i w ogóle niewidoczne, a `opacity: .5` (subtelny nalot na wszystkim,
+ * nie warstwa tła) nie miałoby żadnego sensu.
+ */
+.landing::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 30;
   background-image: radial-gradient(
     circle at 1px 1px,
-    color-mix(in srgb, var(--wb-hairline) 28%, transparent) 1px,
+    color-mix(in srgb, var(--md-paper) 10%, transparent) 1px,
     transparent 0
   );
-  background-size: 24px 24px;
+  background-size: 5px 5px;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /*

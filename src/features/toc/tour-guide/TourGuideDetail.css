@@ -54,15 +54,15 @@
 
 .tour-guide-detail__block p {
   margin: 0.5rem 0 0;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-80);
   line-height: 1.6;
 }
 
 .tour-guide-detail__heading {
   margin: 0;
-  font-family: var(--wb-font-display);
+  font-family: var(--md-font-display);
   font-size: 1rem;
-  color: var(--wb-ink);
+  color: var(--md-paper);
 }
 
 .tour-guide-detail__tags {
@@ -74,21 +74,22 @@
 
 .tour-guide-detail__tag {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--wb-hairline-inner);
-  font-family: var(--wb-font-mono);
+  border: 2px solid var(--md-rule);
+  font-family: var(--md-font-mono);
   font-size: 0.75rem;
-  color: var(--wb-ink);
+  color: var(--md-paper);
 }
 
 .tour-guide-detail__external-link {
   align-self: flex-start;
-  color: var(--wb-accent-primary);
+  color: var(--md-accent-hover);
 }
 
 /*
- * .tour-guide-widget (ProjectCard.css) already sets border/isolation/overflow — this gives it a
- * genuinely taller box for the more generous space a detail page can give it, vs. the tile's
- * compact 320px. Real bug caught live, three layers deep:
+ * .tour-guide-widget (MicrofrontendBand.css, gdzie <TourGuideWidget /> jest dziś renderowany —
+ * nie ProjectCard.css, usunięty w etapie 6 razem z resztą starego pinboardu) already sets
+ * border/isolation/overflow — this gives it a genuinely taller box for the more generous space a
+ * detail page can give it, vs. the tile's compact 320px. Real bug caught live, three layers deep:
  * (1) `min-height` alone left the box's own child unable to resolve a percentage height against
  *     it — a percentage `height` can only resolve against a parent with a *definite* height, not
  *     a min-height-only one — fixed with a real `height` here instead.
@@ -130,9 +131,9 @@
 
 .tour-guide-detail__callout {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--wb-accent-secondary);
-  font-family: var(--wb-font-mono);
+  border: 2px solid var(--md-accent-hover);
+  font-family: var(--md-font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.03em;
-  color: var(--wb-accent-secondary);
+  color: var(--md-accent-hover);
 }

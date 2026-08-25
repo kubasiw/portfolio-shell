@@ -10,11 +10,12 @@ body,
 
 body {
   margin: 0;
-  /* --wb-divider (nie --wb-paper) — "blat", na którym leży strona; .landing dostaje własne,
-     jaśniejsze tło + hairline po bokach, żeby ta różnica była widoczna na szerokich ekranach. */
-  background: var(--wb-divider);
-  color: var(--wb-ink);
-  font-family: var(--wb-font-sans);
+  /* Zgodne z .landing (samo tło strony) — na Atramencie nie ma już rozróżnienia "blat pod
+     stroną"/"strona" jak w Workbenchu (--wb-divider vs --wb-paper); jeden ciemny atrament
+     wszędzie, żeby nie było widać żadnego szwu przy elastycznym overscrollu. */
+  background: var(--md-ink);
+  color: var(--md-paper);
+  font-family: var(--md-font-display);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -30,18 +31,18 @@ a {
   background: none;
   border: none;
   padding: 0;
-  font-family: var(--wb-font-mono);
+  font-family: var(--md-font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-62);
   text-decoration: underline dashed;
   text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .link-dashed:hover {
-  color: var(--wb-accent-primary);
+  color: var(--md-accent-hover);
 }
 
 /*

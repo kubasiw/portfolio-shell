@@ -8,27 +8,28 @@
 }
 
 .section-detail__title {
-  font-family: var(--wb-font-display);
-  font-weight: 700;
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
   font-size: 28px;
+  color: var(--md-paper);
   margin: 0 0 8px;
 }
 
-/* Pełny opis sekcji — na karcie w spisie treści ten sam tekst bywa obcięty elipsą
-   (.spec-plate__description, line-clamp), więc tu zawsze widać go w całości. */
 .section-detail__description {
   max-width: 62ch;
   margin: 0 0 24px;
   font-size: 14px;
   line-height: 1.6;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-80);
 }
 
 .section-detail__placeholder {
   margin: 0;
   padding: 48px 24px;
-  border: 1px dashed var(--wb-hairline-inner);
+  border: 2px dashed var(--md-rule);
   text-align: center;
   font-size: 14px;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-62);
 }

@@ -19,15 +19,15 @@
 
 .insider-detail__block p {
   margin: 0.5rem 0 0;
-  color: var(--wb-ink-secondary);
+  color: var(--md-text-80);
   line-height: 1.6;
 }
 
 .insider-detail__heading {
   margin: 0;
-  font-family: var(--wb-font-display);
+  font-family: var(--md-font-display);
   font-size: 1rem;
-  color: var(--wb-ink);
+  color: var(--md-paper);
 }
 
 .insider-detail__tags {
@@ -39,15 +39,15 @@
 
 .insider-detail__tag {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--wb-hairline-inner);
-  font-family: var(--wb-font-mono);
+  border: 2px solid var(--md-rule);
+  font-family: var(--md-font-mono);
   font-size: 0.75rem;
-  color: var(--wb-ink);
+  color: var(--md-paper);
 }
 
 .insider-detail__external-link {
   align-self: flex-start;
-  color: var(--wb-accent-primary);
+  color: var(--md-accent-hover);
 }
 
 /*
@@ -58,7 +58,7 @@
 .insider-detail__app {
   height: min(85vh, 800px);
   overflow-y: auto;
-  border: 1px solid var(--wb-hairline-inner);
+  border: 2px solid var(--md-rule);
   /*
    * <insider-app> itself sets its own dark background (see insider/src/main-element.ts's :host
    * rule), but this container's own box is still visible — and transparent, showing this page's
@@ -69,9 +69,9 @@
    * one container, not as a shared token, and matches insider's own --insider-bg value exactly.
    */
   background: #0a0e14;
-  /* Same isolation fix as .tour-guide-widget/.modal — contains the widget's own internal
-     z-index (sticky header/footer inside its shadow root) to this box instead of competing with
-     the rest of the document. */
+  /* Same isolation fix as .tour-guide-widget (MicrofrontendBand.css) — contains the widget's own
+     internal z-index (sticky header/footer inside its shadow root) to this box instead of
+     competing with the rest of the document. */
   isolation: isolate;
 }
 
@@ -79,10 +79,12 @@
   margin: 0;
   padding: 3rem 1.5rem;
   text-align: center;
-  /* Sits directly on .insider-detail__app's dark backstop background (see above), not this
-     page's own paper background — needs a light color to stay readable, not --wb-ink-secondary. */
+  /* Sits directly on .insider-detail__app's own hardcoded dark backstop (see above, #0a0e14 —
+     matches insider's own widget background exactly, not this page's --md-ink, which is a
+     different dark value) — kept as its own matching hardcoded color rather than --md-text-80
+     for the same reason the backstop itself stays hardcoded. */
   color: #7c8794;
-  font-family: var(--wb-font-sans);
+  font-family: var(--md-font-display);
 }
 
 insider-app {
