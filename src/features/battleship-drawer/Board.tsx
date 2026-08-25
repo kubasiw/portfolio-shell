@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from 'react';
+import { useTranslate } from '../../i18n/LanguageContext';
 import { ARTILLERY_RADIUS, BOARD_COLS, BOARD_ROWS, getSquareArea } from './use-battleship';
 import type { CellStatus, Coordinate } from './use-battleship';
 import './Board.css';
@@ -9,14 +10,18 @@ interface BoardProps {
   artilleryArmed: boolean;
 }
 
-function cellLabel(coordinate: Coordinate, status: CellStatus): string {
+function cellLabel(
+  coordinate: Coordinate,
+  status: CellStatus,
+  t: (pl: string, en: string) => string,
+): string {
   if (status === 'hit') {
-    return `Pole ${coordinate}, trafienie`;
+    return t(`Pole ${coordinate}, trafienie`, `Cell ${coordinate}, hit`);
   }
   if (status === 'miss') {
-    return `Pole ${coordinate}, pudło`;
+    return t(`Pole ${coordinate}, pudło`, `Cell ${coordinate}, miss`);
   }
-  return `Pole ${coordinate}, nieodkryte`;
+  return t(`Pole ${coordinate}, nieodkryte`, `Cell ${coordinate}, unknown`);
 }
 
 function cellMark(status: CellStatus): string {
@@ -24,6 +29,7 @@ function cellMark(status: CellStatus): string {
 }
 
 export function Board({ cellStatus, onFire, artilleryArmed }: BoardProps) {
+  const t = useTranslate();
   const [hovered, setHovered] = useState<Coordinate | null>(null);
 
   const previewArea = useMemo((): ReadonlySet<Coordinate> => {
@@ -40,7 +46,10 @@ export function Board({ cellStatus, onFire, artilleryArmed }: BoardProps) {
     <div
       className={`board ${artilleryArmed ? 'board--armed' : ''}`}
       role="group"
-      aria-label="Plansza w statki — kliknij pole, aby odkryć notkę „za kulisami”"
+      aria-label={t(
+        'Plansza w statki — kliknij pole, aby odkryć notkę „za kulisami”',
+        'Battleship board — click a cell to reveal a "behind the scenes" note',
+      )}
     >
       <div className="board__grid">
         <div className="board__corner" aria-hidden="true" />
@@ -82,7 +91,7 @@ export function Board({ cellStatus, onFire, artilleryArmed }: BoardProps) {
                     setHovered((current) => (current === coordinate ? null : current))
                   }
                   disabled={status !== 'unknown' && !artilleryArmed}
-                  aria-label={cellLabel(coordinate, status)}
+                  aria-label={cellLabel(coordinate, status, t)}
                 >
                   {cellMark(status)}
                 </button>

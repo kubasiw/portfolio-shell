@@ -1,3 +1,4 @@
+import { useTranslate } from '../../i18n/LanguageContext';
 import type { SkillGroup, SkillPlateData, SkillTag } from './skills-data';
 import { SKILL_PLATES } from './skills-data';
 import './SkillsSection.css';
@@ -6,18 +7,28 @@ import './SkillsSection.css';
 // src/assets/, PDF nie potrzebuje żadnego przetwarzania przez bundler, tylko realnego URL-a.
 const CV_URL = '/cv/Jakub_Siwinski_CV.pdf';
 
-function Tag({ label, planned }: SkillTag) {
-  return <span className={`skills-section__tag ${planned ? 'skills-section__tag--planned' : ''}`}>{label}</span>;
+function Tag({ labelPl, labelEn, planned }: SkillTag) {
+  const t = useTranslate();
+  return (
+    <span className={`skills-section__tag ${planned ? 'skills-section__tag--planned' : ''}`}>
+      {t(labelPl, labelEn)}
+    </span>
+  );
 }
 
-function SkillGroupBlock({ label, note, tags }: SkillGroup) {
+function SkillGroupBlock({ labelPl, labelEn, notePl, noteEn, tags }: SkillGroup) {
+  const t = useTranslate();
   return (
     <div className="skills-section__group">
-      <span className="skills-section__group-label">{label}</span>
-      {note && <p className="skills-section__group-note skills-section__group-note--lead">{note}</p>}
+      <span className="skills-section__group-label">{t(labelPl, labelEn)}</span>
+      {notePl && noteEn && (
+        <p className="skills-section__group-note skills-section__group-note--lead">
+          {t(notePl, noteEn)}
+        </p>
+      )}
       <div className="skills-section__tag-row">
         {tags.map((tag) => (
-          <Tag key={tag.label} {...tag} />
+          <Tag key={tag.labelPl} {...tag} />
         ))}
       </div>
     </div>
@@ -30,29 +41,32 @@ interface SkillColumnProps {
 }
 
 function SkillColumn({ plate, right }: SkillColumnProps) {
-  const { title, pullQuote, pullQuotePrimary, subtitle, groups } = plate;
+  const t = useTranslate();
+  const { titlePl, titleEn, pullQuotePl, pullQuoteEn, pullQuotePrimary, subtitlePl, subtitleEn, groups } = plate;
   return (
     <div className={`skills-section__column ${right ? 'skills-section__column--right' : ''}`}>
-      <span className="skills-section__kicker">{title}</span>
+      <span className="skills-section__kicker">{t(titlePl, titleEn)}</span>
       <p
         className={`skills-section__pull-quote ${
           pullQuotePrimary ? 'skills-section__pull-quote--primary' : ''
         }`}
       >
-        {pullQuote}
+        {t(pullQuotePl, pullQuoteEn)}
       </p>
-      {subtitle && <p className="skills-section__subtitle">{subtitle}</p>}
+      {subtitlePl && subtitleEn && <p className="skills-section__subtitle">{t(subtitlePl, subtitleEn)}</p>}
       {groups.map((group) => (
-        <SkillGroupBlock key={group.label} {...group} />
+        <SkillGroupBlock key={group.labelPl} {...group} />
       ))}
       {right && (
         <div className="skills-section__cv-row">
           <p className="skills-section__cv-text">
-            Pełne CV — doświadczenie zawodowe, projekty klienckie, certyfikaty — do pobrania jako
-            PDF.
+            {t(
+              'Pełne CV — doświadczenie zawodowe, projekty klienckie, certyfikaty — do pobrania jako PDF.',
+              'Full CV — work experience, client projects, certifications — downloadable as a PDF.',
+            )}
           </p>
           <a className="btn-outline" href={CV_URL} download>
-            Pobierz CV (PDF) ↓
+            {t('Pobierz CV (PDF) ↓', 'Download CV (PDF) ↓')}
           </a>
         </div>
       )}
@@ -61,10 +75,11 @@ function SkillColumn({ plate, right }: SkillColumnProps) {
 }
 
 export function SkillsSection() {
+  const t = useTranslate();
   const [core, built] = SKILL_PLATES;
 
   return (
-    <section className="skills-section" id="umiejetnosci" aria-label="Umiejętności">
+    <section className="skills-section" id="umiejetnosci" aria-label={t('Umiejętności', 'Skills')}>
       <div className="skills-section__columns">
         <SkillColumn plate={core} />
         <SkillColumn plate={built} right />
@@ -72,17 +87,20 @@ export function SkillsSection() {
 
       <div className="skills-section__ai-callout-wrap">
         <div className="skills-section__ai-callout">
-          <span className="skills-section__ai-callout-label">Jak naprawdę pracuję z AI</span>
+          <span className="skills-section__ai-callout-label">
+            {t('Jak naprawdę pracuję z AI', 'How I actually work with AI')}
+          </span>
           <p>
-            Na co dzień, w pracy nad dużym projektem, korzystam z GitHub Copilota —
-            doprecyzowuję prompty, wskazuję wzorce, ustalam dobre praktyki i role, w jakich model
-            ma rozumować. To nie jest nowa umiejętność odkryta przy tym portfolio.
+            {t(
+              'Na co dzień, w pracy nad dużym projektem, korzystam z GitHub Copilota — doprecyzowuję prompty, wskazuję wzorce, ustalam dobre praktyki i role, w jakich model ma rozumować. To nie jest nowa umiejętność odkryta przy tym portfolio.',
+              "Day to day, on a large work project, I use GitHub Copilot — refining prompts, pointing out patterns, setting good practices and the roles the model should reason in. This isn't a new skill discovered while building this portfolio.",
+            )}
           </p>
           <p className="skills-section__ai-callout-secondary">
-            To portfolio pokazuje bardziej autonomiczny wariant tej samej pracy: Claude Code
-            prowadzi całe zadania — od infrastruktury po design system — a ja nadal kieruję
-            pracami i sprawdzam każdą decyzję, tylko na poziomie zadania, nie pojedynczej
-            linijki.
+            {t(
+              'To portfolio pokazuje bardziej autonomiczny wariant tej samej pracy: Claude Code prowadzi całe zadania — od infrastruktury po design system — a ja nadal kieruję pracami i sprawdzam każdą decyzję, tylko na poziomie zadania, nie pojedynczej linijki.',
+              'This portfolio shows a more autonomous version of the same work: Claude Code drives whole tasks — from infrastructure to the design system — while I still steer the work and check every decision, just at the level of a task, not a single line.',
+            )}
           </p>
         </div>
       </div>

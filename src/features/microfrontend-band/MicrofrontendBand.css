@@ -83,6 +83,14 @@
   margin: 0;
   min-height: 0;
   border: none;
+  /* Realny feedback właściciela: mapa wewnątrz miała zaokrąglone rogi (tour-guide's own default,
+     Bootstrap $border-radius), ale ten kontener ma kąty proste (Atrament: --md-radius:0 wszędzie)
+     — nie pasowały do siebie. Custom property, nie selektor (jedyny sposób, żeby cokolwiek stąd
+     dotarło do środka shadow roota tour-guide) — ten sam mechanizm co już istniejące
+     --poi-map-height, dodane po stronie tour-guide (poi-map.scss) razem z tą zmianą. WYMAGA
+     przebudowania i wdrożenia tour-guide na VPS, żeby faktycznie zadziałało na żywo — sama ta
+     linijka jest nieszkodliwa/nieaktywna, dopóki tamta strona się nie zaktualizuje. */
+  --poi-map-radius: 0;
 }
 
 @media (max-width: 900px) {

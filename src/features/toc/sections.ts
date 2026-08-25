@@ -8,38 +8,44 @@
 // `inProgress` — wszystkie służyły wyłącznie już nieistniejącemu ProjectCard/pinboardowi.
 export interface Section {
   id: string;
-  title: string;
-  description: string;
+  titlePl: string;
+  titleEn: string;
+  descriptionPl: string;
+  descriptionEn: string;
   hasDetailView: boolean;
 }
 
+// "serwisant" świadomie usunięty stąd (znaleziony martwy przy tej edycji, nie tylko pominięty) —
+// jego wiersz w Indeksie projektów renderuje się jako zwykły `<div>`, nie `<button>`
+// (project-rows.ts, `clickable: false`), więc `openSectionId` nigdy nie przyjmuje wartości
+// 'serwisant'; ten wpis nie miał już żadnego konsumenta.
 export const SECTIONS: Section[] = [
   {
     id: 'tour-guide',
-    title: 'Projekt 01 — Tour Guide',
-    description:
+    titlePl: 'Projekt 01 — Tour Guide',
+    titleEn: 'Project 01 — Tour Guide',
+    descriptionPl:
       'Planowanie tras podróży: Angular 22 + NestJS 11, mapy, pogoda, AI-owe opisy miejsc.',
+    descriptionEn:
+      'Trip planning: Angular 22 + NestJS 11, maps, weather, AI-written place descriptions.',
     hasDetailView: true,
   },
   {
     id: 'insider',
-    title: 'Projekt 02 — Insider',
-    description: 'Insiderskie newsy dla małych inwestorów: Vue, AI-owe podsumowania rynku.',
+    titlePl: 'Projekt 02 — Insider',
+    titleEn: 'Project 02 — Insider',
+    descriptionPl: 'Insiderskie newsy dla małych inwestorów: Vue, AI-owe podsumowania rynku.',
+    descriptionEn: 'Insider market news for small investors: Vue, AI-written market summaries.',
     hasDetailView: true,
   },
   {
-    id: 'serwisant',
-    title: 'Projekt 03 — Serwisant',
-    description: 'Asystent serwisowy samochodu: React Native, OCR książki serwisowej i faktur.',
-    // Bez własnego widoku szczegółowego jeszcze — patrz project-index/project-rows.ts
-    // (clickable: false), wiersz w Indeksie projektów nie jest klikalny.
-    hasDetailView: false,
-  },
-  {
     id: 'portfolio-shell',
-    title: 'Ten shell',
-    description:
+    titlePl: 'Ten shell',
+    titleEn: 'This shell',
+    descriptionPl:
       'Mikrofrontendy przez Web Components, deploy z pusha na własny VPS, status per serwis.',
+    descriptionEn:
+      'Microfrontends via Web Components, deploy on push to my own VPS, status per service.',
     // Wiersz w Indeksie projektów jest klikalny (project-index/project-rows.ts,
     // clickable: true), ale nie ma jeszcze własnej treści w SectionDetail (żaden branch
     // hasCustomDetail) — otwiera się z istniejącym placeholderem "Treść w przygotowaniu", tak
@@ -52,8 +58,10 @@ export const SECTIONS: Section[] = [
     // SectionDetail dalej wiedziało, co pokazać po kliknięciu kafla działu (`AboutGallery`,
     // tytuł/opis w nagłówku widoku szczegółowego).
     id: 'about',
-    title: 'O mnie',
-    description: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko.',
+    titlePl: 'O mnie',
+    titleEn: 'About',
+    descriptionPl: 'Aktywność, wycieczki i podróże, fotografia, motoryzacja, jedzonko.',
+    descriptionEn: 'Activity, trips and travel, photography, cars, food.',
     hasDetailView: true,
   },
 ];

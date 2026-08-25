@@ -8,6 +8,24 @@ body,
   height: 100%;
 }
 
+/*
+ * Realny bug zgłoszony przez właściciela: klik w link nawigacji nagłówka (#projekty/#o-mnie/...)
+ * skakał bez animacji — natywne kotwice `<a href="#...">` bez `scroll-behavior:smooth` po prostu
+ * teleportują. `scroll-padding-top` (nie `scroll-margin-top` na każdym celu osobno — jedno
+ * miejsce, nie N) kompensuje `.masthead`'s `position:sticky` (68px wysokości, zmierzone na żywo,
+ * identyczne na 375px i 1280px + mały bufor), żeby scroll nie zatrzymywał się z celem
+ * częściowo schowanym pod nagłówkiem.
+ */
+html {
+  scroll-padding-top: 84px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   margin: 0;
   /* Zgodne z .landing (samo tło strony) — na Atramencie nie ma już rozróżnienia "blat pod
@@ -55,6 +73,13 @@ a {
   font-family: var(--md-font-display);
   font-weight: 800;
   font-size: 14px;
+  /* Realny bug zgłoszony przez właściciela: tekst wyglądał nie na środku przycisku. Przyczyna nie
+     leżała w paddingu (symetryczny) — `line-height: normal` (domyślne) rezerwuje wysokość linii
+     wg metryk fontu (ascent/descent), które dla Archivo nie są wizualnie symetryczne wokół
+     glifów, więc tekst renderował się bliżej góry/dołu mimo poprawnego, wyśrodkowanego paddingu.
+     `line-height: 1` ściąga box linii ciasno do samych glifów — potwierdzone pomiarem
+     getBoundingClientRect() przed/po (odstęp góra/dół realnie się wyrównał). */
+  line-height: 1;
   text-decoration: none;
   border: 2px solid color-mix(in srgb, var(--md-paper) 55%, transparent);
   color: var(--md-paper);

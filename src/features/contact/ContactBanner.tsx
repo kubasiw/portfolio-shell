@@ -1,3 +1,4 @@
+import { useTranslate } from '../../i18n/LanguageContext';
 import './ContactBanner.css';
 
 // Adresy identyczne jak w dawnym ContactLinks.tsx (usunięty tym etapem, ta sekcja jest teraz
@@ -7,12 +8,13 @@ const CONTACT_LINKEDIN = 'https://www.linkedin.com/in/jakubsiwinski/';
 const CONTACT_GITHUB = 'https://github.com/kubasiw';
 
 export function ContactBanner() {
+  const t = useTranslate();
   return (
     <section className="contact-banner" id="kontakt" aria-labelledby="contact-banner-heading">
       <div className="contact-banner__inner">
         <h2 id="contact-banner-heading" className="contact-banner__heading">
-          <span className="contact-banner__heading-line">Zbudujmy</span>
-          <span className="contact-banner__heading-line">coś razem</span>
+          <span className="contact-banner__heading-line">{t('Zbudujmy', "Let's build")}</span>
+          <span className="contact-banner__heading-line">{t('coś razem', 'something together')}</span>
         </h2>
         <div className="contact-banner__links">
           <a className="contact-banner__link" href={`mailto:${CONTACT_EMAIL}`}>

@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useRef } from 'react';
+import { useTranslate } from '../../i18n/LanguageContext';
 import type { Section } from './sections';
 import './SectionDetail.css';
 
@@ -20,6 +21,7 @@ interface SectionDetailProps {
 }
 
 export function SectionDetail({ section, onClose, aboutPassionId = null }: SectionDetailProps) {
+  const t = useTranslate();
   const backButtonRef = useRef<HTMLButtonElement>(null);
   const hasCustomDetail =
     section.id === 'about' || section.id === 'insider' || section.id === 'tour-guide';
@@ -39,10 +41,13 @@ export function SectionDetail({ section, onClose, aboutPassionId = null }: Secti
         className="section-detail__back link-dashed"
         onClick={onClose}
       >
-        ← Wróć do spisu treści
+        {/* "Wróć do spisu treści" (etap<6) nie ma już sensu — nie ma spisu treści do powrotu,
+            zamknięcie po prostu przewija do sekcji, skąd się przyszło (patrz App.tsx,
+            handleSectionChange). Poprawione przy okazji tłumaczenia. */}
+        {t('← Wróć', '← Back')}
       </button>
-      <h2 className="section-detail__title">{section.title}</h2>
-      <p className="section-detail__description">{section.description}</p>
+      <h2 className="section-detail__title">{t(section.titlePl, section.titleEn)}</h2>
+      <p className="section-detail__description">{t(section.descriptionPl, section.descriptionEn)}</p>
       {hasCustomDetail ? (
         <Suspense fallback={null}>
           {section.id === 'about' && <AboutGallery initialPassionId={aboutPassionId} />}
@@ -50,7 +55,7 @@ export function SectionDetail({ section, onClose, aboutPassionId = null }: Secti
           {section.id === 'tour-guide' && <TourGuideDetail />}
         </Suspense>
       ) : (
-        <p className="section-detail__placeholder">Treść w przygotowaniu.</p>
+        <p className="section-detail__placeholder">{t('Treść w przygotowaniu.', 'Content coming soon.')}</p>
       )}
     </div>
   );

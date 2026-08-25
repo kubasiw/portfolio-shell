@@ -1073,6 +1073,129 @@ na całej stronie, bez żadnego pozostałego Workbenchowego wyjątku.
    zero wyników w całym repo, `tsc`/`lint`/`build` czyste (po naprawie buga minifiera).
    **Redesign "Atrament" ukończony w całości** — wszystkie 7 etapów z tego planu zrobione.
 
+## Atrament — poprawki po realnym click-through (2026-08-25)
+
+Właściciel przeszedł się po całej stronie i zgłosił listę konkretnych rzeczy — realny UX,
+znaleziony dopiero przez klikanie, nie coś, co dałoby się wyłapać samym czytaniem kodu. Zrobione
+"krok po kroku", w kolejności zgłoszenia:
+
+- **Kicker hero**: "Frontend architect · 9 lat · Kraków" → "Frontend developer/architect · 9 lat ·
+  Łódź".
+- **H1 hero**: "Cztery frameworki jeden stack" — właściciel poprosił o luźniejsze alternatywy;
+  zaproponowano 4 warianty przez `AskUserQuestion`, właściciel wybrał własny, spoza opcji: "różne
+  technologie, ten sam uparty człowiek" (3 linie: zwykła/akcent/outline, ten sam wzorzec co
+  wcześniej).
+- **"Napisz do mnie" tekst nie na środku** — realny bug, nie subiektywne odczucie: zmierzone
+  `getBoundingClientRect()`, odstęp góra/dół był realnie asymetryczny (`.btn-outline`: 11.8/13,
+  `.hero__cta-primary`: 16.2/13 przed poprawką) mimo symetrycznego paddingu. Przyczyna:
+  `line-height: normal` rezerwuje wysokość linii wg metryk fontu (ascent/descent Archivo), nie wg
+  wizualnych granic glifów. Naprawione `line-height: 1` na obu przyciskach (index.css/App.css) —
+  po poprawce odstępy realnie się wyrównały (11.8/13 → ~12/13, 12.2/12.6).
+- **PL/EN nie reagował na klik** — był wyłącznie dekoracyjny (handoff: treść EN jeszcze nie
+  istniała). Zapytany przez `AskUserQuestion` czy usunąć, czy zrobić realny wizualny toggle bez
+  tłumaczenia — właściciel odpowiedział własnym, żartobliwym "przetłumacz sobie teksty i włącz
+  przełącznik :D": pełne, prawdziwe i18n, nie tylko toggle. Patrz osobna sekcja niżej.
+- **Brak smooth scroll przy kliku w link nawigacji** — natywne kotwice `<a href="#...">` bez
+  `scroll-behavior:smooth` po prostu teleportują. Naprawione `scroll-behavior: smooth` na `html`
+  (pod `@media (prefers-reduced-motion: no-preference)`, ten sam wzorzec co reszta animacji w tym
+  projekcie) + `scroll-padding-top: 84px`, żeby cel nie chował się pod sticky masthead (68px
+  wysokości, zmierzone na żywo, identyczne na 375px i 1280px + mały bufor).
+- **"Statki — szuflada z boku" + notki**: kilka powiązanych rzeczy naraz:
+  - Nagłówek brzmiał sztucznie/technicznie ("szuflada z boku" to nazwa mechanizmu UI, nie coś, co
+    czyta się naturalnie) — zmieniony na "Zagraj w statki" (EN: "Play battleship").
+  - Notki zmienione z pojedynczej kolumny tekstu (flex, `flex:1 1 260px`) na **grid kart,
+    który wrapuje** (`repeat(auto-fill, minmax(220px, 1fr))`) — dokładnie sugestia właściciela.
+    Rozwiązuje jednym ruchem oba zgłoszone objawy: pusty stan wyglądał na zagubiony w dużej pustej
+    przestrzeni (teraz jest kartą tej samej wielkości co realna notka, tylko przerywaną obwódką) i
+    kolejne notki "doklejały się" pod spodem zamiast obok (teraz każda to kolejny kafel w gridzie).
+  - **4. artyleria** — `ARTILLERY_CHARGES` z 3 na 4 (`use-battleship.ts`).
+- **Powrót z widoku projektu nie ląduje na wysokości "Indeksu projektów"** — realny bug: po
+  zamknięciu widoku szczegółowego strona zostawała przy tym samym `window.scrollY`, ale panel
+  zwijał się do ~0 wysokości NAD tym punktem, więc to, co wcześniej było niżej (About/Umiejętności/
+  Kontakt), po zwinięciu lądowało pod tym samym scrollY. Naprawione: `handleSectionChange(null)`
+  w App.tsx teraz przewija do `#projekty` (albo `#o-mnie` dla działu "O mnie" — jedyna sekcja bez
+  własnego wiersza-kotwicy) PRZED zamknięciem — bezpieczne bez żadnej z dawnych "zamróź
+  transition, zmierz, odmróź" sztuczek, bo oba te cele leżą WYŻEJ w DOM-ie niż zwijany panel, więc
+  jego własna animacja nigdy ich nie porusza.
+- **"To samo oko, bez edytora kodu" brzmiało nienaturalnie** — zmienione na "Poza kodem, to samo
+  spojrzenie" (EN: "Outside the code, the same eye").
+- **"Ziarno i przebarwienia" — poproszono o subtelny rym z "obiecana ziemia"** — dopisane: "Ziarno
+  i przebarwienia są celowe — to nie ziemia obiecana, tylko prawdziwe życie." Nawiązanie
+  nieprzypadkowe: "Ziemia obiecana" (Reymont/Wajda) to klasyczna powieść/film o uprzemysłowionej
+  Łodzi — mieście, które w tej samej turze poprawek zastąpiło Kraków w kickerze hero.
+- **Podgląd mapy Tour Guide ma zaokrąglone rogi, kontener pod spodem ma kąty proste** — realny
+  cross-repo mismatch: `.poi-map__container` (wewnątrz shadow roota tour-guide, `C:\tour-guide`)
+  ma domyślnie `border-radius: v.$border-radius` (Bootstrap), a portfolio-shell (Atrament:
+  `--md-radius: 0` wszędzie) ma kontener o kątach prostych. Naprawione **po stronie tour-guide**
+  (`frontend/src/app/plans/poi-map/poi-map.scss`): `border-radius: var(--poi-map-radius,
+  #{v.$border-radius})`, dokładnie ten sam wzorzec co już istniejące `--poi-map-height` (custom
+  property — jedyny sposób, żeby cokolwiek z zewnątrz dotarło do środka shadow roota). Po stronie
+  portfolio-shell (`MicrofrontendBand.css`) ustawione `--poi-map-radius: 0` na kontenerze widgetu.
+  **Wymaga przebudowania i wdrożenia tour-guide na VPS, żeby faktycznie zadziałało na żywo** — sam
+  ten commit w portfolio-shell jest nieszkodliwy/nieaktywny, dopóki tamta strona się nie
+  zaktualizuje; tour-guide's own dev server ani tak nie jest tym, co portfolio-shell ładuje
+  (`TourGuideWidget.tsx` zawsze woła `https://tourguide.kubsiw.com/elements/main.js`, produkcyjny
+  URL, nigdy lokalny build).
+
+**Dodatkowy realny bug znaleziony przy weryfikacji, nie zgłoszony wprost**: nowy H1 ("różne
+technologie, ten sam uparty człowiek") ma dłuższe słowa niż oryginalne "frameworki"/"jeden stack",
+przez co przy oryginalnym `font-size: min(132px, 14cqw)` realnie zawijał się do 2 linii na 375px
+(`scrollWidth` 368px vs dostępne 343px, złapane dopiero przez pomiar `Range.getClientRects()` na
+tekście — **nie** `element.scrollWidth`, który dla `display:block` elementu nie wykrywa
+zawijania tekstu w środku, tylko realne przepełnienie pudełka). Naprawione zmniejszeniem mnożnika
+do `12.5cqw` — usuwa realne przewijanie strony w poziomie na 375px (zweryfikowane: 0px). Przy
+szerszych, "pośrednich" szerokościach (np. 1280px, kolumna tekstu obok 420px zdjęcia) linijka
+"Różne technologie," i "uparty człowiek" nadal czasem zawijają się do 2 wizualnych linii zamiast
+jednej — **świadomie zaakceptowane, nie naprawione dalej**: dociągnięcie zera zawijania przy
+KAŻDEJ szerokości wymagałoby mnożnika ~8.5cqw, realnie zmniejszając hero o blisko połowę nawet
+tam, gdzie już się mieści. Zawijanie samo w sobie nie łamie twardego wymogu tego projektu (zero
+poziomego przewijania) — tylko zajmuje więcej wysokości niż oryginalny, ciasno dopasowany
+3-liniowy projekt.
+
+### Pełne tłumaczenie PL/EN (etap poza numeracją "Atramentu" — dobudowany po redesignie)
+
+Nowy `src/i18n/LanguageContext.tsx` — React Context (nie prop-drilling: PL/EN dotyczy
+praktycznie każdego komponentu na stronie), `LanguageProvider` (stan `'pl' | 'en'`, domyślnie
+`'pl'`) + dwa hooki: `useLanguage()` (surowy stan + `toggleLanguage`) i `useTranslate()` (skrót
+`t(pl, en)` na najczęstszy przypadek, `useCallback`'d — kilka miejsc trzyma `t` w tablicy
+zależności `useEffect`, bez memoizacji byłby nową referencją co render). Owinięty wokół `<App
+/>` w `main.tsx`.
+
+**Dane z osobnych plików** (passions.ts, skills-data.ts, notes.ts, project-rows.ts, sections.ts)
+dostały pola wprost w kształcie `{ xPl: string; xEn: string }` (np. `titlePl`/`titleEn`,
+`captionPl`/`captionEn`) zamiast osobnego zagnieżdżonego obiektu `{ pl: {...}, en: {...} }` —
+mniej przepisywania w każdym miejscu użycia (`t(row.titlePl, row.titleEn)`, nie
+`t(row.title.pl, row.title.en)`), spójne z resztą już istniejących płaskich interfejsów w tym
+repo. Pola bez realnej treści do tłumaczenia (nazwy technologii w `stack`, identyfikatory,
+adresy e-mail/URL-e) świadomie zostały jednym, wspólnym stringiem — bez `Pl`/`En` tam, gdzie
+tłumaczenie byłoby identyczne albo bez sensu (np. "Angular 22 · NestJS 11 · Postgres").
+
+**Prawdziwe tłumaczenia, nie automatyczne/dosłowne** — zachowany ten sam, krótki/meme'owy ton co
+oryginalne polskie podpisy (patrz `feedback_caption_voice` w pamięci: jargon-specyficzny, nie
+opisowy), nie tłumaczenie zdanie-po-zdaniu tam, gdzie dosłowność zabiłaby żart (np. "Ot,
+prosię.." — polska ironiczna gwara, przełożona na odpowiednik w duchu, nie liczbę słów).
+
+**Realny, znaleziony przy tej okazji bug w istniejącym kodzie**: `serwisant` w `SECTIONS`
+(sections.ts) był już martwy przed tym tłumaczeniem — jego wiersz w Indeksie projektów renderuje
+się jako zwykły `<div>` (`clickable: false`), więc `openSectionId` nigdy nie przyjmuje wartości
+`'serwisant'`, ten wpis nie miał już żadnego konsumenta. Usunięty przy okazji tej samej edycji
+(ten sam precedens "znajdź i posprzątaj, nie tylko pomiń" co usunięcie `skills` z `SECTIONS` w
+etapie 5).
+
+**Masthead na wąskich ekranach, druga runda**: PL/EN, wcześniej "wyłącznie dekoracyjny, więc
+pierwszy do poświęcenia na 375px" (etap 4/6), stał się realną funkcją — nie dało się go już po
+prostu schować. Naprawione zmianą samego przycisku z "PL / EN" (oba naraz, active/inactive) na
+przycisk pokazujący TYLKO język docelowy (np. "EN" gdy aktywny jest PL) — o połowę węższy,
+zmieścił się z powrotem obok wszystkich 4 linków nawigacji przy tym samym `gap: 14px` z etapu 6.
+
+Zweryfikowano żywo, w obu językach: toggle realnie przełącza `<html lang>` i `document.title`
+(nie tylko widoczny tekst), wszystkie sekcje (hero, pasek statystyk, indeks projektów, band
+mikrofrontendu, szuflada statków + notki, "O mnie" + galeria, umiejętności + tagi + CV, banner
+kontaktu, stopka) i wszystkie 3 widoki szczegółowe (Tour Guide, Insider, galeria działu "O mnie")
+poprawnie renderują angielską treść po przełączeniu, zero przewijania w poziomie na 375px w obu
+językach, `tsc`/`lint` (2 nieszkodliwe ostrzeżenia fast-refresh dla pliku eksportującego
+komponent + 2 hooki naraz, akceptowalny, częsty wzorzec dla plików kontekstu)/`build` czyste.
+
 ## Otwarte pytania / do ustalenia w kolejnych krokach
 
 Duże decyzje (koncept, framework i design wszystkich 4 projektów; architektura mikrofrontendu;

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Stamp } from '../../../components/Stamp';
+import { useTranslate } from '../../../i18n/LanguageContext';
 import { PASSIONS } from './passions';
 import './AboutGallery.css';
 
@@ -15,6 +16,7 @@ interface AboutGalleryProps {
 // grid-template-rows 0fr/1fr co przełącznik spis-treści/widok szczegółowy w Toc.css — oba panele
 // zostają zamontowane, nic się nie odmontowuje przy przełączeniu.
 export function AboutGallery({ initialPassionId = null }: AboutGalleryProps) {
+  const t = useTranslate();
   const [selectedId, setSelectedId] = useState<string | null>(initialPassionId);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
@@ -46,13 +48,17 @@ export function AboutGallery({ initialPassionId = null }: AboutGalleryProps) {
                   disabled={!cover}
                 >
                   {cover ? (
-                    <img src={cover.src} alt={cover.alt} className="about-gallery__tile-img" />
+                    <img
+                      src={cover.src}
+                      alt={t(cover.altPl, cover.altEn)}
+                      className="about-gallery__tile-img"
+                    />
                   ) : (
                     <div className="about-gallery__tile-empty">
-                      <Stamp main="W budowie" sub="wkrótce" />
+                      <Stamp main={t('W budowie', 'In progress')} sub={t('wkrótce', 'soon')} />
                     </div>
                   )}
-                  <span className="about-gallery__tile-label">{passion.label}</span>
+                  <span className="about-gallery__tile-label">{t(passion.labelPl, passion.labelEn)}</span>
                 </button>
               );
             })}
@@ -72,14 +78,16 @@ export function AboutGallery({ initialPassionId = null }: AboutGalleryProps) {
                 className="about-gallery__viewer-back link-dashed"
                 onClick={() => setSelectedId(null)}
               >
-                ← Wróć do galerii
+                {t('← Wróć do galerii', '← Back to gallery')}
               </button>
               <img
                 src={activePhoto.src}
-                alt={activePhoto.alt}
+                alt={t(activePhoto.altPl, activePhoto.altEn)}
                 className="about-gallery__viewer-photo"
               />
-              <p className="about-gallery__viewer-caption">{activePhoto.caption}</p>
+              <p className="about-gallery__viewer-caption">
+                {t(activePhoto.captionPl, activePhoto.captionEn)}
+              </p>
               <div className="about-gallery__filmstrip">
                 {selected.photos.map((photo, index) => (
                   <button
@@ -89,7 +97,7 @@ export function AboutGallery({ initialPassionId = null }: AboutGalleryProps) {
                       index === activePhotoIndex ? 'about-gallery__filmstrip-item--active' : ''
                     }`}
                     onClick={() => setActivePhotoIndex(index)}
-                    aria-label={photo.alt}
+                    aria-label={t(photo.altPl, photo.altEn)}
                     aria-current={index === activePhotoIndex}
                   >
                     <img src={photo.src} alt="" />

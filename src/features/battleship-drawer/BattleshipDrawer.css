@@ -153,13 +153,38 @@
   overflow-wrap: anywhere;
 }
 
+/*
+ * Grid kart, nie stos wierszy (realny feedback właściciela) — jedna nowo odkryta notka po prostu
+ * dokłada się jako kolejny kafel i wrapuje do nowego wiersza, zamiast wydłużać jedną kolumnę
+ * tekstu (gdzie sam pusty stan wyglądał na zagubiony w dużej pustej przestrzeni po prawej, a
+ * kolejne notki "doklejały się" pod spodem, nie obok). `auto-fill`, nie stała liczba kolumn —
+ * naturalnie wrapuje przy 1-6 odkrytych notkach na dowolnej szerokości.
+ */
 .battleship-drawer__notes {
-  flex: 1 1 260px;
-  min-width: 260px;
+  flex: 2 1 480px;
+  min-width: 280px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  align-content: start;
+}
+
+.battleship-drawer__note {
+  border: 2px solid var(--md-rule-soft);
+  padding: 16px;
   font-family: var(--md-font-mono);
   font-size: 12px;
-  line-height: 1.9;
+  line-height: 1.7;
   color: var(--md-text-80);
+}
+
+/* Ten sam rozmiar/wygląd karty co realna notka (nie mała, osobno wyglądająca linijka tekstu) —
+   żeby pusty stan nie czytał się jak "coś tu brakuje", tylko jak pierwszy, jeszcze pusty kafel w
+   tym samym gridzie. */
+.battleship-drawer__note--empty {
+  display: flex;
+  align-items: center;
+  border-style: dashed;
 }
 
 .battleship-drawer__notes-empty {
@@ -167,12 +192,8 @@
   color: var(--md-text-62);
 }
 
-.battleship-drawer__note + .battleship-drawer__note {
-  margin-top: 20px;
-}
-
 .battleship-drawer__note-title {
-  margin: 0 0 4px;
+  margin: 0 0 8px;
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;

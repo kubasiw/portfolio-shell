@@ -4,6 +4,7 @@ import './App.css';
 import { AboutSection } from './features/about/AboutSection';
 import { BattleshipDrawer } from './features/battleship-drawer/BattleshipDrawer';
 import { ContactBanner } from './features/contact/ContactBanner';
+import { useLanguage, useTranslate } from './i18n/LanguageContext';
 import { MicrofrontendBand } from './features/microfrontend-band/MicrofrontendBand';
 import { ProjectIndex } from './features/project-index/ProjectIndex';
 import { StatsBar } from './features/project-index/StatsBar';
@@ -12,6 +13,8 @@ import { DetailOverlay } from './features/toc/DetailOverlay';
 import { SECTIONS } from './features/toc/sections';
 
 function App() {
+  const { language, toggleLanguage } = useLanguage();
+  const t = useTranslate();
   // Id aktualnie otwartej sekcji "pełnoekranowej" (widok szczegółowy projektu, albo dział "O
   // mnie") albo null, gdy nic nie jest otwarte — patrz DetailOverlay.tsx. Etap 6 usunął ostatnią
   // sekcję, która była gdziekolwiek "ukryta za kliknięciem" bez własnego miejsca na stronie
@@ -43,6 +46,18 @@ function App() {
       window.visualViewport?.removeEventListener('resize', syncViewportHeight);
     };
   }, []);
+
+  // <html lang> powinien zawsze odpowiadać realnie wyświetlanemu językowi — czytniki ekranu i
+  // tłumacze przeglądarki go czytają, nie samą treść. Tytuł karty też — index.html ma go tylko
+  // jako statyczny fallback (SEO/pierwsze wyrenderowanie przed hydracją), realny toggle powinien
+  // go nadpisać, żeby karta przeglądarki nie została po polsku po przełączeniu na EN.
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = t(
+      'Jakub Siwiński — Różne technologie, ten sam uparty człowiek',
+      'Jakub Siwiński — Different technologies, same stubborn guy',
+    );
+  }, [language, t]);
 
   const openSection = useMemo(
     () => SECTIONS.find((section) => section.id === openSectionId) ?? null,
@@ -92,7 +107,17 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [openSectionId]);
 
+  // Realny bug zgłoszony przez właściciela: po zamknięciu widoku szczegółowego strona zostawała
+  // przy tym samym window.scrollY, ale panel zwijał się do ~0 wysokości nad tym punktem — więc
+  // to, co było wcześniej niżej (About/Umiejętności/...), po zwinięciu ląduje pod tym samym
+  // scrollY, zamiast wysokości "Indeksu projektów"/"O mnie", skąd faktycznie się przyszło.
+  // `#o-mnie` dla działu "O mnie" (jedyna sekcja bez własnego wiersza-kotwicy), `#projekty` dla
+  // każdego projektu (wszystkie 4 żyją w jednym `<ProjectIndex>`, bez osobnych id per wiersz).
   const handleSectionChange = (id: string | null): void => {
+    if (id === null && openSection) {
+      const anchorId = openSection.id === 'about' ? 'o-mnie' : 'projekty';
+      document.getElementById(anchorId)?.scrollIntoView({ block: 'start' });
+    }
     setOpenSectionId(id);
   };
 
@@ -109,53 +134,73 @@ function App() {
       <header className="masthead">
         <div className="masthead__inner">
           <span className="masthead__name">Jakub Siwiński</span>
-          {/* Wszystkie 4 realne kotwice (etap 6) — każda sekcja, do której prowadzą, jest teraz
-              zawsze widoczna na stronie jako osobny, prawdziwy element DOM z tym id (żaden już
-              nie jest "ukryty za kliknięciem" w starym pinboardzie/spisie treści, usuniętym tym
-              etapem). */}
           <nav className="masthead__nav">
-            <a href="#projekty">Projekty</a>
-            <a href="#o-mnie">O mnie</a>
-            <a href="#umiejetnosci">Umiejętności</a>
-            <a href="#kontakt">Kontakt</a>
+            <a href="#projekty">{t('Projekty', 'Projects')}</a>
+            <a href="#o-mnie">{t('O mnie', 'About')}</a>
+            <a href="#umiejetnosci">{t('Umiejętności', 'Skills')}</a>
+            <a href="#kontakt">{t('Kontakt', 'Contact')}</a>
           </nav>
-          {/* PL/EN — wyłącznie wizualne (handoff, sekcja "Fidelity"): treść EN jeszcze nie
-              istnieje, żaden realny przełącznik języka nie jest tu jeszcze podłączony. */}
-          <span className="masthead__lang" aria-hidden="true">
-            <span className="masthead__lang-active">PL</span>
-            <span className="masthead__lang-sep">/</span>
-            <span className="masthead__lang-inactive">EN</span>
-          </span>
+          {/* Realny, działający przełącznik (właściciel: "przetłumacz sobie teksty i włącz
+              przełącznik") — nie tylko wizualny stan "PL / EN" obok siebie jak wcześniej.
+              Świadomie pokazuje TYLKO język docelowy (na co przełączy klik), nie oba naraz —
+              o połowę węższy, potrzebne, żeby w ogóle zmieścić się w nagłówku na 375px razem z 4
+              linkami nawigacji (te same "nie mieści się w jednym wierszu" ograniczenia co
+              wcześniej, ale teraz nie można już po prostu schować PL/EN na mobile — to realna
+              funkcja, nie dekoracja). */}
+          <button
+            type="button"
+            className="masthead__lang"
+            onClick={toggleLanguage}
+            aria-label={t('Przełącz na angielski', 'Switch to Polish')}
+          >
+            {language === 'pl' ? 'EN' : 'PL'}
+          </button>
         </div>
       </header>
 
       <main className="hero">
         <div className="hero__inner">
           <div className="hero__text">
-            <span className="hero__kicker">Frontend architect · 9 lat · Kraków</span>
+            <span className="hero__kicker">
+              {t('Frontend developer/architect · 9 lat · Łódź', 'Frontend developer/architect · 9 years · Łódź')}
+            </span>
             <h1 className="hero__title">
-              <span className="hero__title-line">Cztery</span>
-              <span className="hero__title-line hero__title-line--accent">frameworki</span>
-              <span className="hero__title-line hero__title-line--outline">jeden stack</span>
+              {language === 'pl' ? (
+                <>
+                  <span className="hero__title-line">Różne technologie,</span>
+                  <span className="hero__title-line hero__title-line--accent">ten sam</span>
+                  <span className="hero__title-line hero__title-line--outline">uparty człowiek</span>
+                </>
+              ) : (
+                <>
+                  <span className="hero__title-line">Different technologies,</span>
+                  <span className="hero__title-line hero__title-line--accent">same</span>
+                  <span className="hero__title-line hero__title-line--outline">stubborn guy</span>
+                </>
+              )}
             </h1>
             <p className="hero__text-body">
-              Angular, React, Vue i React Native spięte Web Components, Traefikiem i jednym
-              pipeline&apos;em. Cztery aplikacje na własnym VPS — każda działa samodzielnie, każda
-              jest tu klikalna na żywo.
+              {t(
+                "Angular, React, Vue i React Native spięte Web Components, Traefikiem i jednym pipeline'em. Cztery aplikacje na własnym VPS — każda działa samodzielnie, każda jest tu klikalna na żywo.",
+                'Angular, React, Vue, and React Native tied together with Web Components, Traefik, and one pipeline. Four apps on my own VPS — each runs independently, each is clickable right here.',
+              )}
             </p>
             <div className="hero__cta">
               <a className="hero__cta-primary" href="#projekty">
-                Zobacz projekty →
+                {t('Zobacz projekty →', 'See the projects →')}
               </a>
               <a className="btn-outline" href="#kontakt">
-                Napisz do mnie
+                {t('Napisz do mnie', 'Get in touch')}
               </a>
             </div>
           </div>
           <img
             className="hero__photo"
             src={heroPhoto}
-            alt="Mężczyzna oświetlony ekranem laptopa w ciemności, nocna jazda"
+            alt={t(
+              'Mężczyzna oświetlony ekranem laptopa w ciemności, nocna jazda',
+              'A man lit by his laptop screen in the dark, a night drive',
+            )}
           />
         </div>
       </main>
@@ -168,10 +213,7 @@ function App() {
       <SkillsSection />
 
       {/* Nakładka na widok szczegółowy (projekt/dział "O mnie") — kolapsuje do ~0 wysokości,
-          kiedy nic nie jest otwarte (patrz DetailOverlay.tsx/.css). Treść w środku
-          (SectionDetail/AboutGallery/InsiderDetail/TourGuideDetail) jest wciąż stylowana starymi
-          tokenami --wb-* — świadomy, przejściowy szew, do restylowania w etapie 7 (patrz
-          PORTFOLIO_PLAN.md, plan wdrożenia). */}
+          kiedy nic nie jest otwarte (patrz DetailOverlay.tsx/.css). */}
       <div className="landing__content">
         <DetailOverlay
           openSection={openSection}
@@ -184,7 +226,9 @@ function App() {
 
       <footer className="site-footer">
         <div className="site-footer__inner">
-          <span className="site-footer__tagline">Portfolio jako aplikacja · vol. 01</span>
+          <span className="site-footer__tagline">
+            {t('Portfolio jako aplikacja · vol. 01', 'Portfolio as an app · vol. 01')}
+          </span>
           <span className="site-footer__year">© 2026 Jakub Siwiński</span>
         </div>
       </footer>

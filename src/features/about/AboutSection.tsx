@@ -1,3 +1,4 @@
+import { useTranslate } from '../../i18n/LanguageContext';
 import { PASSIONS, getTotalPhotoCount } from '../toc/about/passions';
 import './AboutSection.css';
 
@@ -10,16 +11,19 @@ interface AboutSectionProps {
 const TOTAL_PHOTOS = getTotalPhotoCount();
 
 export function AboutSection({ onOpenPassion }: AboutSectionProps) {
+  const t = useTranslate();
   return (
     <section className="about-section" id="o-mnie" aria-labelledby="about-section-heading">
       <div className="about-section__header">
         <h2 id="about-section-heading" className="about-section__heading">
-          <span className="about-section__heading-line">To samo oko,</span>
-          <span className="about-section__heading-line">bez edytora kodu</span>
+          <span className="about-section__heading-line">{t('Poza kodem,', 'Outside the code,')}</span>
+          <span className="about-section__heading-line">{t('to samo spojrzenie', 'the same eye')}</span>
         </h2>
         <p className="about-section__body">
-          Rower, szlaki, warsztat, aparat i jedzenie — {TOTAL_PHOTOS} zdjęć w pięciu działach.
-          Ziarno i przebarwienia są celowe, nie do wyczyszczenia.
+          {t(
+            `Rower, szlaki, warsztat, aparat i jedzenie — ${TOTAL_PHOTOS} zdjęć w pięciu działach. Ziarno i przebarwienia są celowe — to nie ziemia obiecana, tylko prawdziwe życie.`,
+            `Bike, trails, garage, camera, and food — ${TOTAL_PHOTOS} photos across five categories. Grain and discoloration are intentional — this isn't the promised land, just real life.`,
+          )}
         </p>
       </div>
 
@@ -35,9 +39,13 @@ export function AboutSection({ onOpenPassion }: AboutSectionProps) {
               disabled={!cover}
             >
               {cover && (
-                <img src={cover.src} alt={cover.alt} className="about-section__tile-img" />
+                <img
+                  src={cover.src}
+                  alt={t(cover.altPl, cover.altEn)}
+                  className="about-section__tile-img"
+                />
               )}
-              <span className="about-section__tile-label">{passion.label}</span>
+              <span className="about-section__tile-label">{t(passion.labelPl, passion.labelEn)}</span>
             </button>
           );
         })}

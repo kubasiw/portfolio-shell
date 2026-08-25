@@ -129,46 +129,43 @@
   color: var(--md-paper);
 }
 
+/*
+ * Realny, działający przycisk (od etapu redesignu, gdy PL/EN przestał być wyłącznie wizualny) —
+ * pokazuje tylko język docelowy, stąd wystarczy zwykły przycisk-tekst, bez sekcji
+ * active/inactive/separator z poprzedniej, czysto wizualnej wersji.
+ */
 .masthead__lang {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font: inherit;
   font-family: var(--md-font-mono);
   font-size: 11px;
   letter-spacing: 0.08em;
+  color: var(--md-text-62);
+  cursor: pointer;
 }
 
-.masthead__lang-active {
+@media (prefers-reduced-motion: no-preference) {
+  .masthead__lang {
+    transition: color 160ms ease;
+  }
+}
+
+.masthead__lang:hover {
   color: var(--md-accent-hover);
 }
 
-.masthead__lang-sep {
-  color: color-mix(in srgb, var(--md-paper) 35%, transparent);
-}
-
-.masthead__lang-inactive {
-  color: var(--md-text-62);
-}
-
-/*
- * Realny bug złapany na żywo podczas weryfikacji etapu 4 (szuflada statków) — nie jego wina,
- * ale znaleziony przy tej samej okazji: nazwa + 4 linki nawigacji + PL/EN nie mieszczą się w
- * jednym wierszu (bez wrap/shrink) poniżej ~480px, co łamało "zero poziomego przewijania na
- * 375px" (document.documentElement.scrollWidth realnie 408px zamiast 375px). PL/EN jest już
- * udokumentowane jako "wyłącznie wizualne" (patrz komentarz w App.tsx) — bez realnej funkcji,
- * więc pierwsze do poświęcenia na wąskim ekranie, zamiast np. skracać realną nawigację.
- */
 @media (max-width: 480px) {
-  .masthead__lang {
-    display: none;
-  }
-
   /*
    * Realny bug złapany na żywo (etap 6) — z "Umiejętności"/"Kontakt" jako realnymi <a> (nie
    * disabled/state-driven <button> jak wcześniej), 4 pełne linki + nazwa nie mieszczą się w
-   * jednym wierszu poniżej 375px nawet z już ukrytym PL/EN (document.documentElement.scrollWidth
-   * realnie 386px). Mniejszy odstęp zamiast np. skracania nazw linków — te same 4 słowa, tylko
-   * ciaśniej upakowane.
+   * jednym wierszu poniżej 375px (document.documentElement.scrollWidth realnie 386px). Mniejszy
+   * odstęp zamiast np. skracania nazw linków — te same 4 słowa, tylko ciaśniej upakowane.
+   * PL/EN zostaje widoczny nawet tutaj mimo tego samego ograniczenia miejsca (inaczej niż
+   * poprzednio, gdy był tylko dekoracyjny i dało się go bez żalu schować) — realna funkcja, nie
+   * coś do poświęcenia; zmieścił się dzięki własnej zmianie na krótszy, jednoliterowy przycisk
+   * (patrz komentarz w App.tsx).
    */
   .masthead__nav {
     gap: 14px;
@@ -218,7 +215,15 @@
 .hero__title {
   font-family: var(--md-font-display);
   font-weight: 800;
-  font-size: min(132px, 14cqw);
+  /* 14cqw -> 12.5cqw (realny bug złapany na żywo, właściciel zmienił treść H1 na "Różne
+     technologie," / "ten sam" / "uparty człowiek"): "technologie," jest dłuższym słowem niż
+     oryginalne "frameworki", więc przy tym samym mnożniku realnie wychodziło poza kolumnę na
+     wąskich szerokościach (scrollWidth 368px vs dostępne 343px na 375px). Zmierzone bezpośrednio
+     — 12.5cqw to najmniejsza wartość z bezpiecznym zapasem (13cqw już dokładnie się mieściło, ale
+     bez marginesu). `min(132px, ...)` — na szerokim desktopie wciąż realnie ogranicza do stałych
+     132px niezależnie od mnożnika, więc ta zmiana nie zmienia wyglądu na desktopie wcale, tylko
+     wąskie/średnie szerokości, gdzie cqw jest wiążącym ograniczeniem. */
+  font-size: min(132px, 12.5cqw);
   line-height: 0.82;
   letter-spacing: -0.035em;
   text-transform: uppercase;
@@ -260,6 +265,9 @@
   font-family: var(--md-font-display);
   font-weight: 800;
   font-size: 14px;
+  /* line-height: 1 — sam fix co .btn-outline (index.css), ten sam bug/przyczyna, ta sama
+     naprawa: font-metric asymmetria pod "normal" line-height, nie sam padding. */
+  line-height: 1;
   text-decoration: none;
   background: var(--md-accent);
   color: var(--md-paper);

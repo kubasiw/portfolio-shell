@@ -1,3 +1,4 @@
+import { useTranslate } from '../../i18n/LanguageContext';
 import { ProjectIndexRow } from './ProjectIndexRow';
 import { PROJECT_INDEX_ROWS } from './project-rows';
 import './ProjectIndex.css';
@@ -7,14 +8,18 @@ interface ProjectIndexProps {
 }
 
 export function ProjectIndex({ onOpenDetail }: ProjectIndexProps) {
+  const t = useTranslate();
   return (
     <section className="project-index" id="projekty" aria-labelledby="project-index-heading">
       <div className="project-index__header">
         <h2 id="project-index-heading" className="project-index__heading">
-          Indeks projektów
+          {t('Indeks projektów', 'Project index')}
         </h2>
         <span className="project-index__count">
-          {String(PROJECT_INDEX_ROWS.length).padStart(2, '0')} pozycje · 2026
+          {t(
+            `${String(PROJECT_INDEX_ROWS.length).padStart(2, '0')} pozycje · 2026`,
+            `${String(PROJECT_INDEX_ROWS.length).padStart(2, '0')} entries · 2026`,
+          )}
         </span>
       </div>
       <div className="project-index__rows">

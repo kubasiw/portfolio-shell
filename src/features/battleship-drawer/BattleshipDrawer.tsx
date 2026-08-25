@@ -1,29 +1,52 @@
 import { useState } from 'react';
+import { useTranslate } from '../../i18n/LanguageContext';
 import { Board } from './Board';
 import { NOTES } from './notes';
 import { TOTAL_SHIP_CELLS, useBattleship } from './use-battleship';
 import type { FireResult } from './use-battleship';
 import './BattleshipDrawer.css';
 
-function buildStatusMessage(lastResult: FireResult | null): string {
+function noteTitle(id: string, t: (pl: string, en: string) => string): string {
+  const note = NOTES.find((n) => n.id === id);
+  return note ? t(note.titlePl, note.titleEn) : id;
+}
+
+function buildStatusMessage(
+  lastResult: FireResult | null,
+  t: (pl: string, en: string) => string,
+): string {
   if (!lastResult) {
     return '';
   }
   if (lastResult.burst) {
-    const { size, hits, misses, sunkTitles } = lastResult.burst;
-    const base = `(Art)yleria: sprawdzono ${size} pól — ${hits} trafień, ${misses} pudeł.`;
-    return sunkTitles.length > 0 ? `${base} Odkryto: ${sunkTitles.join(', ')}.` : base;
+    const { size, hits, misses, sunkNoteIds } = lastResult.burst;
+    const base = t(
+      `(Art)yleria: sprawdzono ${size} pól — ${hits} trafień, ${misses} pudeł.`,
+      `(Art)illery: checked ${size} cells — ${hits} hits, ${misses} misses.`,
+    );
+    if (sunkNoteIds.length === 0) {
+      return base;
+    }
+    const titles = sunkNoteIds.map((id) => noteTitle(id, t)).join(', ');
+    return `${base} ${t('Odkryto', 'Revealed')}: ${titles}.`;
   }
   if (!lastResult.hit) {
-    return `Pudło (${lastResult.coordinate}).`;
+    return t(`Pudło (${lastResult.coordinate}).`, `Miss (${lastResult.coordinate}).`);
   }
-  if (lastResult.sunk) {
-    return `Zatopiony! Odkryto notkę: ${lastResult.noteTitle}.`;
+  if (lastResult.sunk && lastResult.noteId) {
+    return t(
+      `Zatopiony! Odkryto notkę: ${noteTitle(lastResult.noteId, t)}.`,
+      `Sunk! Revealed a note: ${noteTitle(lastResult.noteId, t)}.`,
+    );
   }
-  return `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`;
+  return t(
+    `Trafienie (${lastResult.coordinate})! Statek jeszcze nie zatopiony.`,
+    `Hit (${lastResult.coordinate})! Ship not sunk yet.`,
+  );
 }
 
 export function BattleshipDrawer() {
+  const t = useTranslate();
   const [open, setOpen] = useState(false);
   const {
     cellStatus,
@@ -37,19 +60,21 @@ export function BattleshipDrawer() {
   } = useBattleship();
 
   const revealedNotes = NOTES.filter((note) => revealedNoteIds.has(note.id));
-  const statusMessage = buildStatusMessage(lastResult);
+  const statusMessage = buildStatusMessage(lastResult, t);
 
   return (
     <section className="battleship-drawer" aria-labelledby="battleship-drawer-heading">
       <div className="battleship-drawer__header">
         <div className="battleship-drawer__intro">
-          <span className="battleship-drawer__kicker">Opcjonalnie</span>
+          <span className="battleship-drawer__kicker">{t('Opcjonalnie', 'Optional')}</span>
           <h3 id="battleship-drawer-heading" className="battleship-drawer__title">
-            Statki — szuflada z boku
+            {t('Zagraj w statki', 'Play battleship')}
           </h3>
           <p className="battleship-drawer__body">
-            Indeks powyżej jest pełny od pierwszej sekundy — gra nic nie blokuje. Trafienia
-            dorzucają notki „za kulisami” z każdego projektu: realne bugi, decyzje, koszty.
+            {t(
+              'Indeks powyżej jest pełny od pierwszej sekundy — gra nic nie blokuje. Trafienia dorzucają notki „za kulisami” z każdego projektu: realne bugi, decyzje, koszty.',
+              "The index above is complete from the first second — the game blocks nothing. Hits reveal \"behind the scenes\" notes from each project: real bugs, decisions, costs.",
+            )}
           </p>
           <button
             type="button"
@@ -57,16 +82,16 @@ export function BattleshipDrawer() {
             onClick={() => setOpen((prev) => !prev)}
             aria-expanded={open}
           >
-            {open ? 'Schowaj planszę ↑' : 'Otwórz planszę →'}
+            {open ? t('Schowaj planszę ↑', 'Hide the board ↑') : t('Otwórz planszę →', 'Open the board →')}
           </button>
         </div>
         <div className="battleship-drawer__stats" aria-live="polite">
           <p className="battleship-drawer__stat">
-            Trafienia: <strong className="battleship-drawer__stat-value">{hitsCount}</strong> /{' '}
+            {t('Trafienia', 'Hits')}: <strong className="battleship-drawer__stat-value">{hitsCount}</strong> /{' '}
             {TOTAL_SHIP_CELLS}
           </p>
           <p className="battleship-drawer__stat">
-            Notki odkryte:{' '}
+            {t('Notki odkryte', 'Notes revealed')}:{' '}
             <strong className="battleship-drawer__stat-value">{revealedNotes.length}</strong> /{' '}
             {NOTES.length}
           </p>
@@ -97,8 +122,14 @@ export function BattleshipDrawer() {
                 </button>
                 <p className="battleship-drawer__artillery-hint">
                   {artilleryArmed
-                    ? 'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.'
-                    : 'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.'}
+                    ? t(
+                        'Uzbrojona — kliknij dowolne pole, żeby sprawdzić naraz kwadrat 3×3 wokół niego.',
+                        'Armed — click any cell to check a whole 3×3 square around it at once.',
+                      )
+                    : t(
+                        'Specjalny strzał: sprawdza naraz kwadrat 3×3 zamiast jednego pola. Ograniczona liczba użyć na tę grę.',
+                        'A special shot: checks a 3×3 square at once instead of one cell. Limited uses per game.',
+                      )}
                 </p>
               </div>
 
@@ -109,14 +140,19 @@ export function BattleshipDrawer() {
 
             <div className="battleship-drawer__notes">
               {revealedNotes.length === 0 ? (
-                <p className="battleship-drawer__notes-empty">
-                  Jeszcze nic nie odkryto — zatop statek na planszy obok.
-                </p>
+                <div className="battleship-drawer__note battleship-drawer__note--empty">
+                  <p className="battleship-drawer__notes-empty">
+                    {t(
+                      'Jeszcze nic nie odkryto — zatop statek na planszy obok.',
+                      "Nothing revealed yet — sink a ship on the board.",
+                    )}
+                  </p>
+                </div>
               ) : (
                 revealedNotes.map((note) => (
                   <div key={note.id} className="battleship-drawer__note">
-                    <h4 className="battleship-drawer__note-title">{note.title}</h4>
-                    <p className="battleship-drawer__note-body">{note.body}</p>
+                    <h4 className="battleship-drawer__note-title">{t(note.titlePl, note.titleEn)}</h4>
+                    <p className="battleship-drawer__note-body">{t(note.bodyPl, note.bodyEn)}</p>
                   </div>
                 ))
               )}

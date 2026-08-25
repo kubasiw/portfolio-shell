@@ -16,7 +16,7 @@ export const TOTAL_SHIP_CELLS = SHIP_SIZES.reduce((sum, size) => sum + size, 0);
 // "(Art)yleria" — specjalny strzał sprawdzający naraz kwadrat 3×3 (promień 1 wokół celu),
 // ograniczony liczbą użyć na sesję (jedną planszę), żeby zostać ciekawym przyspieszeniem,
 // nie sposobem na trywialne rozwiązanie całej gry.
-export const ARTILLERY_CHARGES = 3;
+export const ARTILLERY_CHARGES = 4;
 export const ARTILLERY_RADIUS = 1;
 
 export type Coordinate = string;
@@ -26,14 +26,17 @@ export interface BurstResult {
   size: number;
   hits: number;
   misses: number;
-  sunkTitles: string[];
+  // Id, nie gotowy tytuł — ten hook nie zna aktualnego języka (nie jest komponentem, nie ma
+  // useTranslate); BattleshipDrawer.tsx (który go zna) mapuje id na titlePl/titleEn dopiero przy
+  // budowaniu komunikatu do wyświetlenia.
+  sunkNoteIds: string[];
 }
 
 export interface FireResult {
   coordinate: Coordinate;
   hit: boolean;
   sunk: boolean;
-  noteTitle?: string;
+  noteId?: string;
   burst?: BurstResult;
 }
 
@@ -222,11 +225,10 @@ function fireSingleCell(
   const status: CellStatus = noteId ? 'hit' : 'miss';
   const nextRevealed = new Map(prev.revealed).set(coordinate, status);
   const sunk = noteId ? isSunk(noteId, cellsByNote, nextRevealed) : false;
-  const note = noteId ? NOTES.find((n) => n.id === noteId) : undefined;
   return {
     ...prev,
     revealed: nextRevealed,
-    lastResult: { coordinate, hit: status === 'hit', sunk, noteTitle: note?.title },
+    lastResult: { coordinate, hit: status === 'hit', sunk, noteId: sunk ? noteId : undefined },
   };
 }
 
@@ -255,15 +257,12 @@ function fireArtilleryBurst(
     }
   });
 
-  const sunkTitles: string[] = [];
+  const sunkNoteIds: string[] = [];
   cellsByNote.forEach((_cells, noteId) => {
     const wasSunk = isSunk(noteId, cellsByNote, prev.revealed);
     const nowSunk = isSunk(noteId, cellsByNote, nextRevealed);
     if (!wasSunk && nowSunk) {
-      const note = NOTES.find((n) => n.id === noteId);
-      if (note) {
-        sunkTitles.push(note.title);
-      }
+      sunkNoteIds.push(noteId);
     }
   });
 
@@ -274,8 +273,8 @@ function fireArtilleryBurst(
     lastResult: {
       coordinate: center,
       hit: hits > 0,
-      sunk: sunkTitles.length > 0,
-      burst: { size: hits + misses, hits, misses, sunkTitles },
+      sunk: sunkNoteIds.length > 0,
+      burst: { size: hits + misses, hits, misses, sunkNoteIds },
     },
   };
 }
