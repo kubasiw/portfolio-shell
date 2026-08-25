@@ -965,10 +965,62 @@ Display + IBM Plex Sans ładowane naraz, przejściowo). Do usunięcia całościo
    nagłówka wskazują poprawne `href`, `SkillsDetail-*.js/css` zniknęły z outputu builda (lazy
    chunk faktycznie usunięty, nie tylko martwy kod), zero przewijania w poziomie na 375px (z
    otwartą galerią i bez), `tsc`/`lint`/`build` czyste.
-6. ⏳ Banner kontaktu + Stopka (stopka już zrobiona w etapie 1, ten punkt tylko dla porządku
-   względem numeracji handoffu).
+6. ✅ **Banner kontaktu + pełne sprzątanie starego pinboardu** (2026-08-24) — nowy
+   `src/features/contact/ContactBanner.tsx` (jedyna sekcja na stronie z tłem `--md-accent`,
+   `id="kontakt"`, H2 "Zbudujmy / coś razem" + 3 linki mono wyrównane do prawej, adresy
+   identyczne jak w usuniętym `ContactLinks.tsx`). Stopka bez zmian (już zrobiona w etapie 1).
+   **Ten etap okazał się większy niż "dobuduj banner"** — usunięcie ostatniej sekcji z pinboardu
+   ("Kontakt") zostawiłoby pustą, złamaną siatkę w starym `Toc`, więc cały pinboard
+   (`ProjectCard.tsx`/`.css`, `ContactLinks.tsx`/`.css`) i jego mechanizm nawigacji stały się w
+   pełni martwe w tym samym momencie, nie stopniowo — sprzątnięte od razu, nie odłożone (ten sam
+   precedens co usunięcie wpisu `skills` z `SECTIONS` w etapie 5, tylko na większą skalę):
+   - **`Toc.tsx`/`Toc.css` → `DetailOverlay.tsx`/`.css`** (rename, nie tylko przeniesienie — rola
+     skurczyła się z "spis treści + siatka kart + przełącznik widoku szczegółowego" do samego
+     przełącznika: rozwijanej nakładki na `SectionDetail`, kolapsującej do ~0 wysokości, kiedy nic
+     nie jest otwarte). Ten sam sprawdzony mechanizm `grid-template-rows: 0fr↔1fr` co wcześniej,
+     tylko jeden panel zamiast dwóch (nie ma już drugiego, "zamkniętego" stanu z treścią do
+     krzyżowego przenikania).
+   - **`ProjectCard.tsx`/`.css` i `ContactLinks.tsx`/`.css` usunięte całkowicie** — zweryfikowane
+     przed usunięciem, że nic poza `Toc`/`ProjectCard` ich nie importuje. `.plate-emphasized`
+     (`index.css`, współdzielona klasa Workbencha) też usunięta — jedyny pozostały konsument
+     (`ProjectCard`) właśnie zniknął.
+   - **`Section` (sections.ts) drastycznie uproszczony** — `navGroup`/`coverPhoto`/
+     `hideDescription`/`inProgress` usunięte (służyły wyłącznie już nieistniejącemu
+     `ProjectCard`), zostało tylko `id`/`title`/`description`/`hasDetailView` — dokładnie to,
+     czego dziś potrzebuje `SectionDetail`. Wpis `contact` usunięty z `SECTIONS` (jak `skills` w
+     etapie 5) — nic już go nie potrzebuje.
+   - **Cała nawigacja masthead to teraz zwykłe `<a href="#...">`** (wszystkie 4: Projekty/O mnie/
+     Umiejętności/Kontakt) — `activeNavTarget`/`handleNavClick`/`displayNavTarget` i połowa
+     dużego `useEffect`a w `App.tsx` (scroll-do-podświetlonej-karty) usunięte z App.tsx w całości,
+     zostawiając tylko drugą połowę (scroll do otwartego widoku szczegółowego), wciąż potrzebną
+     dla kliknięć wierszy Indeksu projektów/kafli "O mnie". **Realny, wcześniej niezłapany bug
+     odkryty przy tym sprzątaniu**: "Projekty" w nagłówku był już cicho zepsuty od etapu 2 — stary
+     mechanizm scrollował do `#section-${id}` (konwencja id starego `ProjectCard`), ale nowy
+     `ProjectIndexRow` (etap 2) nigdy nie renderował takiego id, więc klik po prostu nic nie
+     robił, bez żadnego błędu w konsoli. Nikt tego nie zgłosił, bo `#projekty` (na samym
+     `<ProjectIndex>`) i tak jest widoczne od razu przy starcie strony. Naprawione tym samym
+     przejściem na realną kotwicę.
+   **Realny bug złapany na żywo po tym sprzątaniu, nie od razu**: "Umiejętności"/"Kontakt" jako
+   pełne, nie-`disabled` linki (wcześniej: `disabled` placeholder / `<button>` ze stanem) plus
+   nazwa nie mieściły się już w jednym wierszu na 375px nawet z ukrytym PL/EN
+   (`document.documentElement.scrollWidth` realnie 386px) — naprawione zmniejszeniem `gap` w
+   `.masthead__nav` z 26px do 14px poniżej 480px (ten sam "mniejszy odstęp, nie skracanie treści"
+   duch co wcześniejszy fix PL/EN). **Nieoficjalny, dodatkowy sprawdzian na 320px pokazał dalsze
+   30px przewijania** — nienaprawione świadomie: 375px jest jedynym oficjalnie zweryfikowanym
+   progiem w tym projekcie (powtarzane w każdym poprzednim etapie), 320px pojawia się gdzie
+   indziej w tym pliku tylko raz, przy planszy statków — warta odnotowania jako znane, drobne
+   ograniczenie poniżej oficjalnego baseline'u, nie pilna do naprawy teraz.
+   Zweryfikowano żywo: `#kontakt`/wszystkie 4 `href` poprawne, klik wiersza "Tour Guide" otwiera
+   `DetailOverlay` (tytuł "Projekt 01 — Tour Guide"), przycisk "Wróć" poprawnie zamyka (sprawdzone
+   asynchronicznie, nie od razu po `.click()` — React batchuje), `Stamp.tsx` (nieużywany od etapu
+   1 w mastheadzie) dostał własny leniwie ładowany chunk zamiast siedzieć w głównym bundlu (dowód,
+   że sprzątanie realnie zmniejszyło eager bundle, nie tylko usunęło pliki), zero przewijania w
+   poziomie na 375px i 1280px (po poprawce gap), `tsc`/`lint`/`build` czyste.
 7. ⏳ Sprzątanie: usunięcie `--wb-*`/Big Shoulders Display/IBM Plex Sans, gdy nic już ich nie
-   używa; zamiana linków nawigacji masthead na realne kotwice.
+   używa (jedyni pozostali konsumenci: `SectionDetail`/`AboutGallery`/`InsiderDetail`/
+   `TourGuideDetail`/`.landing`'s own base tło+tekstura — świadomie NIE ruszone w etapie 6, bo
+   `SectionDetail`'s jasna, kremowa stylistyka wciąż wizualnie zależy od jasnego tła `.landing`
+   pod spodem).
 
 ## Otwarte pytania / do ustalenia w kolejnych krokach
 

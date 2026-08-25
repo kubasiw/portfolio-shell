@@ -101,47 +101,20 @@
 }
 
 /*
- * Reset przeglądarkowego stylu <button>/<a> — bez tego nie dziedziczyłby fontu/koloru z
- * .masthead__nav (domyślny UA stylesheet ustawia formularzowym elementom własną czcionkę
- * systemową, a linkom domyślne podkreślenie/niebieski). "Projekty"/"Kontakt" wciąż <button>
- * (state-driven, cel jeszcze nie w pełni realny — patrz komentarz w App.tsx); "O mnie"/
- * "Umiejętności" (etap 5) już realne <a href="#..."> skoro ich sekcje istnieją teraz jako
- * prawdziwe elementy DOM z tymi id.
+ * Reset przeglądarkowego stylu <a> — bez tego nie dziedziczyłby fontu/koloru z .masthead__nav i
+ * miałby domyślne podkreślenie/niebieski. Wszystkie 4 linki są teraz zwykłymi kotwicami (etap 6
+ * — ostatnia sekcja bez stałego miejsca na stronie, Kontakt, dostała wtedy ContactBanner) — nie
+ * ma już stanu "aktywny"/"disabled" do obsłużenia, tylko hover.
  */
-.masthead__nav button,
 .masthead__nav a {
-  background: none;
-  border: none;
   padding: 2px 0;
-  margin: 0;
-  font: inherit;
   color: inherit;
   text-decoration: none;
-  cursor: pointer;
   border-bottom: 2px solid transparent;
 }
 
-.masthead__nav button:hover:not(:disabled),
 .masthead__nav a:hover {
   color: var(--md-paper);
-}
-
-.masthead__nav button:disabled {
-  cursor: default;
-  opacity: 0.4;
-}
-
-/*
- * `.masthead__nav button.masthead__nav-item--active` (nie sam `.masthead__nav-item--active`) —
- * realny bug złapany na żywo w poprzednim designie: sama klasa ma specyficzność 0-1-0, a
- * `.masthead__nav button` (klasa + element) to 0-1-1, więc `color: inherit` z tamtej reguły
- * wygrywało mimo poprawnie dodanej klasy `--active` na elemencie. Zostawione w tym samym
- * kształcie tutaj (teraz też dla `a`), żeby nie wprowadzić tego samego bugu drugi raz.
- */
-.masthead__nav button.masthead__nav-item--active,
-.masthead__nav a.masthead__nav-item--active {
-  color: var(--md-paper);
-  border-bottom-color: var(--md-accent-hover);
 }
 
 .masthead__lang {
@@ -176,6 +149,17 @@
 @media (max-width: 480px) {
   .masthead__lang {
     display: none;
+  }
+
+  /*
+   * Realny bug złapany na żywo (etap 6) — z "Umiejętności"/"Kontakt" jako realnymi <a> (nie
+   * disabled/state-driven <button> jak wcześniej), 4 pełne linki + nazwa nie mieszczą się w
+   * jednym wierszu poniżej 375px nawet z już ukrytym PL/EN (document.documentElement.scrollWidth
+   * realnie 386px). Mniejszy odstęp zamiast np. skracania nazw linków — te same 4 słowa, tylko
+   * ciaśniej upakowane.
+   */
+  .masthead__nav {
+    gap: 14px;
   }
 }
 

@@ -1,0 +1,73 @@
+/*
+ * Jedyna sekcja na stronie z tłem --md-accent (czerwień) zamiast --md-ink — świadome zamknięcie
+ * strony mocnym akcentem, patrz handoff, sekcja "9. Banner kontaktu".
+ */
+.contact-banner {
+  background: var(--md-accent);
+}
+
+.contact-banner__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 64px 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.contact-banner__heading {
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 6.5vw, 92px);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--md-paper);
+  margin: 0;
+}
+
+.contact-banner__heading-line {
+  display: block;
+}
+
+.contact-banner__links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.contact-banner__link {
+  font-family: var(--md-font-mono);
+  font-size: 13px;
+  line-height: 2.2;
+  text-align: right;
+  color: var(--md-paper);
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .contact-banner__link {
+    transition: color 160ms ease;
+  }
+}
+
+.contact-banner__link:hover {
+  color: var(--md-ink);
+}
+
+@media (max-width: 480px) {
+  .contact-banner__inner {
+    padding: 44px 16px;
+    align-items: flex-start;
+  }
+
+  .contact-banner__links {
+    align-items: flex-start;
+  }
+
+  .contact-banner__link {
+    text-align: left;
+  }
+}

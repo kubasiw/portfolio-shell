@@ -1,0 +1,37 @@
+/*
+ * Rozwijana nakładka na widok szczegółowy — ten sam sprawdzony mechanizm co dawniej w Toc.css
+ * (przełącznik spis-treści/widok szczegółowy) i BattleshipDrawer.css (szuflada statków):
+ * `grid-template-rows: 0fr ↔ 1fr` na rodzicu, `overflow: hidden; min-height: 0` na dziecku.
+ * Uproszczone względem oryginału (Toc.css) do JEDNEGO panelu — od etapu 6 nie ma już drugiego,
+ * "zamkniętego" stanu z treścią (siatka kart), którego trzeba by krzyżowo przenikać z tym —
+ * kolapsuje po prostu do ~0 wysokości, kiedy nic nie jest otwarte.
+ */
+.detail-overlay__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.detail-overlay__panel--open {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .detail-overlay__panel {
+    transition: grid-template-rows 320ms ease;
+  }
+}
+
+.detail-overlay__panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.detail-overlay__panel--open .detail-overlay__panel-inner {
+  padding: 24px;
+}
+
+@media (max-width: 480px) {
+  .detail-overlay__panel--open .detail-overlay__panel-inner {
+    padding: 12px;
+  }
+}

@@ -44,15 +44,6 @@ a {
   color: var(--wb-accent-primary);
 }
 
-/* Wspólny "wyróżniony plate" (gruba ramka w kolorze primary + bladozielone tło) — ten sam wygląd
-   co .spec-plate--unlocked, reużyty przez skill-plate--core (Umiejętności), zamiast powielać te
-   same 3 deklaracje w drugim pliku pod inną nazwą. */
-.plate-emphasized {
-  border-width: 2px;
-  border-color: var(--wb-accent-primary);
-  background: var(--wb-unlocked-bg);
-}
-
 /*
  * Przycisk-obwódka na ciemnym tle (--md-ink) — ten sam wygląd, wydzielony tu przy 3. wystąpieniu
  * (hero secondary CTA, band mikrofrontendu, szuflada statków), tak jak .link-dashed wyżej.
