@@ -158,17 +158,29 @@
 
 @media (max-width: 480px) {
   /*
-   * Realny bug złapany na żywo (etap 6) — z "Umiejętności"/"Kontakt" jako realnymi <a> (nie
-   * disabled/state-driven <button> jak wcześniej), 4 pełne linki + nazwa nie mieszczą się w
-   * jednym wierszu poniżej 375px (document.documentElement.scrollWidth realnie 386px). Mniejszy
-   * odstęp zamiast np. skracania nazw linków — te same 4 słowa, tylko ciaśniej upakowane.
-   * PL/EN zostaje widoczny nawet tutaj mimo tego samego ograniczenia miejsca (inaczej niż
-   * poprzednio, gdy był tylko dekoracyjny i dało się go bez żalu schować) — realna funkcja, nie
-   * coś do poświęcenia; zmieścił się dzięki własnej zmianie na krótszy, jednoliterowy przycisk
-   * (patrz komentarz w App.tsx).
+   * Realny bug zgłoszony przez właściciela na żywym telefonie (nie tylko na oko/na desktopowym
+   * resize) — poprzednia poprawka (tylko mniejszy gap w .masthead__nav, patrz historia) nie
+   * wystarczała: z 4 pełnymi linkami + nazwą + przełącznikiem języka w jednym `flex; nowrap`
+   * wierszu, `docOverflow` sam w sobie był 0 (żadnego scrolla strony), ale przeglądarka i tak
+   * ściskała wszystkie 3 dzieci (`flex-shrink` domyślnie 1 na każdym) poniżej ich naturalnej
+   * szerokości — nazwa łamała się na 2 linie, a przełącznik języka realnie miał ~14px szerokości
+   * (za mało na "EN"), tekst się nakładał. Zmierzone bezpośrednio (getBoundingClientRect) na
+   * żywym kubsiw.com, nie zgadywane.
+   *
+   * Naprawa: nawigacja dostaje własny, pełnoszerokościowy drugi wiersz (flex-wrap + flex-basis:
+   * 100% na .masthead__nav), więc wiersz 1 (nazwa + język) ma dość miejsca, żeby nigdy nie
+   * musiał się ściskać.
    */
+  .masthead__inner {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
   .masthead__nav {
-    gap: 14px;
+    flex-basis: 100%;
+    order: 3;
+    justify-content: space-between;
+    gap: 12px;
   }
 }
 
@@ -338,7 +350,12 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
+  /* flex-wrap (nie samo nowrap domyślne) — realny bug zgłoszony przez właściciela na telefonie:
+     na 375px oba teksty razem sięgały dokładnie do krawędzi paddingu, zero luzu (zmierzone
+     bezpośrednio, 0px marginesu) — każde nieco inne renderowanie fontu/zoom łatwo by to
+     przepchnęło w realny overflow. wrap daje bezpieczny fallback na 2 wiersze zamiast ucinania. */
+  flex-wrap: wrap;
+  gap: 4px 16px;
 }
 
 .site-footer__tagline,

@@ -198,8 +198,19 @@
 }
 
 @media (max-width: 480px) {
+  /*
+   * Realny bug zgłoszony przez właściciela na żywym telefonie: `flex; nowrap; align-items:
+   * baseline` techniczne "mieściło się" (żadnego page-level overflow), ale ciasna kolumna
+   * zmuszała nagłówek "Indeks projektów" (32px) do złamania się na 2 linie, a "04 pozycje ·
+   * 2026" wisiało gdzieś w połowie ich wysokości — czytało się jak przypadkowe nakładanie, nie
+   * świadomy układ. Poniżej tego progu nagłówek/licznik lądują jeden pod drugim (własne wiersze,
+   * `flex-direction: column`) zamiast dzielić jeden ciasny wiersz.
+   */
   .project-index__header {
     padding: 26px 16px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   .index-row__number {
