@@ -67,7 +67,20 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   filter: grayscale(1) contrast(1.08);
+}
+
+/*
+ * Realny bug zgłoszony przez właściciela: dział "Fotografia" (3. kafel — passions.ts, kolejność
+ * aktywność/wycieczki/fotografia/motoryzacja/jedzonko) ma jako okładkę wysoki, portretowy kadr
+ * (night_portrait.webp, 1200×1800) — domyślne center-crop (50%/50%) obcinało oczy/twarz, zostawiając
+ * widoczną tylko brodę/kołnierz kurtki niżej w kadrze. `16%` sprawdzone bezpośrednio na renderowanym
+ * kaflu (getBoundingClientRect + powiększony podgląd) na obu proporcjach ramki (siatka 5-kol.
+ * desktop i 2-kol. mobile) — pokazuje oczy i brodę razem, nie sam dół zdjęcia.
+ */
+.about-section__tile:nth-child(3) .about-section__tile-img {
+  object-position: center 16%;
 }
 
 @media (prefers-reduced-motion: no-preference) {
