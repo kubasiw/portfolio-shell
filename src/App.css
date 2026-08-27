@@ -33,16 +33,17 @@
  * chce OSOBNEGO `opacity: .5` tylko dla ziarna, nie dla całego tła (pełny `background-color`
  * strony musi zostać w 100% kryjący, żeby nic nigdy przez niego nie prześwitywało).
  * `pointer-events: none` — czysto dekoracyjne, nigdy nie ma przechwytywać kliknięć/hoverów
- * elementów pod spodem. Musi leżeć NAD całą treścią (stąd wysoki z-index, wyżej niż masthead:20)
- * — sekcje mają własne, w pełni kryjące tła (--md-ink/--md-accent), więc leżąc pod nimi ziarno
- * byłoby zawsze zasłonięte i w ogóle niewidoczne, a `opacity: .5` (subtelny nalot na wszystkim,
- * nie warstwa tła) nie miałoby żadnego sensu.
+ * elementów pod spodem. Musi leżeć NAD całą treścią (stąd wysoki z-index, wyżej niż
+ * masthead/stopka:1001, patrz ich komentarz) — sekcje mają własne, w pełni kryjące tła
+ * (--md-ink/--md-accent), więc leżąc pod nimi ziarno byłoby zawsze zasłonięte i w ogóle
+ * niewidoczne, a `opacity: .5` (subtelny nalot na wszystkim, nie warstwa tła) nie miałoby
+ * żadnego sensu.
  */
 .landing::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 1002;
   background-image: radial-gradient(
     circle at 1px 1px,
     color-mix(in srgb, var(--md-paper) 10%, transparent) 1px,
@@ -79,11 +80,21 @@
 .masthead {
   border-bottom: 2px solid var(--md-rule);
   padding: 16px 0;
-  /* Sticky, nie fixed — ten sam wzorzec co przed redesignem (i co tour-guide). z-index 20 (nie
-     dawne 10) — handoff podnosi masthead ponad sekcje treściowe wprost. */
+  /* Sticky, nie fixed — ten sam wzorzec co przed redesignem (i co tour-guide).
+   * z-index 1001 (było 20) — zgłoszony przez właściciela realny bug na telefonie: podgląd mapy
+   * Tour Guide (MicrofrontendBand.css, `.microfrontend-band__widget`) zasłaniał header/stopkę
+   * przy scrollowaniu. `isolation: isolate` na kontenerze widgetu (już tam, ta sama naprawa co
+   * InsiderDetail.css) powinno w teorii w pełni zamykać wewnętrzne z-indeksy Leafleta (do 1000,
+   * potwierdzone bezpośrednim odczytem shadow roota) w nowym kontekście stackowania — nie udało
+   * się jednak odtworzyć nakładania w tym środowisku testowym (desktop Chromium), a ten projekt
+   * ma już udokumentowany precedens realnych, specyficznych dla iOS Safari błędów pozycjonowania
+   * sticky niewidocznych w zwykłym testowaniu (patrz --app-vh niżej, .site-footer) — więc zamiast
+   * polegać wyłącznie na subtelnościach isolation, header/stopka dostają z-index jawnie WYŻSZY niż
+   * jakakolwiek wartość, którą Leaflet może kiedykolwiek ustawić, żeby nie było już żadnej
+   * dwuznaczności niezależnie od przeglądarki/silnika. */
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 1001;
   background: var(--md-ink);
 }
 
@@ -341,7 +352,7 @@
 .site-footer {
   position: sticky;
   bottom: 0;
-  z-index: 20; /* matches .masthead — chrome always wins over ordinary content */
+  z-index: 1001; /* matches .masthead (see its comment) — chrome always wins over ordinary content */
   padding: 20px 0;
   background: var(--md-ink);
 }
