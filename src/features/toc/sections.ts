@@ -46,10 +46,6 @@ export const SECTIONS: Section[] = [
       'Mikrofrontendy przez Web Components, deploy z pusha na własny VPS, status per serwis.',
     descriptionEn:
       'Microfrontends via Web Components, deploy on push to my own VPS, status per service.',
-    // Wiersz w Indeksie projektów jest klikalny (project-index/project-rows.ts,
-    // clickable: true), ale nie ma jeszcze własnej treści w SectionDetail (żaden branch
-    // hasCustomDetail) — otwiera się z istniejącym placeholderem "Treść w przygotowaniu", tak
-    // jak każda inna sekcja bez custom-widoku. Świadomie nie budować tej treści teraz.
     hasDetailView: true,
   },
   {

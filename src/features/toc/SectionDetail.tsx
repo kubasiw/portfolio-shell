@@ -12,6 +12,7 @@ const InsiderDetail = lazy(() => import('./insider/InsiderDetail').then((m) => (
 const TourGuideDetail = lazy(() =>
   import('./tour-guide/TourGuideDetail').then((m) => ({ default: m.TourGuideDetail })),
 );
+const ShellDetail = lazy(() => import('./shell/ShellDetail').then((m) => ({ default: m.ShellDetail })));
 
 interface SectionDetailProps {
   section: Section;
@@ -24,7 +25,10 @@ export function SectionDetail({ section, onClose, aboutPassionId = null }: Secti
   const t = useTranslate();
   const backButtonRef = useRef<HTMLButtonElement>(null);
   const hasCustomDetail =
-    section.id === 'about' || section.id === 'insider' || section.id === 'tour-guide';
+    section.id === 'about' ||
+    section.id === 'insider' ||
+    section.id === 'tour-guide' ||
+    section.id === 'portfolio-shell';
 
   // Fokus na przycisk powrotu przy otwarciu — ten sam duch co "dostępność jako standard" z
   // dobrych praktyk w PORTFOLIO_PLAN.md; to nowy sposób nawigacji, więc użytkownik klawiatury/
@@ -53,6 +57,7 @@ export function SectionDetail({ section, onClose, aboutPassionId = null }: Secti
           {section.id === 'about' && <AboutGallery initialPassionId={aboutPassionId} />}
           {section.id === 'insider' && <InsiderDetail />}
           {section.id === 'tour-guide' && <TourGuideDetail />}
+          {section.id === 'portfolio-shell' && <ShellDetail />}
         </Suspense>
       ) : (
         <p className="section-detail__placeholder">{t('Treść w przygotowaniu.', 'Content coming soon.')}</p>

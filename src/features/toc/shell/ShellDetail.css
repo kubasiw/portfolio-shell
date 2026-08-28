@@ -1,0 +1,44 @@
+/*
+ * Jedna, pełnej szerokości kolumna — brak drugiej "app" kolumny jak w InsiderDetail/
+ * TourGuideDetail celowo (patrz komentarz w ShellDetail.tsx). Shape bloków/nagłówków/tagów/
+ * linku skopiowany z insider-detail__* dla spójności między wszystkimi trzema widokami.
+ */
+.shell-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 72ch;
+}
+
+.shell-detail__block p {
+  margin: 0.5rem 0 0;
+  color: var(--md-text-80);
+  line-height: 1.6;
+}
+
+.shell-detail__heading {
+  margin: 0;
+  font-family: var(--md-font-display);
+  font-size: 1rem;
+  color: var(--md-paper);
+}
+
+.shell-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.shell-detail__tag {
+  padding: 0.25rem 0.6rem;
+  border: 2px solid var(--md-rule);
+  font-family: var(--md-font-mono);
+  font-size: 0.75rem;
+  color: var(--md-paper);
+}
+
+.shell-detail__external-link {
+  align-self: flex-start;
+  color: var(--md-accent-hover);
+}
