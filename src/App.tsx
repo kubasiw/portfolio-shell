@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
 import heroPhoto from './assets/about/night_drive.webp';
 import './App.css';
 import { AboutSection } from './features/about/AboutSection';
@@ -24,6 +25,20 @@ function App() {
   // Który dział "O mnie" ma się otworzyć od razu w AboutGallery (etap 5) — patrz
   // handleOpenAboutPassion niżej i AboutGallery.tsx. Tylko dla section.id==='about'.
   const [aboutPassionId, setAboutPassionId] = useState<string | null>(null);
+
+  // Statki znowu bramkują resztę strony (real feedback właściciela, cofnięcie wcześniejszej
+  // decyzji "treść dostępna od pierwszej sekundy" z pierwszej wersji tego redesignu) — patrz
+  // BattleshipDrawer.tsx dla samej gry. `allShipsSunk` ustawiane przez jej `onAllShipsSunk`,
+  // `skipped` przez jej przycisk "Pomiń" ORAZ przez kliknięcie dowolnej kotwicy (nawigacja/hero
+  // CTA) prowadzącej do jeszcze zablokowanej treści — patrz handleGatedAnchorClick niżej.
+  const [skipped, setSkipped] = useState(false);
+  const [allShipsSunk, setAllShipsSunk] = useState(false);
+  const unlocked = skipped || allShipsSunk;
+  // Kotwica, do której trzeba doscrollować DOPIERO gdy zablokowana dziś treść realnie się
+  // zamontuje (patrz efekt niżej) — klik na "Projekty"/"Kontakt"/hero CTA, zanim treść jest
+  // odblokowana, nie może po prostu pozwolić przeglądarce na natywny skok do #id, bo ten element
+  // jeszcze nie istnieje w DOM-ie.
+  const [pendingAnchorId, setPendingAnchorId] = useState<string | null>(null);
 
   // Real bug reported on a real iPhone (both Safari and Chrome for iOS — same WebKit engine
   // underneath): `.site-footer`'s `position: sticky; bottom: 0` doesn't recompute against the
@@ -129,16 +144,54 @@ function App() {
     handleSectionChange('about');
   };
 
+  // Dopiero po odblokowaniu (setSkipped w handleGatedAnchorClick niżej) zablokowana treść
+  // faktycznie się montuje — podwójny requestAnimationFrame czeka na realny paint po tym
+  // montowaniu, zanim zmierzy pozycję celu (ten sam powód co PANEL_REVEAL_MS wyżej: odczyt
+  // geometrii od razu po zmianie DOM bywa niewiarygodny).
+  useEffect(() => {
+    if (!unlocked || pendingAnchorId === null) {
+      return;
+    }
+    const id = pendingAnchorId;
+    setPendingAnchorId(null);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView({ block: 'start' });
+      });
+    });
+  }, [unlocked, pendingAnchorId]);
+
+  // Nagłówek i hero CTA prowadzą do kotwic, które przed odblokowaniem jeszcze nie istnieją w
+  // DOM-ie (statki blokują wszystko poniżej hero) — klik na nie odblokowuje treść zamiast
+  // pozwolić przeglądarce skoczyć donikąd, a docelowa sekcja i tak dostaje scroll po
+  // zamontowaniu (efekt wyżej). Po odblokowaniu te same linki działają jak zwykłe kotwice.
+  const handleGatedAnchorClick = (anchorId: string, event: MouseEvent): void => {
+    if (unlocked) {
+      return;
+    }
+    event.preventDefault();
+    setSkipped(true);
+    setPendingAnchorId(anchorId);
+  };
+
   return (
     <div className="landing">
       <header className="masthead">
         <div className="masthead__inner">
           <span className="masthead__name">Jakub Siwiński</span>
           <nav className="masthead__nav">
-            <a href="#projekty">{t('Projekty', 'Projects')}</a>
-            <a href="#o-mnie">{t('O mnie', 'About')}</a>
-            <a href="#umiejetnosci">{t('Umiejętności', 'Skills')}</a>
-            <a href="#kontakt">{t('Kontakt', 'Contact')}</a>
+            <a href="#projekty" onClick={(e) => handleGatedAnchorClick('projekty', e)}>
+              {t('Projekty', 'Projects')}
+            </a>
+            <a href="#o-mnie" onClick={(e) => handleGatedAnchorClick('o-mnie', e)}>
+              {t('O mnie', 'About')}
+            </a>
+            <a href="#umiejetnosci" onClick={(e) => handleGatedAnchorClick('umiejetnosci', e)}>
+              {t('Umiejętności', 'Skills')}
+            </a>
+            <a href="#kontakt" onClick={(e) => handleGatedAnchorClick('kontakt', e)}>
+              {t('Kontakt', 'Contact')}
+            </a>
           </nav>
           {/* Realny, działający przełącznik (właściciel: "przetłumacz sobie teksty i włącz
               przełącznik") — nie tylko wizualny stan "PL / EN" obok siebie jak wcześniej.
@@ -186,10 +239,18 @@ function App() {
               )}
             </p>
             <div className="hero__cta">
-              <a className="hero__cta-primary" href="#projekty">
+              <a
+                className="hero__cta-primary"
+                href="#projekty"
+                onClick={(e) => handleGatedAnchorClick('projekty', e)}
+              >
                 {t('Zobacz projekty →', 'See the projects →')}
               </a>
-              <a className="btn-outline" href="#kontakt">
+              <a
+                className="btn-outline"
+                href="#kontakt"
+                onClick={(e) => handleGatedAnchorClick('kontakt', e)}
+              >
                 {t('Napisz do mnie', 'Get in touch')}
               </a>
             </div>
@@ -205,33 +266,48 @@ function App() {
         </div>
       </main>
 
-      <StatsBar />
-      <ProjectIndex onOpenDetail={handleSectionChange} />
-      <MicrofrontendBand />
-      <BattleshipDrawer />
-      <AboutSection onOpenPassion={handleOpenAboutPassion} />
-      <SkillsSection />
+      <BattleshipDrawer
+        unlocked={unlocked}
+        onAllShipsSunk={() => setAllShipsSunk(true)}
+        onSkip={() => setSkipped(true)}
+      />
 
-      {/* Nakładka na widok szczegółowy (projekt/dział "O mnie") — kolapsuje do ~0 wysokości,
-          kiedy nic nie jest otwarte (patrz DetailOverlay.tsx/.css). */}
-      <div className="landing__content">
-        <DetailOverlay
-          openSection={openSection}
-          onClose={() => handleSectionChange(null)}
-          aboutPassionId={aboutPassionId}
-        />
-      </div>
+      {/* Reszta strony montuje się dopiero po odblokowaniu (zatopienie wszystkich statków albo
+          "Pomiń" w BattleshipDrawer) — nie warunkowa animacja zwijania jak gdzie indziej w tym
+          repo (DetailOverlay, panele AboutGallery), tylko zwykłe warunkowe renderowanie: ta
+          zablokowana treść to kilka pełnych sekcji ze zdjęciami i osadzonymi Web Componentami
+          (mapa tour-guide, cała apka Insider), więc nie ma sensu ich w ogóle montować/ładować,
+          dopóki naprawdę nie są widoczne. */}
+      {unlocked && (
+        <>
+          <StatsBar />
+          <ProjectIndex onOpenDetail={handleSectionChange} />
+          <MicrofrontendBand />
+          <AboutSection onOpenPassion={handleOpenAboutPassion} />
+          <SkillsSection />
 
-      <ContactBanner />
+          {/* Nakładka na widok szczegółowy (projekt/dział "O mnie") — kolapsuje do ~0 wysokości,
+              kiedy nic nie jest otwarte (patrz DetailOverlay.tsx/.css). */}
+          <div className="landing__content">
+            <DetailOverlay
+              openSection={openSection}
+              onClose={() => handleSectionChange(null)}
+              aboutPassionId={aboutPassionId}
+            />
+          </div>
 
-      <footer className="site-footer">
-        <div className="site-footer__inner">
-          <span className="site-footer__tagline">
-            {t('Portfolio jako aplikacja · vol. 01', 'Portfolio as an app · vol. 01')}
-          </span>
-          <span className="site-footer__year">© 2026 Jakub Siwiński</span>
-        </div>
-      </footer>
+          <ContactBanner />
+
+          <footer className="site-footer">
+            <div className="site-footer__inner">
+              <span className="site-footer__tagline">
+                {t('Portfolio jako aplikacja · vol. 01', 'Portfolio as an app · vol. 01')}
+              </span>
+              <span className="site-footer__year">© 2026 Jakub Siwiński</span>
+            </div>
+          </footer>
+        </>
+      )}
     </div>
   );
 }

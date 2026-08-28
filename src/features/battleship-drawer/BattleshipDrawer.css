@@ -71,8 +71,43 @@
   font-weight: 500;
 }
 
-/* grid-template-rows: 0fr↔1fr — ta sama technika co Toc.css (.toc__view-panel), z handoffu wprost
-   jako "do reużycia, nie do wymyślania od nowa" (inny czas przejścia: 380ms, z handoffu). */
+/*
+ * Przycisk pomijania — świadomie mocniejszy wizualnie niż .btn-outline (ta sama recepta co
+ * .hero__cta-primary: pełne czerwone tło, nie sama obwódka) po realnym feedbacku, że stary,
+ * cichy przycisk "pomiń" w poprzedniej wersji (Workbench) był za mało widoczny. Zduplikowana, nie
+ * wydzielona jako współdzielona klasa — dopiero 2. wystąpienie tego wyglądu, nie 3. (patrz
+ * konwencja w PORTFOLIO_PLAN.md, "wydzielaj przy 3. wystąpieniu, nie wcześniej").
+ */
+.battleship-drawer__skip {
+  display: inline-block;
+  font-family: var(--md-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+  border: none;
+  background: var(--md-accent);
+  color: var(--md-paper);
+  padding: 13px 18px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .battleship-drawer__skip {
+    transition: background 160ms ease, transform 160ms ease;
+  }
+}
+
+.battleship-drawer__skip:hover {
+  background: var(--md-accent-hover);
+  transform: translateY(-2px);
+}
+
+/*
+ * grid-template-rows: 0fr↔1fr — ta sama technika co DetailOverlay.css/AboutGallery.css. Dodane z
+ * powrotem po realnym feedbacku właściciela: skoro plansza znowu bramkuje resztę strony,
+ * automatyczne zwinięcie po odblokowaniu (BattleshipDrawer.tsx, efekt na `unlocked`) oszczędza
+ * miejsce, zamiast trzymać całą planszę rozwiniętą, mimo że przestała cokolwiek blokować.
+ */
 .battleship-drawer__panel {
   display: grid;
   grid-template-rows: 0fr;

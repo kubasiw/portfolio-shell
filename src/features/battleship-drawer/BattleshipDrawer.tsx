@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslate } from '../../i18n/LanguageContext';
 import { Board } from './Board';
 import { NOTES } from './notes';
@@ -45,9 +45,19 @@ function buildStatusMessage(
   );
 }
 
-export function BattleshipDrawer() {
+interface BattleshipDrawerProps {
+  unlocked: boolean;
+  onAllShipsSunk: () => void;
+  onSkip: () => void;
+}
+
+// Statki znowu bramkują resztę strony (real feedback po "content dostępny od pierwszej sekundy"
+// z pierwszej wersji redesignu "Atrament") — patrz App.tsx dla samej bramki (co jest chowane, gdzie
+// ten komponent teraz siedzi w kolejności sekcji). Ten komponent zostaje self-contained
+// (`useBattleship()` nadal tu, nie podniesiony do App) — App potrzebuje tylko wiedzieć "wszystkie
+// zatopione" i "użytkownik kliknął pomiń", stąd 2 callbacki zamiast całego stanu gry w propsach.
+export function BattleshipDrawer({ unlocked, onAllShipsSunk, onSkip }: BattleshipDrawerProps) {
   const t = useTranslate();
-  const [open, setOpen] = useState(false);
   const {
     cellStatus,
     revealedNoteIds,
@@ -61,29 +71,66 @@ export function BattleshipDrawer() {
 
   const revealedNotes = NOTES.filter((note) => revealedNoteIds.has(note.id));
   const statusMessage = buildStatusMessage(lastResult, t);
+  const allSunk = revealedNotes.length === NOTES.length;
+
+  // Wywołane bezwarunkowo za każdym razem, gdy warunek jest spełniony — setState w App.tsx na tę
+  // samą wartość (true->true) i tak nie wywoła dodatkowego renderu, więc nie trzeba pilnować, żeby
+  // wywołać to dokładnie raz.
+  useEffect(() => {
+    if (allSunk) {
+      onAllShipsSunk();
+    }
+  }, [allSunk, onAllShipsSunk]);
+
+  // Zwinięta plansza po odblokowaniu — realny feedback właściciela: skoro plansza przestała
+  // blokować cokolwiek (albo zatopiono wszystkie statki, albo kliknięto "Pomiń"), nie musi już
+  // zajmować pełnej wysokości nad resztą strony. `[unlocked]` w deps, nie `[allSunk]`/`onSkip` —
+  // `unlocked` zmienia wartość dokładnie raz (false→true, nigdy z powrotem), więc ten efekt
+  // odpala się dokładnie raz, w momencie odblokowania — późniejsze ręczne rozwinięcie (przycisk
+  // niżej) nie zostanie przez niego cofnięte.
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    if (unlocked) {
+      setCollapsed(true);
+    }
+  }, [unlocked]);
 
   return (
     <section className="battleship-drawer" aria-labelledby="battleship-drawer-heading">
       <div className="battleship-drawer__header">
         <div className="battleship-drawer__intro">
-          <span className="battleship-drawer__kicker">{t('Opcjonalnie', 'Optional')}</span>
+          <span className="battleship-drawer__kicker">
+            {unlocked ? t('Odblokowane', 'Unlocked') : t('Zagraj albo pomiń', 'Play or skip')}
+          </span>
           <h3 id="battleship-drawer-heading" className="battleship-drawer__title">
             {t('Zagraj w statki', 'Play battleship')}
           </h3>
           <p className="battleship-drawer__body">
-            {t(
-              'Indeks powyżej jest pełny od pierwszej sekundy — gra nic nie blokuje. Trafienia dorzucają notki „za kulisami” z każdego projektu: realne bugi, decyzje, koszty.',
-              "The index above is complete from the first second — the game blocks nothing. Hits reveal \"behind the scenes\" notes from each project: real bugs, decisions, costs.",
-            )}
+            {unlocked
+              ? t(
+                  'Reszta portfolio jest już odblokowana. Możesz dograć planszę do końca — każde trafienie wciąż odkrywa notkę „za kulisami” z jednego z projektów.',
+                  "The rest of the portfolio is already unlocked. Feel free to keep playing — every hit still reveals a \"behind the scenes\" note from one of the projects.",
+                )
+              : t(
+                  'Zatop wszystkie statki, żeby odsłonić resztę portfolio — każde trafienie odkrywa notkę „za kulisami” z jednego z projektów: realne bugi, decyzje, koszty.',
+                  'Sink every ship to reveal the rest of the portfolio — each hit uncovers a "behind the scenes" note from one of the projects: real bugs, decisions, costs.',
+                )}
           </p>
-          <button
-            type="button"
-            className="btn-outline"
-            onClick={() => setOpen((prev) => !prev)}
-            aria-expanded={open}
-          >
-            {open ? t('Schowaj planszę ↑', 'Hide the board ↑') : t('Otwórz planszę →', 'Open the board →')}
-          </button>
+          {!unlocked && (
+            <button type="button" className="battleship-drawer__skip" onClick={onSkip}>
+              {t('Pomiń i przejdź do treści →', 'Skip and go to the content →')}
+            </button>
+          )}
+          {unlocked && (
+            <button
+              type="button"
+              className="btn-outline"
+              onClick={() => setCollapsed((prev) => !prev)}
+              aria-expanded={!collapsed}
+            >
+              {collapsed ? t('Pokaż planszę ↓', 'Show the board ↓') : t('Schowaj planszę ↑', 'Hide the board ↑')}
+            </button>
+          )}
         </div>
         <div className="battleship-drawer__stats" aria-live="polite">
           <p className="battleship-drawer__stat">
@@ -101,9 +148,10 @@ export function BattleshipDrawer() {
         </div>
       </div>
 
-      {/* grid-template-rows: 0fr↔1fr — ta sama technika co Toc.css (.toc__view-panel), z handoffu
-          wprost jako "do reużycia, nie do wymyślania od nowa". */}
-      <div className={`battleship-drawer__panel ${open ? 'battleship-drawer__panel--open' : ''}`}>
+      {/* grid-template-rows: 0fr↔1fr — ten sam wzorzec co DetailOverlay.css/AboutGallery.css,
+          teraz też tutaj: zwija się automatycznie po odblokowaniu (efekt wyżej), rozwijalne z
+          powrotem przyciskiem "Pokaż planszę". */}
+      <div className={`battleship-drawer__panel ${collapsed ? '' : 'battleship-drawer__panel--open'}`}>
         <div className="battleship-drawer__panel-inner">
           <div className="battleship-drawer__content">
             <div className="battleship-drawer__board-col">
@@ -144,7 +192,7 @@ export function BattleshipDrawer() {
                   <p className="battleship-drawer__notes-empty">
                     {t(
                       'Jeszcze nic nie odkryto — zatop statek na planszy obok.',
-                      "Nothing revealed yet — sink a ship on the board.",
+                      'Nothing revealed yet — sink a ship on the board.',
                     )}
                   </p>
                 </div>

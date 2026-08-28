@@ -919,6 +919,54 @@ na całej stronie, bez żadnego pozostałego Workbenchowego wyjątku.
    34×34/`border-radius:0` na desktopie (`getComputedStyle`, nie tylko wizualnie), płynna siatka
    poniżej 900px, zero przewijania w poziomie na 375px zarówno przy zwiniętej jak i otwartej
    szufladzie, `tsc`/`lint`/`build` czyste.
+   **✅ Cofnięcie decyzji "treść dostępna od pierwszej sekundy" (2026-08-25), realny feedback
+   właściciela.** Handoff i etap 4 powyżej explicite zakładały, że statki nigdy nic nie
+   blokują — właściciel poprosił wprost o odwrócenie tego: plansza ma znowu bramkować resztę
+   strony, tak jak w starym Workbenchu, ale z dwiema świadomymi poprawkami względem tamtej wersji
+   (potwierdzonymi przez `AskUserQuestion`, nie zgadywane): (1) **zakres blokady to wszystko
+   poniżej hero** (statystyki, indeks projektów, mikrofrontend, o mnie, umiejętności, kontakt,
+   stopka — nie tylko indeks), hero i sama plansza zostają zawsze widoczne; (2) **warunek
+   odblokowania to zatopienie wszystkich statków** (nie np. pierwszy strzał), z dużo bardziej
+   widocznym przyciskiem "Pomiń" niż w Workbenchu (pełne czerwone tło jak `.hero__cta-primary`,
+   nie cichy link).
+   **`App.tsx`**: `BattleshipDrawer` przeniesiony w kolejności zaraz po `<main className="hero">`,
+   przed `<StatsBar />`. Nowy stan `skipped`/`allShipsSunk` (→ `unlocked = skipped ||
+   allShipsSunk`) — reszta sekcji renderuje się warunkowo (`{unlocked && (...)}</>`), **zwykłe
+   warunkowe renderowanie, nie animowane zwijanie** jak gdzie indziej w tym repo (DetailOverlay,
+   panele AboutGallery) — zablokowana treść to kilka pełnych sekcji ze zdjęciami i osadzonymi Web
+   Componentami (mapa tour-guide, cała apka Insider), więc nie ma sensu ich w ogóle
+   montować/ładować, dopóki naprawdę nie są widoczne. Klik na dowolną kotwicę prowadzącą do
+   jeszcze zablokowanej treści (4 linki nagłówka + oba hero CTA) odblokowuje **i** doscrolluje do
+   celu po zamontowaniu (`pendingAnchorId` + podwójny `requestAnimationFrame`, żeby poczekać na
+   realny paint po zamontowaniu nowej treści — ten sam powód co `PANEL_REVEAL_MS` gdzie indziej w
+   tym pliku) — bez tego klik np. w "Projekty" przed odblokowaniem prowadziłby donikąd (element
+   jeszcze nie istnieje w DOM-ie).
+   **`BattleshipDrawer.tsx`**: `useBattleship()` zostaje self-contained (nie podniesiony do App)
+   — App potrzebuje tylko 2 callbacków (`onAllShipsSunk`, `onSkip`), nie całego stanu gry w
+   propsach. Stary przycisk "Otwórz/schowaj planszę" (etap 4, domyślnie zwinięta) zniknął —
+   plansza renderuje się od razu otwarta, skoro jest teraz głównym, wymaganym elementem
+   interakcji, a nie opcjonalnym dodatkiem schowanym za kolejnym klikiem (podwójna bramka
+   byłaby złym UX). Kopia w nagłówku (kicker/tytuł/opis) zmienia się zależnie od `unlocked` —
+   przed odblokowaniem tłumaczy zasadę gry, po odblokowaniu zachęca do dokończenia planszy dla
+   samych notek.
+   **✅ Automatyczne zwijanie planszy po odblokowaniu (2026-08-25), drugi kawałek tego samego
+   realnego feedbacku** — `.battleship-drawer__panel`/`--panel--open`/`.panel-inner` (usunięte
+   chwilę wcześniej w tym samym etapie jako rzekomo martwe, przywrócone) wraca jako mechanizm
+   zwijania: nowy stan `collapsed` w `BattleshipDrawer.tsx`, efekt na `[unlocked]` (nie
+   `[allSunk]`/`onSkip`) ustawia `collapsed(true)` **dokładnie raz**, w momencie przejścia
+   false→true — `unlocked` nigdy nie wraca do `false`, więc późniejsze ręczne rozwinięcie
+   przyciskiem "Pokaż planszę ↓" (widocznym tylko po odblokowaniu, w miejscu, gdzie wcześniej był
+   przycisk "Pomiń") nie zostanie przez ten efekt cofnięte. Dotyczy identycznie obu ścieżek
+   odblokowania (Pomiń i zatopienie wszystkich statków), zgodnie z wprost wyrażoną prośbą
+   właściciela "to samo jak użytkownik sam rozwiąże".
+   Zweryfikowano żywo: świeże wejście na stronę renderuje wyłącznie masthead/hero/
+   battleship-drawer (`Array.from(landing.children)`, reszta sekcji faktycznie nieobecna w
+   DOM-ie, nie tylko ukryta CSS-em); klik "Pomiń" montuje resztę stron i zwija planszę do 0
+   wysokości (`getBoundingClientRect().height === 0`), przycisk zamienia się na "Pokaż planszę
+   ↓", ponowny klik realnie rozwija z powrotem; klik hero CTA "Zobacz projekty →" na
+   zablokowanej stronie odblokowuje i doscrollowuje dokładnie do `#projekty` (zmierzone
+   `getBoundingClientRect().top`, nie tylko `scrollY`); zero przewijania w poziomie na 375px
+   zarówno zablokowanej, jak i odblokowanej stronie; `tsc`/`lint`/`build` czyste.
 5. ✅ **"O mnie" (pasek pozioki) + Umiejętności (dwie kolumny)** (2026-08-24) — nowy
    `src/features/about/AboutSection.tsx` (nagłówek + pasek 5 kafli, zawsze widoczny, `id="o-mnie"`)
    i nowy top-level `src/features/skills/` (przeniesione z `toc/skills/`: `SkillsSection.tsx`
