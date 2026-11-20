@@ -1,6 +1,6 @@
 name: CI
 
-# Deploy is handled by Cloudflare Pages itself (connected to this repo, builds `npm run build` and
+# Deploy is handled by Cloudflare Workers itself (connected to this repo, builds `npm run build` and
 # publishes `dist/` on every push to main) — this workflow only gates quality. Replaces the old
 # deploy.yml (Docker image -> GHCR -> SSH to the VPS), removed 2026-11-20 together with the VPS.
 

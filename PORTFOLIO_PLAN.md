@@ -395,7 +395,7 @@ odblokowuje się po kilku trafieniach, nie po ukończeniu całej planszy).
 > wspólny Postgres + Uptime Kuma + GHCR) jest HISTORYCZNE i już nie działa.** Aktualny stan opisuje
 > ta podsekcja; reszta zostaje jako zapis decyzji i tego, czego się przy tym nauczyłem.
 
-### Aktualny stan (od 2026-11-20): Cloudflare Pages, koszt €0
+### Aktualny stan (od 2026-11-20): Cloudflare Workers, koszt €0
 
 **Dlaczego.** Jedynym realnym, stałym kosztem był Hetzner CPX22: €23,97/mies. (~€288/rok) po
 czerwcowej podwyżce, za ruch, jakiego portfolio nie ma. Próba przeniesienia *tego samego* stosu na
@@ -406,7 +406,7 @@ Zakres uzgodniony wprost z właścicielem: "najprościej — widget i kod".
 
 **Jak działa teraz.**
 
-- **portfolio-shell** → Cloudflare Pages (statyczny `dist/`, repo podpięte, deploy z pusha do
+- **portfolio-shell** → Cloudflare Workers (statyczny `dist/`, repo podpięte, deploy z pusha do
   `main`). Nagłówki/CSP w `public/_headers` (zastąpiły `nginx.conf`); `ci.yml` tylko lint + build.
 - **Oba widgety to statyczne pliki obok strony** (`public/elements/tour-guide/main.js` +
   `krakow-demo-pois.json`, `public/elements/insider/main.js`) — ten sam origin co strona, więc
@@ -2483,11 +2483,11 @@ dla pełnego uzasadnienia każdej decyzji — zastępuje wcześniejsze uproszczo
   (build-time, nie runtime) — naprawa wymagałaby cofnięcia decyzji o SDK 54. Pełne szczegóły w
   `C:\serwisant\CLAUDE.md`.
 
-- 2026-11-20: **Koniec z VPS-em: hosting za €0 (Cloudflare Pages), widgety jako statyczne pliki.**
+- 2026-11-20: **Koniec z VPS-em: hosting za €0 (Cloudflare Workers), widgety jako statyczne pliki.**
   Hetzner CPX22 (€23,97/mies.) był jedynym stałym kosztem; próba przeprowadzki tego samego stosu na
   darmowy Oracle Cloud (Ampere A1) utknęła na "out of capacity" (jedna AD w Paryżu, wszystkie
   Fault Domains), więc zamiast dalej walczyć o darmowy serwer — przeprojektowanie: strona na
-  Cloudflare Pages, oba widgety (tour-guide: mapa; insider: cała apka) skompilowane do Web
+  Cloudflare Workers, oba widgety (tour-guide: mapa; insider: cała apka) skompilowane do Web
   Components i serwowane jako pliki obok strony (`public/elements/`, ten sam origin). Backendy
   tour-guide/insider nie są wdrożone: mapa czyta statyczny snapshot 40 POI (generowany raz z
   żywego backendu przed wyłączeniem, ścieżka względem `import.meta.url`), sugestie AI insidera są
@@ -2502,7 +2502,7 @@ dla pełnego uzasadnienia każdej decyzji — zastępuje wcześniejsze uproszczo
   łączyć się z localhostem odwiedzającego — teraz pusty string = AI wyłączone. Zweryfikowane na
   zbudowanym `dist` serwowanym z prawdziwym CSP z `_headers`: oba widgety ładują się z plików
   lokalnych (mapa: 6 kafli OSM, 40 markerów, `overflow: hidden` na kontenerze Leafleta; insider:
-  shadow root, 6 żądań do Finnhuba bez błędów CSP). **Kroki poza repo (robi właściciel):** projekt
-  Cloudflare Pages + custom domain `kubsiw.com`, usunięcie rekordów `tourguide`/`insider`/
+  shadow root, 6 żądań do Finnhuba bez błędów CSP). **Kroki poza repo (wykonane 2026-11-20: Worker `portfolio-shell` z buildem z Gita, domena `kubsiw.com` podpięta przez `routes` w `wrangler.jsonc` — nowy dashboard tworzy Workers zamiast Pages; rekordy DNS usunięte, serwer Hetzner skasowany):** projekt
+  Cloudflare Workers + custom domain `kubsiw.com`, usunięcie rekordów `tourguide`/`insider`/
   `serwisant` z DNS, a na końcu skasowanie serwera w Hetznerze (dopiero po weryfikacji nowej
   strony pod właściwą domeną).

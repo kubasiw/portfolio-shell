@@ -143,7 +143,7 @@ export const SKILL_PLATES: SkillPlateData[] = [
           { labelPl: 'Traefik', labelEn: 'Traefik' },
           { labelPl: 'VPS (Hetzner)', labelEn: 'VPS (Hetzner)' },
           { labelPl: 'GitHub Actions (CI/CD)', labelEn: 'GitHub Actions (CI/CD)' },
-          { labelPl: 'Cloudflare Pages', labelEn: 'Cloudflare Pages' },
+          { labelPl: 'Cloudflare Workers', labelEn: 'Cloudflare Workers' },
         ],
       },
       {

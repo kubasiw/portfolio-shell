@@ -8,7 +8,7 @@ const TECH_TAGS = [
   'React 19 + Vite',
   'TypeScript',
   'Web Components',
-  'Cloudflare Pages',
+  'Cloudflare Workers',
   'GitHub Actions',
 ];
 
@@ -58,8 +58,8 @@ export function ShellDetail() {
             <h3 className="shell-detail__heading">{t('Infrastruktura', 'Infrastructure')}</h3>
             <p>
               {t(
-                'Ta strona przeszła dwie wersje infrastruktury. Pierwsza: własny VPS, Traefik i Docker Compose, osobny kontener i subdomena na każdą aplikację, obrazy w GHCR, deploy z pusha — świetna nauka i dobry materiał do pokazania. Druga, obecna: statyczny hosting na Cloudflare Pages za zero złotych, a oba widgety to skompilowane Web Components leżące obok strony. Powód zmiany jest prozaiczny — po czerwcowej podwyżce cen Hetznera serwer kosztował ok. 24 € miesięcznie, a portfolio nie ma ruchu, który by to uzasadniał. Deploy z pusha został, serwera już nie ma.',
-                "This site went through two versions of its infrastructure. The first: its own VPS, Traefik and Docker Compose, a container and a subdomain per app, images in GHCR, deploy on push — great for learning and good material to show off. The second, current one: static hosting on Cloudflare Pages for zero zloty, with both widgets compiled into Web Components that sit next to the page. The reason for the change is mundane — after Hetzner's June price hike the server cost about €24 a month, and a portfolio doesn't get the traffic to justify that. Deploy on push stayed, the server didn't.",
+                'Ta strona przeszła dwie wersje infrastruktury. Pierwsza: własny VPS, Traefik i Docker Compose, osobny kontener i subdomena na każdą aplikację, obrazy w GHCR, deploy z pusha — świetna nauka i dobry materiał do pokazania. Druga, obecna: statyczny hosting na Cloudflare Workers za zero złotych, a oba widgety to skompilowane Web Components leżące obok strony. Powód zmiany jest prozaiczny — po czerwcowej podwyżce cen Hetznera serwer kosztował ok. 24 € miesięcznie, a portfolio nie ma ruchu, który by to uzasadniał. Deploy z pusha został, serwera już nie ma.',
+                "This site went through two versions of its infrastructure. The first: its own VPS, Traefik and Docker Compose, a container and a subdomain per app, images in GHCR, deploy on push — great for learning and good material to show off. The second, current one: static hosting on Cloudflare Workers for zero zloty, with both widgets compiled into Web Components that sit next to the page. The reason for the change is mundane — after Hetzner's June price hike the server cost about €24 a month, and a portfolio doesn't get the traffic to justify that. Deploy on push stayed, the server didn't.",
               )}
             </p>
           </section>

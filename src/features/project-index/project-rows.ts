@@ -86,7 +86,7 @@ export const PROJECT_INDEX_ROWS: ProjectIndexRow[] = [
     id: 'portfolio-shell',
     titlePl: 'Ten shell',
     titleEn: 'This shell',
-    stack: 'React · Vite · Cloudflare Pages',
+    stack: 'React · Vite · Cloudflare Workers',
     notePl:
       'Mikrofrontendy przez Web Components, statyczny hosting za €0, deploy z pusha.',
     noteEn: 'Microfrontends via Web Components, static hosting for €0, deploy on push.',

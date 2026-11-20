@@ -62,8 +62,8 @@ export const NOTES: BattleshipNote[] = [
     titlePl: 'Serwer za €24 miesięcznie dla portfolio? Nie',
     titleEn: 'A €24/month server for a portfolio? No',
     bodyPl:
-      'Portfolio działało na własnym VPS-ie: Traefik, Docker Compose, osobny kontener i subdomena na każdą apkę, deploy z pusha. Po czerwcowej podwyżce cen Hetznera (nawet +176% na liniach CPX) kosztowało to ok. €24 miesięcznie — za ruch, jakiego tu realnie nie ma. Backendy zniknęły, a oba widgety zostały skompilowane do statycznych Web Components, które leżą obok strony na Cloudflare Pages; mapa czyta snapshot prawdziwych danych z OpenStreetMap. Koszt: €0, została tylko domena.',
+      'Portfolio działało na własnym VPS-ie: Traefik, Docker Compose, osobny kontener i subdomena na każdą apkę, deploy z pusha. Po czerwcowej podwyżce cen Hetznera (nawet +176% na liniach CPX) kosztowało to ok. €24 miesięcznie — za ruch, jakiego tu realnie nie ma. Backendy zniknęły, a oba widgety zostały skompilowane do statycznych Web Components, które leżą obok strony na Cloudflare Workers; mapa czyta snapshot prawdziwych danych z OpenStreetMap. Koszt: €0, została tylko domena.',
     bodyEn:
-      "The portfolio ran on its own VPS: Traefik, Docker Compose, a container and a subdomain per app, deploy on push. After Hetzner's June price hike (up to +176% on the CPX line) that came to about €24 a month — for traffic that simply isn't there. The backends are gone, and both widgets were compiled into static Web Components that sit next to the page on Cloudflare Pages; the map reads a snapshot of real OpenStreetMap data. Cost: €0, only the domain remains.",
+      "The portfolio ran on its own VPS: Traefik, Docker Compose, a container and a subdomain per app, deploy on push. After Hetzner's June price hike (up to +176% on the CPX line) that came to about €24 a month — for traffic that simply isn't there. The backends are gone, and both widgets were compiled into static Web Components that sit next to the page on Cloudflare Workers; the map reads a snapshot of real OpenStreetMap data. Cost: €0, only the domain remains.",
   },
 ];

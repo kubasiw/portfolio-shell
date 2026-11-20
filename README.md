@@ -20,24 +20,30 @@ npm run build
 npm run preview   # podgląd builda lokalnie (UWAGA: nie stosuje public/_headers, więc bez CSP)
 ```
 
-## Hosting: Cloudflare Pages (od 2026-11-20)
+## Hosting: Cloudflare Workers (static assets), od 2026-11-20
 
-Statyczny build `dist/`, bez serwera, bez Dockera, koszt €0 (poza domeną). Wcześniejszy VPS
+Statyczny build `dist/`, bez serwera i bez Dockera, koszt €0 (poza domeną). Wcześniejszy VPS
 (Hetzner + Traefik + Docker Compose) został wyłączony — historia i powody w `PORTFOLIO_PLAN.md`
 (sekcja "Hosting / infrastruktura") i `INFRA_SETUP.md` (oznaczony jako historyczny).
 
-Ustawienia projektu w Cloudflare Pages (Workers & Pages → Create → Pages → Connect to Git):
+Strona to Worker bez kodu, który tylko serwuje pliki z `dist/` (konfiguracja w `wrangler.jsonc`:
+nazwa `portfolio-shell`, katalog `dist`, SPA fallback, custom domain `kubsiw.com`). Nowy dashboard
+Cloudflare tworzy takie projekty jako Workers, nie klasyczne Pages.
+
+Ustawienia w dashboardzie (Compute → Workers & Pages → `portfolio-shell` → Settings → Build):
 
 | Pole | Wartość |
 |---|---|
 | Repozytorium / branch produkcyjny | `kubasiw/portfolio-shell` / `main` |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
-| Zmienna środowiskowa | `NODE_VERSION` = `22` |
-| Custom domain | `kubsiw.com` (Cloudflare sam dopisze rekord DNS) |
+| Deploy command | `npx wrangler deploy` |
+| Zmienna buildu | `NODE_VERSION` = `22` |
 
-Każdy push do `main` buduje i publikuje stronę automatycznie. Nagłówki bezpieczeństwa i CSP
-siedzą w `public/_headers`. `.github/workflows/ci.yml` tylko pilnuje jakości (lint + build).
+Każdy push do `main` buduje i wdraża stronę automatycznie. Domena `kubsiw.com` jest podpięta przez
+`routes` w `wrangler.jsonc` (Cloudflare sam tworzy rekord DNS i certyfikat; adres `workers.dev` jest
+przez to wyłączony). Nagłówki bezpieczeństwa i CSP siedzą w `public/_headers`.
+`.github/workflows/ci.yml` tylko pilnuje jakości (lint + build). Ręczny deploy awaryjny:
+`npm run build` i `npx wrangler deploy`.
 
 ## Widgety osadzone na stronie (`public/elements/`)
 

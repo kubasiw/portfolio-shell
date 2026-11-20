@@ -1,4 +1,4 @@
-# Nagłówki dla Cloudflare Pages (zastępują dawny nginx.conf z VPS-a, 2026-11-20).
+# Nagłówki dla Cloudflare Workers (zastępują dawny nginx.conf z VPS-a, 2026-11-20).
 #
 # CSP: wszystko własne ('self') — oba widgety (tour-guide mapa, insider) są serwowane z tego samego
 # hostingu pod /elements/, nic nie jest ładowane z obcych domen skryptów. Wyjątki, każdy realnie
