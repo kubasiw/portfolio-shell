@@ -1980,8 +1980,12 @@ dla pełnego uzasadnienia każdej decyzji — zastępuje wcześniejsze uproszczo
     (`expo-print`, potwierdzone, nie tylko kandydat). Fakt vs. szacunek rozdzielone strukturalnie w
     samej odpowiedzi AI (dwa osobne pola), nie tylko wizualnie. Pełne szczegóły w
     `C:\serwisant\CLAUDE.md`.
-15. Domykanie pętli — ręczne odhaczenie pozycji z dowodem wykonania (zdjęcie faktury/dokumentu,
-    przez ten sam OCR co krok 13), dopisanie do historii, przeliczenie kolejnego terminu.
+15. ✅ Domykanie pętli — ręczne odhaczenie pozycji z dowodem wykonania (zdjęcie faktury/dokumentu,
+    przez ten sam endpoint OCR co krok 13, nie nowy backend), dopisanie do historii, przeliczenie
+    kolejnego terminu (pełne ponowne uruchomienie oceny po odhaczeniu). Fallback na syntetyczny
+    wpis gdy OCR nic nie rozpozna — samo potwierdzenie użytkownika to już fakt wart zapisania.
+    Ostatni funkcjonalny krok Fazy 5 przed dystrybucją. Pełne szczegóły w
+    `C:\serwisant\CLAUDE.md`.
 16. **Dystrybucja różni się od pozostałych dwóch projektów** — nie "subdomena w przeglądarce", tylko
     realny plik do zainstalowania na telefonie: backend (OCR/AI) nadal wystawiony pod subdomeną jak
     reszta, ale sam frontend to build EAS (Android APK do sideloadu na start, ikona na pulpicie
@@ -2481,6 +2485,18 @@ dla pełnego uzasadnienia każdej decyzji — zastępuje wcześniejsze uproszczo
   5×201 potem 429; zbyt długi `freeText` → 400 z konkretnym komunikatem walidacji. Świadomie
   nienaprawione: 11 podatności npm we frontendzie, wszystkie w łańcuchu narzędziowym Expo
   (build-time, nie runtime) — naprawa wymagałaby cofnięcia decyzji o SDK 54. Pełne szczegóły w
+  `C:\serwisant\CLAUDE.md`.
+- 2026-08-05: **Serwisant — dodany trwały nagłówek appki** (monogram + wordmark, na razie bez
+  osobnej ikony aplikacji — to nadal domyślna ikona Expo, wymaga osobnej pracy graficznej) oraz
+  **zbudowany krok 15** (domykanie pętli: odhaczenie pozycji serwisowej z dowodem — zdjęciem,
+  przez ten sam endpoint OCR co krok 13, nie nowy). Przy budowie kroku 15 wyodrębniono
+  `usePhotoPicker` z ekranu przechwytywania historii przy drugim użyciu (ten sam wzorzec "nie
+  duplikuj po raz drugi" co gdzie indziej w tej apce). Realny problem złapany żywym `curl`, nie
+  zgadywany: pierwsza wersja podpowiedzi tekstowej dla AI przy odhaczeniu poprawnie rozpoznawała
+  czynność, ale zostawiała datę/przebieg jako `null` — naprawione przekazaniem dzisiejszej daty i
+  aktualnego przebiegu jako domyślnych faktów (AI nadal może je nadpisać, jeśli zdjęcie pokazuje
+  coś innego) — ponownie zweryfikowane tym samym żądaniem, potwierdzając realną poprawkę. To
+  ostatni funkcjonalny krok Fazy 5 przed dystrybucją (krok 16). Pełne szczegóły w
   `C:\serwisant\CLAUDE.md`.
 
 - 2026-11-20: **Koniec z VPS-em: hosting za €0 (Cloudflare Workers), widgety jako statyczne pliki.**
