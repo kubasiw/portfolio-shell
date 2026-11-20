@@ -25,17 +25,17 @@ export function MicrofrontendBand() {
           </h3>
           <p className="microfrontend-band__body">
             {t(
-              'To nie zrzut ekranu — realny, osadzony Web Component z tour-guide.kubsiw.com, pobiera prawdziwe dane POI i renderuje żywą mapę Leaflet tuż tutaj, na tej stronie.',
-              "This isn't a screenshot — it's a real, embedded Web Component from tour-guide.kubsiw.com, fetching real POI data and rendering a live Leaflet map right here on this page.",
+              'To nie zrzut ekranu — realny Web Component z Tour Guide (Angular), skompilowany osobno i ładowany tutaj w Shadow DOM. Mapa Leaflet jest w pełni interaktywna, a dane to snapshot 40 prawdziwych miejsc z OpenStreetMap dołączony do widgetu — bez żadnego backendu.',
+              "This isn't a screenshot — it's a real Web Component from Tour Guide (Angular), compiled separately and loaded here in a Shadow DOM. The Leaflet map is fully interactive, and the data is a snapshot of 40 real places from OpenStreetMap bundled with the widget — no backend at all.",
             )}
           </p>
           <a
             className="btn-outline"
-            href="https://tourguide.kubsiw.com"
+            href="https://github.com/kubasiw/tour-guide"
             target="_blank"
             rel="noreferrer"
           >
-            {t('Otwórz całą aplikację ↗', 'Open the full app ↗')}
+            {t('Zobacz kod ↗', 'See the code ↗')}
           </a>
         </div>
         <div className="microfrontend-band__widget">

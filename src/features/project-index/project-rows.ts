@@ -42,8 +42,8 @@ export const PROJECT_INDEX_ROWS: ProjectIndexRow[] = [
       altPl: 'Sylwetki gór o zmierzchu',
       altEn: 'Mountain silhouettes at dusk',
     },
-    statusPl: 'Wdrożone',
-    statusEn: 'Live',
+    statusPl: 'Widget na żywo',
+    statusEn: 'Live widget',
     clickable: true,
   },
   {
@@ -60,8 +60,8 @@ export const PROJECT_INDEX_ROWS: ProjectIndexRow[] = [
       altPl: 'Zrzut ekranu aplikacji Insider — pasek tickera i karta sugestii AI',
       altEn: 'Screenshot of the Insider app — ticker bar and an AI suggestion card',
     },
-    statusPl: 'Wdrożone',
-    statusEn: 'Live',
+    statusPl: 'Widget na żywo',
+    statusEn: 'Live widget',
     clickable: true,
   },
   {
@@ -86,10 +86,10 @@ export const PROJECT_INDEX_ROWS: ProjectIndexRow[] = [
     id: 'portfolio-shell',
     titlePl: 'Ten shell',
     titleEn: 'This shell',
-    stack: 'React · Vite · Traefik · GHCR',
+    stack: 'React · Vite · Cloudflare Pages',
     notePl:
-      'Mikrofrontendy przez Web Components, deploy z pusha na własny VPS, status per serwis.',
-    noteEn: 'Microfrontends via Web Components, deploy on push to my own VPS, status per service.',
+      'Mikrofrontendy przez Web Components, statyczny hosting za €0, deploy z pusha.',
+    noteEn: 'Microfrontends via Web Components, static hosting for €0, deploy on push.',
     image: {
       src: interiorVolvo,
       altPl: 'Wnętrze samochodu, kokpit i deska rozdzielcza',

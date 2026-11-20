@@ -1,3 +1,10 @@
+> **⚠️ DOKUMENT HISTORYCZNY (2026-11-20).** Opisuje stawianie własnego VPS-a (Hetzner + Traefik +
+> Docker Compose + wspólny Postgres), który został **wyłączony** — hosting zszedł do darmowego
+> Cloudflare Pages, a widgety lecą jako statyczne pliki obok strony. Aktualny stan: `README.md`
+> (sekcja "Hosting") i `PORTFOLIO_PLAN.md`. Zostaje tu jako zapis tego, jak to działało i czego się
+> przy tym nauczyłem (np. wersja Traefika vs. API Dockera) — **nie wykonuj tych kroków**.
+> Z całości nadal aktualny jest tylko krok 1–2 (domena kupiona w Cloudflare Registrar + DNS).
+
 # Stawianie infrastruktury — VPS + domena + Cloudflare, krok po kroku
 
 Ten plik jest tymczasowo w `portfolio-shell` (dopóki nie założymy osobnego `portfolio-meta`) —

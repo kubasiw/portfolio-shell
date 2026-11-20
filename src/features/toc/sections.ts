@@ -43,9 +43,9 @@ export const SECTIONS: Section[] = [
     titlePl: 'Ten shell',
     titleEn: 'This shell',
     descriptionPl:
-      'Mikrofrontendy przez Web Components, deploy z pusha na własny VPS, status per serwis.',
+      'Mikrofrontendy przez Web Components, statyczny hosting za €0, deploy z pusha.',
     descriptionEn:
-      'Microfrontends via Web Components, deploy on push to my own VPS, status per service.',
+      'Microfrontends via Web Components, static hosting for €0, deploy on push.',
     hasDetailView: true,
   },
   {

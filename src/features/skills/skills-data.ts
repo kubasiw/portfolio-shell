@@ -131,16 +131,19 @@ export const SKILL_PLATES: SkillPlateData[] = [
         labelPl: 'Automatyzacja wdrożeń',
         labelEn: 'Deployment automation',
         notePl:
-          'Nie tylko "działa u mnie" — pełny łańcuch build → test → obraz Dockera → deploy na ' +
-          'VPS, uruchamiany samym pushem, bez ręcznego wchodzenia na serwer.',
+          'Przećwiczone w tym portfolio od początku do końca: build → test → obraz Dockera → deploy ' +
+          'na własny VPS z Traefikiem, uruchamiany samym pushem. A potem świadome zejście na ' +
+          'statyczny hosting, kiedy koszt serwera przestał się opłacać — to też umiejętność.',
         noteEn:
-          'Not just "works on my machine" — a full build → test → Docker image → deploy-to-VPS ' +
-          'chain, triggered by a plain push, no manual SSH-ing into the server.',
+          'Practiced in this portfolio end to end: build → test → Docker image → deploy to my own ' +
+          'VPS with Traefik, triggered by a plain push. And then a deliberate step down to static ' +
+          'hosting once the server stopped paying for itself — that is a skill too.',
         tags: [
           { labelPl: 'Docker', labelEn: 'Docker' },
           { labelPl: 'Traefik', labelEn: 'Traefik' },
           { labelPl: 'VPS (Hetzner)', labelEn: 'VPS (Hetzner)' },
           { labelPl: 'GitHub Actions (CI/CD)', labelEn: 'GitHub Actions (CI/CD)' },
+          { labelPl: 'Cloudflare Pages', labelEn: 'Cloudflare Pages' },
         ],
       },
       {

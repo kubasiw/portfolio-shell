@@ -3,7 +3,7 @@ import { useLanguage, useTranslate } from '../../../i18n/LanguageContext';
 import { TourGuideWidget } from '../TourGuideWidget';
 import './TourGuideDetail.css';
 
-const TOUR_GUIDE_URL = 'https://tourguide.kubsiw.com';
+const TOUR_GUIDE_REPO_URL = 'https://github.com/kubasiw/tour-guide';
 
 const TECH_TAGS = [
   'Angular 22 + signals',
@@ -17,10 +17,12 @@ const TECH_TAGS = [
 // Sits right under the widget, not in the "Pod maską" text — the point is a claim you can verify
 // on the spot against the live thing sitting right above it, not another generic stack fact.
 // Each one maps to something actually true of *this exact* embed (see CLAUDE.md's tour-guide
-// step 15): real Overpass fetch for the demo area, ViewEncapsulation.ShadowDom with Leaflet CSS
-// injected into the shadow root, and an Angular Elements custom element (not an iframe).
-const WIDGET_CALLOUTS_PL = ['ŻYWE DANE OSM · NIE MOCK', 'SHADOW DOM · IZOLACJA STYLÓW', 'WEB COMPONENT · NIE IFRAME'];
-const WIDGET_CALLOUTS_EN = ['LIVE OSM DATA · NOT MOCK', 'SHADOW DOM · STYLE ISOLATION', 'WEB COMPONENT · NOT AN IFRAME'];
+// step 15): a snapshot of real Overpass/OSM data for the demo area (static JSON next to the
+// script — the backend is no longer deployed, so "live" would be a lie), ViewEncapsulation.ShadowDom
+// with Leaflet CSS injected into the shadow root, and an Angular Elements custom element (not an
+// iframe).
+const WIDGET_CALLOUTS_PL = ['PRAWDZIWE DANE OSM · SNAPSHOT', 'SHADOW DOM · IZOLACJA STYLÓW', 'WEB COMPONENT · NIE IFRAME'];
+const WIDGET_CALLOUTS_EN = ['REAL OSM DATA · SNAPSHOT', 'SHADOW DOM · STYLE ISOLATION', 'WEB COMPONENT · NOT AN IFRAME'];
 
 // Split view, same shape as InsiderDetail: write-up on one side, the real embedded app on the
 // other. The "app" here is the same <tour-guide-mini-map> fragment already used on the tile
@@ -81,13 +83,24 @@ export function TourGuideDetail() {
               )}
             </p>
           </section>
+          <section className="tour-guide-detail__block">
+            <h3 className="tour-guide-detail__heading">
+              {t('Gdzie jest reszta aplikacji', 'Where the rest of the app lives')}
+            </h3>
+            <p>
+              {t(
+                'Pełna aplikacja (backend, baza, logowanie, AI) nie jest już nigdzie wdrożona — świadoma decyzja: serwer pod portfolio kosztował więcej, niż było to warte, więc wróciłem do hostingu za zero złotych. Mapa obok to statyczny snapshot 40 prawdziwych miejsc z OpenStreetMap, dołączony do samego widgetu, bez żadnego backendu. Cała aplikacja uruchamia się lokalnie z repozytorium w kilka minut.',
+                "The full app (backend, database, login, AI) is no longer deployed anywhere — a deliberate call: a server for a portfolio cost more than it was worth, so I went back to zero-cost hosting. The map next to this is a static snapshot of 40 real places from OpenStreetMap, bundled with the widget itself, no backend at all. The whole app runs locally from the repository in a few minutes.",
+              )}
+            </p>
+          </section>
           <a
             className="tour-guide-detail__external-link"
-            href={TOUR_GUIDE_URL}
+            href={TOUR_GUIDE_REPO_URL}
             target="_blank"
             rel="noreferrer"
           >
-            {t('Otwórz tourguide.kubsiw.com w nowej karcie →', 'Open tourguide.kubsiw.com in a new tab →')}
+            {t('Zobacz kod na GitHubie →', 'See the code on GitHub →')}
           </a>
         </div>
 

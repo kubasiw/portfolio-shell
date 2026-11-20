@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import './tour-guide-mini-map.d.ts';
 
-const WIDGET_SCRIPT_SRC = 'https://tourguide.kubsiw.com/elements/main.js';
+// Bundle widgetu leży obok strony (public/elements/tour-guide/), nie na osobnej subdomenie — backend
+// tour-guide nie jest już nigdzie wdrożony (2026-11-20), patrz PORTFOLIO_PLAN.md.
+const WIDGET_SCRIPT_SRC = '/elements/tour-guide/main.js';
 const WIDGET_TAG = 'tour-guide-mini-map';
 
 // Ładuje skrypt widgetu dokładnie raz, niezależnie od tego, ile razy ten komponent się

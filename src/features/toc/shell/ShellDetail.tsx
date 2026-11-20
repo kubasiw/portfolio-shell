@@ -8,8 +8,7 @@ const TECH_TAGS = [
   'React 19 + Vite',
   'TypeScript',
   'Web Components',
-  'Docker + Traefik',
-  'GHCR',
+  'Cloudflare Pages',
   'GitHub Actions',
 ];
 
@@ -32,8 +31,8 @@ export function ShellDetail() {
             <h3 className="shell-detail__heading">{t('Problem', 'The problem')}</h3>
             <p>
               {t(
-                'Portfolio zwykle jest statyczną wizytówką — kilka zrzutów ekranu i linki. Tutaj postawiłem inne pytanie: czy portfolio może samo być czwartym, realnym projektem — z własną infrastrukturą, własnym pipeline\'em wdrożeniowym i żywymi fragmentami pozostałych trzech aplikacji osadzonymi bezpośrednio na stronie, nie jako zrzuty ekranu.',
-                "A portfolio is usually a static showcase — a few screenshots and some links. Here I asked a different question: can the portfolio itself be a fourth, real project — with its own infrastructure, its own deploy pipeline, and live fragments of the other three apps embedded directly on the page instead of screenshots.",
+                'Portfolio zwykle jest statyczną wizytówką — kilka zrzutów ekranu i linki. Tutaj postawiłem inne pytanie: czy portfolio może samo być czwartym, realnym projektem — z własnym pipeline\'em wdrożeniowym i żywymi fragmentami pozostałych aplikacji osadzonymi bezpośrednio na stronie, nie jako zrzuty ekranu.',
+                "A portfolio is usually a static showcase — a few screenshots and some links. Here I asked a different question: can the portfolio itself be a fourth, real project — with its own deploy pipeline and live fragments of the other apps embedded directly on the page instead of screenshots.",
               )}
             </p>
           </section>
@@ -42,8 +41,8 @@ export function ShellDetail() {
             <h3 className="shell-detail__heading">{t('Architektura', 'Architecture')}</h3>
             <p>
               {t(
-                'React 19 + Vite dla tej strony, ale każdy z pozostałych trzech projektów zostaje w swoim własnym frameworku (Angular w tour-guide, Vue w Insiderze) — most między nimi to Web Components, nie wspólny framework ani iframe. Fragment mapy tour-guide i cała apka Insider renderują się tutaj jako realne, natywne custom elementy w Shadow DOM, z żywymi danymi z ich własnych domen.',
-                "React 19 + Vite for this site, but each of the other three projects stays in its own framework (Angular in tour-guide, Vue in Insider) — the bridge between them is Web Components, not a shared framework or an iframe. The tour-guide map fragment and the whole Insider app render here as real, native custom elements in Shadow DOM, with live data from their own domains.",
+                'React 19 + Vite dla tej strony, ale każdy z pozostałych trzech projektów zostaje w swoim własnym frameworku (Angular w tour-guide, Vue w Insiderze) — most między nimi to Web Components, nie wspólny framework ani iframe. Fragment mapy tour-guide i cała apka Insider renderują się tutaj jako realne, natywne custom elementy w Shadow DOM, serwowane razem z tą stroną — bez iframe i bez osobnych backendów.',
+                "React 19 + Vite for this site, but each of the other three projects stays in its own framework (Angular in tour-guide, Vue in Insider) — the bridge between them is Web Components, not a shared framework or an iframe. The tour-guide map fragment and the whole Insider app render here as real, native custom elements in Shadow DOM, served together with this page — no iframe, no separate backends.",
               )}
             </p>
             <div className="shell-detail__tags">
@@ -59,8 +58,8 @@ export function ShellDetail() {
             <h3 className="shell-detail__heading">{t('Infrastruktura', 'Infrastructure')}</h3>
             <p>
               {t(
-                'Żadnego Kubernetesa, żadnej platformy chmurowej — Traefik jako reverse proxy i Docker Compose na jednym VPS, każda z czterech aplikacji jako osobny kontener pod własną subdomeną, obrazy budowane i publikowane do GHCR przez GitHub Actions. Deploy z pusha do gałęzi głównej, nie z ręcznego klikania w panelu — tańsze i prostsze niż orkiestracja, w sam raz na ruch, jaki realnie tu jest.',
-                "No Kubernetes, no cloud platform — Traefik as a reverse proxy and Docker Compose on one VPS, each of the four apps as its own container under its own subdomain, images built and pushed to GHCR by GitHub Actions. Deploy on push to the main branch, not by clicking around a dashboard — cheaper and simpler than orchestration, plenty for the traffic this actually gets.",
+                'Ta strona przeszła dwie wersje infrastruktury. Pierwsza: własny VPS, Traefik i Docker Compose, osobny kontener i subdomena na każdą aplikację, obrazy w GHCR, deploy z pusha — świetna nauka i dobry materiał do pokazania. Druga, obecna: statyczny hosting na Cloudflare Pages za zero złotych, a oba widgety to skompilowane Web Components leżące obok strony. Powód zmiany jest prozaiczny — po czerwcowej podwyżce cen Hetznera serwer kosztował ok. 24 € miesięcznie, a portfolio nie ma ruchu, który by to uzasadniał. Deploy z pusha został, serwera już nie ma.',
+                "This site went through two versions of its infrastructure. The first: its own VPS, Traefik and Docker Compose, a container and a subdomain per app, images in GHCR, deploy on push — great for learning and good material to show off. The second, current one: static hosting on Cloudflare Pages for zero zloty, with both widgets compiled into Web Components that sit next to the page. The reason for the change is mundane — after Hetzner's June price hike the server cost about €24 a month, and a portfolio doesn't get the traffic to justify that. Deploy on push stayed, the server didn't.",
               )}
             </p>
           </section>

@@ -1,0 +1,25 @@
+name: CI
+
+# Deploy is handled by Cloudflare Pages itself (connected to this repo, builds `npm run build` and
+# publishes `dist/` on every push to main) — this workflow only gates quality. Replaces the old
+# deploy.yml (Docker image -> GHCR -> SSH to the VPS), removed 2026-11-20 together with the VPS.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

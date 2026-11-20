@@ -1,0 +1,24 @@
+# Nagłówki dla Cloudflare Pages (zastępują dawny nginx.conf z VPS-a, 2026-11-20).
+#
+# CSP: wszystko własne ('self') — oba widgety (tour-guide mapa, insider) są serwowane z tego samego
+# hostingu pod /elements/, nic nie jest ładowane z obcych domen skryptów. Wyjątki, każdy realnie
+# potrzebny: kafle OpenStreetMap (img-src), Finnhub (connect-src — insider woła go wprost z
+# przeglądarki), Google Fonts (stylesheet + pliki fontów).
+# style-src 'unsafe-inline' jest potrzebne, bo widgety (Angular ViewEncapsulation.ShadowDom, Vue
+# customElement) wstrzykują własne <style> do shadow rootów, a CSP dotyczy całego dokumentu —
+# bez tego przeglądarka po cichu ignoruje ich reguły (realny bug złapany na produkcji, patrz
+# PORTFOLIO_PLAN.md).
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  Content-Security-Policy: default-src 'self'; script-src 'self'; connect-src 'self' https://finnhub.io; img-src 'self' data: https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fixed filenames without content hashes (the host page hardcodes the script path) — must never
+# be served stale after a redeploy.
+/elements/*
+  Cache-Control: no-cache

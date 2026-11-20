@@ -58,12 +58,12 @@ export const NOTES: BattleshipNote[] = [
       "Tour Guide's map, embedded as <tour-guide-mini-map>, rendered blank despite correct data. Shadow DOM isolates styles — the app's global Leaflet CSS simply never reaches inside. Fix: Leaflet's styles attached directly to the component, injected into the shadow root along with it.",
   },
   {
-    id: 'one-vps-four-apps',
-    titlePl: 'Jeden VPS, cztery aplikacje',
-    titleEn: 'One VPS, four apps',
+    id: 'hosting-cost',
+    titlePl: 'Serwer za €24 miesięcznie dla portfolio? Nie',
+    titleEn: 'A €24/month server for a portfolio? No',
     bodyPl:
-      'Żadnego Kubernetesa, żadnej platformy chmurowej — Traefik jako reverse proxy + Docker Compose na jednym VPS, każda apka jako osobny kontener pod własną subdomeną. Deploy z pusha, nie z klikania w panelu. Tańsze i prostsze niż orkiestracja, wystarczające dla ruchu, jaki realnie tu jest.',
+      'Portfolio działało na własnym VPS-ie: Traefik, Docker Compose, osobny kontener i subdomena na każdą apkę, deploy z pusha. Po czerwcowej podwyżce cen Hetznera (nawet +176% na liniach CPX) kosztowało to ok. €24 miesięcznie — za ruch, jakiego tu realnie nie ma. Backendy zniknęły, a oba widgety zostały skompilowane do statycznych Web Components, które leżą obok strony na Cloudflare Pages; mapa czyta snapshot prawdziwych danych z OpenStreetMap. Koszt: €0, została tylko domena.',
     bodyEn:
-      "No Kubernetes, no cloud platform — Traefik as a reverse proxy plus Docker Compose on one VPS, each app its own container under its own subdomain. Deploy on push, not by clicking around a dashboard. Cheaper and simpler than orchestration, plenty for the traffic this actually gets.",
+      "The portfolio ran on its own VPS: Traefik, Docker Compose, a container and a subdomain per app, deploy on push. After Hetzner's June price hike (up to +176% on the CPX line) that came to about €24 a month — for traffic that simply isn't there. The backends are gone, and both widgets were compiled into static Web Components that sit next to the page on Cloudflare Pages; the map reads a snapshot of real OpenStreetMap data. Cost: €0, only the domain remains.",
   },
 ];

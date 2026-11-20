@@ -234,8 +234,8 @@ function App() {
             </h1>
             <p className="hero__text-body">
               {t(
-                "Angular, React, Vue i React Native spięte Web Components, Traefikiem i jednym pipeline'em. Cztery aplikacje na własnym VPS — każda działa samodzielnie, każda jest tu klikalna na żywo.",
-                'Angular, React, Vue, and React Native tied together with Web Components, Traefik, and one pipeline. Four apps on my own VPS — each runs independently, each is clickable right here.',
+                "Angular, React, Vue i React Native spięte Web Components w jednym portfolio. Cztery projekty, cztery frameworki — dwa działają tu na żywo jako osadzone widgety, resztę znajdziesz w kodzie na GitHubie.",
+                'Angular, React, Vue, and React Native tied together with Web Components in one portfolio. Four projects, four frameworks — two run right here as embedded widgets, the rest live in code on GitHub.',
               )}
             </p>
             <div className="hero__cta">

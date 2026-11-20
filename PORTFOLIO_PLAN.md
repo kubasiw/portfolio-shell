@@ -391,6 +391,46 @@ odblokowuje się po kilku trafieniach, nie po ukończeniu całej planszy).
 
 ## Hosting / infrastruktura
 
+> **⚠️ ZASTĄPIONE 2026-11-20 — wszystko poniżej (własny VPS Hetzner + Traefik + Docker Compose +
+> wspólny Postgres + Uptime Kuma + GHCR) jest HISTORYCZNE i już nie działa.** Aktualny stan opisuje
+> ta podsekcja; reszta zostaje jako zapis decyzji i tego, czego się przy tym nauczyłem.
+
+### Aktualny stan (od 2026-11-20): Cloudflare Pages, koszt €0
+
+**Dlaczego.** Jedynym realnym, stałym kosztem był Hetzner CPX22: €23,97/mies. (~€288/rok) po
+czerwcowej podwyżce, za ruch, jakiego portfolio nie ma. Próba przeniesienia *tego samego* stosu na
+darmowego VPS-a (Oracle Cloud Always Free, ARM Ampere A1) rozbiła się o brak pojemności ("out of
+capacity" w Paryżu — jedna Availability Domain, wszystkie Fault Domains, także dla 1 OCPU) —
+zamiast czekać na skrypt ponawiający albo płacić za upgrade konta, uproszczono architekturę.
+Zakres uzgodniony wprost z właścicielem: "najprościej — widget i kod".
+
+**Jak działa teraz.**
+
+- **portfolio-shell** → Cloudflare Pages (statyczny `dist/`, repo podpięte, deploy z pusha do
+  `main`). Nagłówki/CSP w `public/_headers` (zastąpiły `nginx.conf`); `ci.yml` tylko lint + build.
+- **Oba widgety to statyczne pliki obok strony** (`public/elements/tour-guide/main.js` +
+  `krakow-demo-pois.json`, `public/elements/insider/main.js`) — ten sam origin co strona, więc
+  `script-src 'self'` i zero CORS. Ręcznie kopiowane artefakty z repo źródłowych (instrukcja w
+  `README.md`).
+- **tour-guide**: backend, Postgres i pełna aplikacja **nie są nigdzie wdrożone** (tylko lokalnie z
+  repo). Widget czyta statyczny snapshot 40 prawdziwych POI z OSM (po 10 z 4 typów, wygenerowany
+  raz z żywego backendu tuż przed wyłączeniem), a URL pliku liczy względem własnego skryptu
+  (`import.meta.url`), więc działa z dowolnego hosta (kubsiw.com, podgląd `*.pages.dev`, lokalnie).
+- **insider**: backend (sugestie AI przez Anthropic) nie działa. Widget ma sugestie AI **wyłączone
+  wprost** (komunikat zamiast przycisku; build elementu przypina `VITE_API_BASE_URL` do `""`, żeby
+  przeglądarka odwiedzającego nigdy nie próbowała łączyć się z `localhost:3100`); newsy i kursy
+  działają dalej, bo Finnhub jest wołany prosto z przeglądarki.
+- **serwisant**: nigdy nie był wdrożony (backend lokalny); dystrybucja mobilna i tak nie szła tym
+  hostingiem.
+- **Skasowane**: Traefik, kontener Postgres, Uptime Kuma, obrazy w GHCR, deployy SSH, subdomeny
+  `tourguide.`/`insider.`/`serwisant.` (rekordy DNS do usunięcia po przełączeniu domeny), sam
+  serwer Hetzner. Zostaje domena (~$10/rok, Cloudflare Registrar).
+- **Narracja**: "własny VPS jako dowód DevOps" (powód wyboru oryginalnego planu, patrz niżej)
+  świadomie porzucona na rzecz "zejście na najprostszy hosting, gdy koszt przestał mieć sens" —
+  opisane wprost w `ShellDetail`, w notce "za kulisami" `hosting-cost` i w sekcji umiejętności.
+
+### Plan historyczny (do 2026-11-20)
+
 Zdecydowano na wariant bardziej "inżynierski" (świadomy wybór — więcej do pokazania w portfolio
 jako umiejętność DevOps, kosztem większego nakładu pracy utrzymaniowej). Poniżej konkretny plan,
 sprawdzony pod kątem realnych, aktualnych cen (2026-07-24, po podwyżce Hetznera z kwietnia 2026 —
@@ -2442,3 +2482,27 @@ dla pełnego uzasadnienia każdej decyzji — zastępuje wcześniejsze uproszczo
   nienaprawione: 11 podatności npm we frontendzie, wszystkie w łańcuchu narzędziowym Expo
   (build-time, nie runtime) — naprawa wymagałaby cofnięcia decyzji o SDK 54. Pełne szczegóły w
   `C:\serwisant\CLAUDE.md`.
+
+- 2026-11-20: **Koniec z VPS-em: hosting za €0 (Cloudflare Pages), widgety jako statyczne pliki.**
+  Hetzner CPX22 (€23,97/mies.) był jedynym stałym kosztem; próba przeprowadzki tego samego stosu na
+  darmowy Oracle Cloud (Ampere A1) utknęła na "out of capacity" (jedna AD w Paryżu, wszystkie
+  Fault Domains), więc zamiast dalej walczyć o darmowy serwer — przeprojektowanie: strona na
+  Cloudflare Pages, oba widgety (tour-guide: mapa; insider: cała apka) skompilowane do Web
+  Components i serwowane jako pliki obok strony (`public/elements/`, ten sam origin). Backendy
+  tour-guide/insider nie są wdrożone: mapa czyta statyczny snapshot 40 POI (generowany raz z
+  żywego backendu przed wyłączeniem, ścieżka względem `import.meta.url`), sugestie AI insidera są
+  wyłączone wprost. Zmienione w kodzie: loadery widgetów (ścieżki lokalne), linki do subdomen →
+  repozytoria GitHub, teksty o VPS-ie/Traefiku (hero, notatka "za kulisami", statystyka "€0 koszt
+  hostingu", umiejętności, ShellDetail/InsiderDetail/TourGuideDetail — statusy projektów:
+  "Widget na żywo"), wywalone pliki Docker/nginx/compose i workflow deploy (zastąpiony ci.yml).
+  **Realne ustalenia po drodze:** (1) stary CSP z `nginx.conf` miał `style-src 'self'` i
+  `font-src 'self'`, czyli blokował Google Fonts (Archivo/IBM Plex Mono) na produkcji — niewidoczne
+  lokalnie, bo Vite dev nie wysyła CSP; nowy `_headers` je dopuszcza. (2) Fallback
+  `VITE_API_BASE_URL || 'http://localhost:3100'` w insiderze trafiłby do bundla i próbował
+  łączyć się z localhostem odwiedzającego — teraz pusty string = AI wyłączone. Zweryfikowane na
+  zbudowanym `dist` serwowanym z prawdziwym CSP z `_headers`: oba widgety ładują się z plików
+  lokalnych (mapa: 6 kafli OSM, 40 markerów, `overflow: hidden` na kontenerze Leafleta; insider:
+  shadow root, 6 żądań do Finnhuba bez błędów CSP). **Kroki poza repo (robi właściciel):** projekt
+  Cloudflare Pages + custom domain `kubsiw.com`, usunięcie rekordów `tourguide`/`insider`/
+  `serwisant` z DNS, a na końcu skasowanie serwera w Hetznerze (dopiero po weryfikacji nowej
+  strony pod właściwą domeną).

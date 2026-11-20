@@ -3,7 +3,10 @@ import { useTranslate } from '../../../i18n/LanguageContext';
 import '../insider-app.d.ts';
 import './InsiderDetail.css';
 
-const WIDGET_SCRIPT_SRC = 'https://insider.kubsiw.com/elements/main.js';
+// Bundle widgetu leży obok strony (public/elements/insider/), nie na osobnej subdomenie — patrz
+// PORTFOLIO_PLAN.md (2026-11-20).
+const WIDGET_SCRIPT_SRC = '/elements/insider/main.js';
+const INSIDER_REPO_URL = 'https://github.com/kubasiw/insider';
 const WIDGET_TAG = 'insider-app';
 
 type ScriptState = 'loading' | 'ready' | 'error';
@@ -46,7 +49,7 @@ const TECH_TAGS = [
   'Node/Express',
   'Finnhub',
   'Claude AI',
-  'Docker + Traefik',
+  'Static hosting',
   'Web Components',
 ];
 
@@ -99,8 +102,8 @@ export function InsiderDetail() {
             <h3 className="insider-detail__heading">{t('Pod maską', 'Under the hood')}</h3>
             <p>
               {t(
-                'Trzeci, celowo odrębny stack we frontendowym trio tego portfolio (Angular w tour-guide, React w tym shellu, Vue tutaj). Dane rynkowe — newsy i kursy — na żywo z Finnhuba (wybranego po realnym teście CORS, nie z dokumentacji). Sugestie AI: Claude, ta sama zasada "retrieve then generate" co w tour-guide — model widzi wyłącznie realnie pobrane newsy, nigdy nie wymyśla spółek ani tickerów. Własny, minimalny backend istnieje wyłącznie po to, żeby klucz do Anthropica nigdy nie opuścił serwera. Design system "Night Desk" — ciemny terminal inwestora, bursztynowy akcent, monospace dla liczb — zaprojektowany od zera, odrębny od reszty portfolio.',
-                'The third, deliberately distinct stack in this portfolio\'s frontend trio (Angular in tour-guide, React in this shell, Vue here). Market data — news and prices — live from Finnhub (chosen after a real CORS test, not from the docs). AI suggestions: Claude, the same "retrieve then generate" principle as tour-guide — the model only ever sees real, fetched news, never invents companies or tickers. A small, dedicated backend exists solely so the Anthropic key never leaves the server. The "Night Desk" design system — a dark investor terminal, an amber accent, monospace for numbers — designed from scratch, separate from the rest of the portfolio.',
+                'Trzeci, celowo odrębny stack we frontendowym trio tego portfolio (Angular w tour-guide, React w tym shellu, Vue tutaj). Dane rynkowe — newsy i kursy — na żywo z Finnhuba (wybranego po realnym teście CORS, nie z dokumentacji). Sugestie AI: Claude, ta sama zasada "retrieve then generate" co w tour-guide — model widzi wyłącznie realnie pobrane newsy, nigdy nie wymyśla spółek ani tickerów. Sugestie AI wymagają małego backendu, żeby klucz do Anthropica nigdy nie opuścił serwera — jego kod jest w repozytorium, ale w tej wersji demo nie jest uruchomiony, więc sugestie są wyłączone (newsy i kursy działają, bo Finnhub jest wołany prosto z przeglądarki). Design system "Night Desk" — ciemny terminal inwestora, bursztynowy akcent, monospace dla liczb — zaprojektowany od zera, odrębny od reszty portfolio.',
+                'The third, deliberately distinct stack in this portfolio\'s frontend trio (Angular in tour-guide, React in this shell, Vue here). Market data — news and prices — live from Finnhub (chosen after a real CORS test, not from the docs). AI suggestions: Claude, the same "retrieve then generate" principle as tour-guide — the model only ever sees real, fetched news, never invents companies or tickers. AI suggestions need a small backend so the Anthropic key never leaves the server — its code is in the repository, but it is not running in this demo, so suggestions are switched off (news and prices work, since Finnhub is called straight from the browser). The "Night Desk" design system — a dark investor terminal, an amber accent, monospace for numbers — designed from scratch, separate from the rest of the portfolio.',
               )}
             </p>
             <div className="insider-detail__tags">
@@ -117,18 +120,18 @@ export function InsiderDetail() {
             </h3>
             <p>
               {t(
-                'Insider jest osobną apką Vue, zbudowaną i wdrożoną niezależnie od tego shellu (React) — na własnej domenie, z własnym backendem. To, co renderuje się po prawej, nie jest zrzutem ekranu ani ramką iframe: cała apka jest skompilowana do jednego realnego Web Componentu (<insider-app>, Vue\'s defineCustomElement), ładowanego z insider.kubsiw.com i renderowanego w natywnym Shadow DOM — działa dokładnie tak samo, jak pod własnym adresem, ze wszystkimi żywymi danymi. Ten sam wzorzec (Web Components, nie iframe/single-spa) stoi już za mapą tour-guide osadzoną w karcie tego projektu wyżej — tam jako mały fragment, tutaj jako cała apka, bo Insider — w przeciwieństwie do tour-guide — nie ma routera ani logowania do orkiestrowania.',
-                "Insider is a separate Vue app, built and deployed independently of this shell (React) — on its own domain, with its own backend. What renders on the right isn't a screenshot or an iframe: the whole app compiles into one real Web Component (<insider-app>, Vue's defineCustomElement), loaded from insider.kubsiw.com and rendered in a native Shadow DOM — it works exactly as it does at its own address, with all the live data. The same pattern (Web Components, not iframe/single-spa) already backs the tour-guide map embedded in that project's card above — there as a small fragment, here as a whole app, since Insider — unlike tour-guide — has no router or login to orchestrate around.",
+                'Insider jest osobną apką Vue, zbudowaną niezależnie od tego shellu (React). To, co renderuje się po prawej, nie jest zrzutem ekranu ani ramką iframe: cała apka jest skompilowana do jednego realnego Web Componentu (<insider-app>, Vue\'s defineCustomElement), ładowanego jako osobny plik JS i renderowanego w natywnym Shadow DOM, z żywymi newsami i kursami z Finnhuba. Ten sam wzorzec (Web Components, nie iframe/single-spa) stoi już za mapą tour-guide osadzoną w karcie tego projektu wyżej — tam jako mały fragment, tutaj jako cała apka, bo Insider — w przeciwieństwie do tour-guide — nie ma routera ani logowania do orkiestrowania.',
+                "Insider is a separate Vue app, built independently of this shell (React). What renders on the right isn't a screenshot or an iframe: the whole app compiles into one real Web Component (<insider-app>, Vue's defineCustomElement), loaded as a separate JS file and rendered in a native Shadow DOM, with live news and prices from Finnhub. The same pattern (Web Components, not iframe/single-spa) already backs the tour-guide map embedded in that project's card above — there as a small fragment, here as a whole app, since Insider — unlike tour-guide — has no router or login to orchestrate around.",
               )}
             </p>
           </section>
           <a
             className="insider-detail__external-link"
-            href="https://insider.kubsiw.com"
+            href={INSIDER_REPO_URL}
             target="_blank"
             rel="noreferrer"
           >
-            {t('Otwórz insider.kubsiw.com w nowej karcie →', 'Open insider.kubsiw.com in a new tab →')}
+            {t('Zobacz kod na GitHubie →', 'See the code on GitHub →')}
           </a>
         </div>
 
@@ -136,8 +139,8 @@ export function InsiderDetail() {
           {scriptState === 'error' && (
             <p className="insider-detail__status">
               {t(
-                'Nie udało się załadować aplikacji. Spróbuj ponownie później albo skorzystaj z powyższego linku.',
-                'The app failed to load. Try again later, or use the link above.',
+                'Nie udało się załadować aplikacji. Spróbuj odświeżyć stronę albo zajrzyj do kodu przez powyższy link.',
+                'The app failed to load. Try refreshing the page, or have a look at the code via the link above.',
               )}
             </p>
           )}

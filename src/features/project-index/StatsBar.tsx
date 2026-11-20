@@ -9,14 +9,14 @@ interface Stat {
 }
 
 // Trzy pierwsze z handoffu (README, "3. Pasek statystyk") — statyczne, nie wyliczone z żadnego
-// realnego źródła (liczba aplikacji/lat/VPS), tak samo jak w prototypie. Czwarta ("zdjęcia w
+// realnego źródła (liczba aplikacji/lat/koszt hostingu), tak samo jak w prototypie. Czwarta ("zdjęcia w
 // galerii") NAPRAWIONA na realną liczbę (etap 5) — handoff podawał "44" ilustracyjnie, realne
 // passions.ts ma więcej; patrz getTotalPhotoCount (jedno źródło prawdy, użyte tu i w
 // AboutSection.tsx).
 const STATS: Stat[] = [
   { number: '04', labelPl: 'Aplikacje / frameworki', labelEn: 'Apps / frameworks' },
   { number: '09', labelPl: 'Lat we frontendzie', labelEn: 'Years in frontend' },
-  { number: '01', labelPl: 'VPS, Traefik, CI/CD', labelEn: 'VPS, Traefik, CI/CD' },
+  { number: '€0', labelPl: 'Koszt hostingu miesięcznie', labelEn: 'Monthly hosting cost' },
   { number: String(getTotalPhotoCount()), labelPl: 'Zdjęcia w galerii', labelEn: 'Photos in the gallery' },
 ];
 
