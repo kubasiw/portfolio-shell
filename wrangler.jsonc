@@ -3,9 +3,12 @@
   // `name` must match the project name in the Cloudflare dashboard.
   // public/_headers (CSP etc.) is copied into dist/ by Vite and honored by Workers static assets;
   // SPA fallback serves index.html for unknown paths.
+  // custom_domain: Cloudflare creates the DNS record + certificate for kubsiw.com on deploy (the
+  // old A record pointing at the Hetzner VPS must be deleted first, or the deploy errors).
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "portfolio-shell",
   "compatibility_date": "2026-11-01",
+  "routes": [{ "pattern": "kubsiw.com", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
