@@ -3166,7 +3166,7 @@ var Co = { class: "suggestion-card__meta" }, wo = { class: "suggestion-card__cat
 	}
 }), [["styles", [".world-clocks[data-v-a259cd2e]{border-bottom:1px solid var(--insider-hairline);grid-template-columns:repeat(4,1fr);gap:.5rem;width:100%;max-width:360px;padding-bottom:1rem;display:grid}.world-clocks__item[data-v-a259cd2e]{font-family:var(--insider-font-mono);flex-direction:column;align-items:center;gap:.15rem;min-width:0;display:flex}.world-clocks__city[data-v-a259cd2e]{letter-spacing:.05em;color:var(--insider-text-secondary);align-items:center;gap:.3rem;font-size:.65rem;font-weight:600;display:flex}.world-clocks__dot[data-v-a259cd2e]{border-radius:50%;flex:none;width:.35rem;height:.35rem}.world-clocks__dot--open[data-v-a259cd2e]{background:var(--insider-up)}.world-clocks__dot--closed[data-v-a259cd2e]{background:var(--insider-text-secondary)}.world-clocks__time[data-v-a259cd2e]{color:var(--insider-text-primary);font-size:.85rem;font-weight:600}.world-clocks__date[data-v-a259cd2e]{color:var(--insider-text-secondary);font-size:.6rem}"]], ["__scopeId", "data-v-a259cd2e"]]), Jo = "https://finnhub.io/api/v1";
 function Yo() {
-	return "d9llbm9r01qomrv3p220d9llbm9r01qomrv3p22g";
+	return "dc05mh9r01qs4ks333i0dc05mh9r01qs4ks333ig";
 }
 //#endregion
 //#region src/composables/useFinnhubNews.ts
