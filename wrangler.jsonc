@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers (static assets) — deploy of the plain `dist/` build, no Worker code.
+  // `name` must match the project name in the Cloudflare dashboard.
+  // public/_headers (CSP etc.) is copied into dist/ by Vite and honored by Workers static assets;
+  // SPA fallback serves index.html for unknown paths.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio-shell",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
